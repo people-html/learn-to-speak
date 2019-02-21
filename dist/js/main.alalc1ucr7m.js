@@ -164,7 +164,7 @@ window.ozzx = {
 };
 var globalConfig = {
   "root": "/src",
-  "entry": "main",
+  "entry": "card",
   "title": "页面",
   "outFolder": "./dist",
   "watcher": {
@@ -191,6 +191,9 @@ var globalConfig = {
     "content": "initial-scale=1,user-scalable=no,maximum-scale=1"
   }],
   "scriptList": [{
+    "name": "jquery-3.3.1",
+    "src": "https://code.jquery.com/jquery-3.3.1.min.js"
+  }, {
     "name": "swiper2.0",
     "src": "http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.min.js"
   }],
@@ -201,14 +204,14 @@ var globalConfig = {
   "pageList": [{
     "main": true,
     "isPage": true,
-    "name": "main",
-    "src": "./src/page/main.page",
-    "temple": "<temple name=\"main\" src=\"./src/page/main.page\" isPage=\"true\"></temple>"
+    "name": "card",
+    "src": "./src/page/card.page",
+    "temple": "<temple name=\"card\" src=\"./src/page/card.page\" isPage=\"true\"></temple>"
   }],
   "isOnePage": true
 };
 window.ozzx.script = {
-  "main": {
+  "card": {
     "data": {
       "nameList": {
         "rank1": {
@@ -226,15 +229,19 @@ window.ozzx.script = {
       }
     },
     "created": function created() {
-      console.log('hellow word!');
-    },
-    "methods": {
-      "showAlert": function showAlert(othersName, myName) {
-        console.log('可以传递参数:', othersName, myName);
-        console.log('方便的获取到可能会用到的信息!');
-        console.log(this);
-        this.$el.innerText = "Hellow ".concat(othersName, ", My name is ").concat(myName);
-      }
+      var mySwiper = new Swiper('.swiper-container', {
+        loop: true,
+        grabCursor: true,
+        paginationClickable: true
+      });
+      $('.arrow-left').on('click', function (e) {
+        e.preventDefault();
+        mySwiper.swipePrev();
+      });
+      $('.arrow-right').on('click', function (e) {
+        e.preventDefault();
+        mySwiper.swipeNext();
+      });
     }
   }
 };

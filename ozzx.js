@@ -2,7 +2,7 @@ module.exports = {
   // 项目根目录
   root: "/src",
   // 项目入口文件
-  entry: "main",
+  entry: "card",
   // 页面标题
   title: '页面',
   // 输出目录
@@ -50,6 +50,10 @@ module.exports = {
   // 使用到的外部脚本清单
   scriptList: [
     {
+      name: 'jquery-3.3.1',
+      src: 'https://code.jquery.com/jquery-3.3.1.min.js'
+    },
+    {
       name: 'swiper2.0',
       src: 'http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.min.js'
     }
@@ -66,8 +70,8 @@ module.exports = {
       // 是否为页面主入口
       main: true,
       isPage: true,
-      name: 'main',
-      src: './src/page/main.page'
+      name: 'card',
+      src: './src/page/card.page'
     }
   ]
 }
