@@ -190,7 +190,14 @@ var globalConfig = {
     "name": "viewport",
     "content": "initial-scale=1,user-scalable=no,maximum-scale=1"
   }],
-  "scriptList": [],
+  "scriptList": [{
+    "name": "swiper2.0",
+    "src": "http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.min.js"
+  }],
+  "styleList": [{
+    "name": "swiper2.0",
+    "src": "http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.css"
+  }],
   "pageList": [{
     "main": true,
     "isPage": true,

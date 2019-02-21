@@ -49,6 +49,16 @@ module.exports = {
   ],
   // 使用到的外部脚本清单
   scriptList: [
+    {
+      name: 'swiper2.0',
+      src: 'http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.min.js'
+    }
+  ],
+  styleList: [
+    {
+      name: 'swiper2.0',
+      src: 'http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.css'
+    }
   ],
   // 页面清单
   pageList: [
