@@ -165,7 +165,7 @@ window.ozzx = {
 var globalConfig = {
   "root": "/src",
   "entry": "card",
-  "title": "页面",
+  "title": "学习有声",
   "outFolder": "./dist",
   "watcher": {
     "enable": true,
@@ -194,12 +194,21 @@ var globalConfig = {
     "name": "jquery-3.3.1",
     "src": "https://code.jquery.com/jquery-3.3.1.min.js"
   }, {
-    "name": "swiper2.0",
-    "src": "http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.min.js"
+    "name": "modernizr",
+    "src": "./src/modernizr.custom.js"
+  }, {
+    "name": "draggabilly",
+    "src": "./src/draggabilly.pkgd.min.js"
+  }, {
+    "name": "elastiStack",
+    "src": "./src/elastiStack.js"
   }],
   "styleList": [{
-    "name": "swiper2.0",
-    "src": "http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.css"
+    "name": "component",
+    "src": "./src/component.css"
+  }, {
+    "name": "normalize",
+    "src": "./src/normalize.css"
   }],
   "pageList": [{
     "main": true,
@@ -213,35 +222,72 @@ var globalConfig = {
 window.ozzx.script = {
   "card": {
     "data": {
-      "nameList": {
-        "rank1": {
-          "name": "lis",
-          "like": "orange"
+      "audio": null,
+      "control": null,
+      "dateList": {
+        "2月22": {
+          "text": "orange"
         },
-        "rank2": {
+        "2月23": {
           "name": "kim",
           "like": "yellow"
         },
-        "rank3": {
+        "2月24": {
           "name": "tony",
           "like": "white"
         }
       }
     },
     "created": function created() {
-      var mySwiper = new Swiper('.swiper-container', {
-        loop: true,
-        grabCursor: true,
-        paginationClickable: true
-      });
-      $('.arrow-left').on('click', function (e) {
+      var _this = this;
+
+      document.addEventListener('touchmove', function (e) {
         e.preventDefault();
-        mySwiper.swipePrev();
-      });
-      $('.arrow-right').on('click', function (e) {
-        e.preventDefault();
-        mySwiper.swipeNext();
+      }, false);
+      new ElastiStack(document.getElementById('elasticstack'), {
+        elastic: false,
+        distDragBack: 100,
+        distDragMax: 200,
+        onUpdateStack: function onUpdateStack(activeIndex) {
+          // 停止当前播放的音乐
+          if (_this.data.audio !== null) {
+            _this.data.audio.pause();
+
+            _this.data.audio.src = '';
+          } // 停止上一个动画
+
+
+          if (_this.data.control !== null) {
+            _this.data.control.next = false;
+          } // 查找文字区域
+
+
+          var textBox = $("#slideItem".concat(activeIndex, " .text")); // 查找音频区域
+
+          var audio = $("#slideItem".concat(activeIndex, " audio")); // console.log(textBox)
+          // console.log(audio)
+
+          if (audio.length > 0) {
+            // 播放音乐
+            _this.data.audio = audio[0];
+            _this.data.audio.src = 'http://cunchu.site/resource/bgm.mp3';
+
+            _this.data.audio.play();
+
+            if (textBox.length > 0) {
+              // 滚动条长度
+              var scrollHeight = textBox[0].scrollHeight; // 超出长度
+
+              var overflow = scrollHeight - textBox[0].clientHeight;
+
+              _this.data.audio.ontimeupdate = function (e) {
+                textBox.scrollTop(_this.data.audio.currentTime / _this.data.audio.duration * overflow);
+              };
+            }
+          }
+        }
       });
     }
-  }
+  },
+  "shareBar": {}
 };

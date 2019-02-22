@@ -4,7 +4,7 @@ module.exports = {
   // 项目入口文件
   entry: "card",
   // 页面标题
-  title: '页面',
+  title: '学习有声',
   // 输出目录
   outFolder: "./dist",
   // 是否监测文件改动重新打包
@@ -54,15 +54,27 @@ module.exports = {
       src: 'https://code.jquery.com/jquery-3.3.1.min.js'
     },
     {
-      name: 'swiper2.0',
-      src: 'http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.min.js'
+      name: 'modernizr',
+      src: './src/modernizr.custom.js'
+    },
+    {
+      name: 'draggabilly',
+      src: './src/draggabilly.pkgd.min.js'
+    },
+    {
+      name: 'elastiStack',
+      src: './src/elastiStack.js'
     }
   ],
   styleList: [
     {
-      name: 'swiper2.0',
-      src: 'http://tools.people.com.cn/libs/swiper/2.0/idangerous.swiper.css'
-    }
+      name: 'component',
+      src: './src/component.css'
+    },
+    {
+      name: 'normalize',
+      src: './src/normalize.css'
+    },
   ],
   // 页面清单
   pageList: [

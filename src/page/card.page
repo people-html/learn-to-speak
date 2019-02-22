@@ -1,13 +1,21 @@
 <template>
   <div class="app">
-    <a class="arrow-left" href="#">左</a> 
-    <a class="arrow-right" href="#">右</a>
-    <div class="swiper-container">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide"><div class="card">1</div></div>
-        <div class="swiper-slide"><div class="card">2</div></div>
-        <div class="swiper-slide"><div class="card">3</div></div>
-      </div>
+    <div class="show-box">
+      <ul class="elasticstack" id="elasticstack">
+        <li id="slideItem0">
+          <div class="text"><img src="./images/1.jpg"/>我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!</div>
+          <audio src="http://cunchu.site/resource/bgm.mp3" controls="controls"></audio>
+        </li>
+        <li id="slideItem1"><div class="card">3 <temple name="shareBar" src="./src/page/shareBar.page"></div></li>
+        <li id="slideItem2"><div class="card">3</div></li>
+        <li id="slideItem3"><div class="card">4</div></li>
+        <li id="slideItem4"><div class="card">5</div></li>
+        <li id="slideItem5"><div class="card">6</div></li>
+        <li id="slideItem6"><div class="card">7</div></li>
+      </ul>
+    </div>
+    <div class="date-box">
+      <div class="date-item" @for="(item, key) in dateList">{{key}}</div>
     </div>
   </div>
 </template>
@@ -15,25 +23,54 @@
 <script>
   module.exports = {
     data: {
-      nameList: {
-        "rank1": {name: "lis", like: "orange"},
-        "rank2": {name: "kim", like: "yellow"},
-        "rank3": {name: "tony", like: "white"}
+      // 当前正在播放的音乐
+      audio: null,
+      control:  null,
+      dateList: {
+        "2月22": {text: "orange"},
+        "2月23": {name: "kim", like: "yellow"},
+        "2月24": {name: "tony", like: "white"}
       }
     },
-    created: () => {
-      var mySwiper = new Swiper('.swiper-container',{
-        loop: true,
-        grabCursor: true,
-        paginationClickable: true
-      })
-      $('.arrow-left').on('click', function(e){
-        e.preventDefault()
-        mySwiper.swipePrev()
-      })
-      $('.arrow-right').on('click', function(e){
-        e.preventDefault()
-        mySwiper.swipeNext()
+    created: function() {
+      document.addEventListener('touchmove', function(e){e.preventDefault()}, false)
+      new ElastiStack( document.getElementById( 'elasticstack' ), {
+        elastic: false,
+        distDragBack: 100,
+        distDragMax: 200,
+        onUpdateStack: (activeIndex) => {
+          // 停止当前播放的音乐
+          if (this.data.audio !== null) {
+            this.data.audio.pause()
+            this.data.audio.src = ''
+          }
+          // 停止上一个动画
+          if (this.data.control !== null) {
+            this.data.control.next = false
+          }
+          // 查找文字区域
+          const textBox = $(`#slideItem${activeIndex} .text`)
+          // 查找音频区域
+          const audio = $(`#slideItem${activeIndex} audio`)
+          // console.log(textBox)
+          // console.log(audio)
+          if (audio.length > 0) {
+            // 播放音乐
+            this.data.audio = audio[0]
+            this.data.audio.src = 'http://cunchu.site/resource/bgm.mp3'
+            this.data.audio.play()
+            
+            if (textBox.length > 0) {
+              // 滚动条长度
+              const scrollHeight = textBox[0].scrollHeight
+              // 超出长度
+              const overflow = scrollHeight - textBox[0].clientHeight
+              this.data.audio.ontimeupdate = (e) => {
+                textBox.scrollTop(this.data.audio.currentTime / this.data.audio.duration * overflow)
+              }
+            }
+          }
+        }
       })
     }
   }
@@ -41,23 +78,67 @@
 
 
 <style lang="less">
-
-  .swiper-container {
+  .elasticstack {
     width: 80%;
-    height: 80%;
-    background-color: blue;
-    .swiper-wrapper, .swiper-slide {
-      width: 100%;
-      height: 100%;
-    }
-    .swiper-slide {
+    height: 90%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    li {
       display: block;
+      position: absolute;
+      width: 90%;
+      height: 90%;
+      background-color: white;
+      box-shadow: 0px 1px 10px #888888;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      transform: translate3d(10px, 0px, -20px);
     }
     .card {
-      color: white;
-      line-height: 500px;
+      line-height: 300px;
       text-align: center;
       font-size: 2rem;
     }
+    .text {
+      overflow: auto;
+      height: calc(100% - 50px);
+      font-size: 16px;
+      margin: 0 10px;
+    }
+    audio {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      height: 50px;
+    }
+    img {
+      width: 100%;
+      margin: 10px 0;
+    }
+  }
+  .show-box {
+    height: calc(100% - 50px);
+    position: relative;
+    overflow: hidden;
+  }
+  .date-box {
+    line-height: 50px;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid #ccc;
+  }
+  .date-item {
+    border-left: 1px solid #ccc;
+    padding: 0 5px;
+  }
+  .date-item:last-child {
+    border-right: 1px solid #ccc;
   }
 </style>
