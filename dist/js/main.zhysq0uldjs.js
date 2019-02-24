@@ -226,67 +226,92 @@ window.ozzx.script = {
       "control": null,
       "dateList": {
         "2月22": {
-          "text": "orange"
+          "content": "2",
+          "share": true
         },
         "2月23": {
-          "name": "kim",
-          "like": "yellow"
+          "content": "我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!",
+          "music": "http://cunchu.site/resource/bgm.mp3"
         },
         "2月24": {
-          "name": "tony",
-          "like": "white"
+          "content": "3",
+          "share": true
         }
       }
     },
     "created": function created() {
       var _this = this;
 
+      var elasticstack = document.getElementById('elasticstack');
       document.addEventListener('touchmove', function (e) {
         e.preventDefault();
-      }, false);
-      new ElastiStack(document.getElementById('elasticstack'), {
-        distDragBack: 100,
-        distDragMax: 200,
-        onUpdateStack: function onUpdateStack(activeIndex) {
-          // 停止当前播放的音乐
-          if (_this.data.audio !== null) {
-            _this.data.audio.pause();
+      }, false); // 生成dom
 
-            _this.data.audio.src = '';
-          } // 停止上一个动画
+      var domTemple = '';
+      var ind = 0;
+
+      for (var key in this.data.dateList) {
+        var element = this.data.dateList[key];
+        domTemple += "<li id=\"slideItem".concat(ind++, "\"><div class=\"content\">").concat(element.content, "</div>");
+
+        if (element.music) {
+          domTemple += "<audio src=\"".concat(element.music, "\" controls=\"controls\"></audio>");
+        }
+
+        if (element.share) {
+          domTemple += "<div class=\"share-bar\"><div class=\"share-bar-item left\">\u70B9\u8D5E</div><div class=\"share-bar-item right\">\u5206\u4EAB</div></div>";
+        }
+
+        domTemple += "</li>";
+      }
+
+      elasticstack.innerHTML = domTemple;
+      setTimeout(function () {
+        new ElastiStack(elasticstack, {
+          loop: false,
+          distDragBack: 100,
+          distDragMax: 200,
+          onUpdateStack: function onUpdateStack(activeIndex) {
+            // 停止当前播放的音乐
+            if (_this.data.audio !== null) {
+              _this.data.audio.pause();
+
+              _this.data.audio.src = '';
+            } // 停止上一个动画
 
 
-          if (_this.data.control !== null) {
-            _this.data.control.next = false;
-          } // 查找文字区域
+            if (_this.data.control !== null) {
+              _this.data.control.next = false;
+            } // 查找文字区域
 
 
-          var textBox = $("#slideItem".concat(activeIndex, " .text")); // 查找音频区域
+            var textBox = $("#slideItem".concat(activeIndex, " .content")); // 查找音频区域
 
-          var audio = $("#slideItem".concat(activeIndex, " audio")); // console.log(textBox)
-          // console.log(audio)
+            var audio = $("#slideItem".concat(activeIndex, " audio")); // console.log(textBox)
+            // console.log(audio)
 
-          if (audio.length > 0) {
-            // 播放音乐
-            _this.data.audio = audio[0];
-            _this.data.audio.src = 'http://cunchu.site/resource/bgm.mp3';
+            if (audio.length > 0) {
+              // 播放音乐
+              _this.data.audio = audio[0];
+              _this.data.audio.src = 'http://cunchu.site/resource/bgm.mp3';
 
-            _this.data.audio.play();
+              _this.data.audio.play();
 
-            if (textBox.length > 0) {
-              // 滚动条长度
-              var scrollHeight = textBox[0].scrollHeight; // 超出长度
+              if (textBox.length > 0) {
+                // 滚动条长度
+                var scrollHeight = textBox[0].scrollHeight; // 超出长度
 
-              var overflow = scrollHeight - textBox[0].clientHeight;
+                var overflow = scrollHeight - textBox[0].clientHeight;
 
-              _this.data.audio.ontimeupdate = function (e) {
-                textBox.scrollTop(_this.data.audio.currentTime / _this.data.audio.duration * overflow);
-              };
+                _this.data.audio.ontimeupdate = function (e) {
+                  textBox.scrollTop(_this.data.audio.currentTime / _this.data.audio.duration * overflow);
+                };
+              }
             }
           }
-        }
-      });
+        });
+        elasticstack.style.display = 'block';
+      }, 0);
     }
-  },
-  "shareBar": {}
+  }
 };

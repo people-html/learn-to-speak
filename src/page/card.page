@@ -1,18 +1,7 @@
 <template>
   <div class="app">
     <div class="show-box">
-      <ul class="elasticstack" id="elasticstack">
-        <li id="slideItem0">
-          <div class="text"><img src="./images/1.jpg"/>我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!</div>
-          <audio src="http://cunchu.site/resource/bgm.mp3" controls="controls"></audio>
-        </li>
-        <li id="slideItem1"><div class="card">3 <temple name="shareBar" src="./src/page/shareBar.page"></div></li>
-        <li id="slideItem2"><div class="card">3</div></li>
-        <li id="slideItem3"><div class="card">4</div></li>
-        <li id="slideItem4"><div class="card">5</div></li>
-        <li id="slideItem5"><div class="card">6</div></li>
-        <li id="slideItem6"><div class="card">7</div></li>
-      </ul>
+      <ul class="elasticstack" id="elasticstack"></ul>
     </div>
     <div class="date-box">
       <div class="date-item" @for="(item, key) in dateList">{{key}}</div>
@@ -27,52 +16,73 @@
       audio: null,
       control:  null,
       dateList: {
-        "2月22": {text: "orange"},
-        "2月23": {name: "kim", like: "yellow"},
-        "2月24": {name: "tony", like: "white"}
+        "2月22": {content: "2", share: true},
+        "2月23": {content: '我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!', music: "http://cunchu.site/resource/bgm.mp3"},
+        "2月24": {content: "3", share: true},
       }
     },
     created: function() {
+      const elasticstack = document.getElementById('elasticstack')
       document.addEventListener('touchmove', (e) => {
         e.preventDefault()
       }, false)
-      new ElastiStack( document.getElementById( 'elasticstack' ), {
-        distDragBack: 100,
-        distDragMax: 200,
-        onUpdateStack: (activeIndex) => {
-          // 停止当前播放的音乐
-          if (this.data.audio !== null) {
-            this.data.audio.pause()
-            this.data.audio.src = ''
-          }
-          // 停止上一个动画
-          if (this.data.control !== null) {
-            this.data.control.next = false
-          }
-          // 查找文字区域
-          const textBox = $(`#slideItem${activeIndex} .text`)
-          // 查找音频区域
-          const audio = $(`#slideItem${activeIndex} audio`)
-          // console.log(textBox)
-          // console.log(audio)
-          if (audio.length > 0) {
-            // 播放音乐
-            this.data.audio = audio[0]
-            this.data.audio.src = 'http://cunchu.site/resource/bgm.mp3'
-            this.data.audio.play()
-            
-            if (textBox.length > 0) {
-              // 滚动条长度
-              const scrollHeight = textBox[0].scrollHeight
-              // 超出长度
-              const overflow = scrollHeight - textBox[0].clientHeight
-              this.data.audio.ontimeupdate = (e) => {
-                textBox.scrollTop(this.data.audio.currentTime / this.data.audio.duration * overflow)
+      
+      // 生成dom
+      let domTemple = ''
+      let ind = 0
+      for(let key in this.data.dateList) {
+        const element = this.data.dateList[key]
+        domTemple += `<li id="slideItem${ind++}"><div class="content">${element.content}</div>`
+        if (element.music) {
+          domTemple += `<audio src="${element.music}" controls="controls"></audio>`
+        }
+        if (element.share) {
+          domTemple += `<div class="share-bar"><div class="share-bar-item left">点赞</div><div class="share-bar-item right">分享</div></div>`
+        }
+        domTemple += `</li>`
+      }
+      elasticstack.innerHTML = domTemple
+      setTimeout(() => {
+        new ElastiStack( elasticstack, {
+          loop: false,
+          distDragBack: 100,
+          distDragMax: 200,
+          onUpdateStack: (activeIndex) => {
+            // 停止当前播放的音乐
+            if (this.data.audio !== null) {
+              this.data.audio.pause()
+              this.data.audio.src = ''
+            }
+            // 停止上一个动画
+            if (this.data.control !== null) {
+              this.data.control.next = false
+            }
+            // 查找文字区域
+            const textBox = $(`#slideItem${activeIndex} .content`)
+            // 查找音频区域
+            const audio = $(`#slideItem${activeIndex} audio`)
+            // console.log(textBox)
+            // console.log(audio)
+            if (audio.length > 0) {
+              // 播放音乐
+              this.data.audio = audio[0]
+              this.data.audio.src = 'http://cunchu.site/resource/bgm.mp3'
+              this.data.audio.play()
+              
+              if (textBox.length > 0) {
+                // 滚动条长度
+                const scrollHeight = textBox[0].scrollHeight
+                // 超出长度
+                const overflow = scrollHeight - textBox[0].clientHeight
+                this.data.audio.ontimeupdate = (e) => {
+                  textBox.scrollTop(this.data.audio.currentTime / this.data.audio.duration * overflow)
+                }
               }
             }
           }
-        }
-      })
+        })
+        elasticstack.style.display = 'block'
+      }, 0)
     }
   }
 </script>
@@ -88,13 +98,14 @@
     top: 0;
     bottom: 0;
     margin: auto;
+    display: none;
     li {
       display: block;
       position: absolute;
       width: 90%;
       height: 90%;
       background-color: white;
-      box-shadow: 0px 1px 10px #888888;
+      box-shadow: rgb(170, 170, 170) 0px 0px 10px 0px;
       left: 0;
       top: 0;
       right: 0;
@@ -102,14 +113,9 @@
       margin: auto;
       transform: translate3d(10px, 0px, -20px);
     }
-    .card {
-      line-height: 300px;
-      text-align: center;
-      font-size: 2rem;
-    }
-    .text {
+    .content {
       overflow: auto;
-      height: calc(100% - 50px);
+      height: calc(100% - 60px);
       font-size: 16px;
       margin: 0 10px;
     }
@@ -141,5 +147,16 @@
   }
   .date-item:last-child {
     border-right: 1px solid #ccc;
+  }
+  .share-bar {
+    height: 50px;
+    margin: 5px;
+    box-shadow: rgb(170, 170, 170) 0px 0px 10px 0px;
+  }
+  .share-bar-item {
+    width: 49%;
+    line-height: 50px;
+    display: inline-block;
+    text-align: center;
   }
 </style>

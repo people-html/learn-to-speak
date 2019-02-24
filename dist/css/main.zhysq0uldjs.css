@@ -7,11 +7,7 @@ html, body, .ox, .app {
 }
 
 * { touch-action: pan-y; }
-.ox-shareBar .share-bar {
-  height: 60px;
-  border: 1px solid #ccc;
-  margin: 0 5px;
-}.ox-card .elasticstack {
+.ox-card .elasticstack {
   width: 80%;
   height: 90%;
   position: absolute;
@@ -20,6 +16,7 @@ html, body, .ox, .app {
   top: 0;
   bottom: 0;
   margin: auto;
+  display: none;
 }
 
 .ox-card .elasticstack li {
@@ -28,7 +25,7 @@ html, body, .ox, .app {
   width: 90%;
   height: 90%;
   background-color: white;
-  box-shadow: 0px 1px 10px #888888;
+  box-shadow: #aaaaaa 0px 0px 10px 0px;
   left: 0;
   top: 0;
   right: 0;
@@ -38,15 +35,9 @@ html, body, .ox, .app {
           transform: translate3d(10px, 0px, -20px);
 }
 
-.ox-card .elasticstack .card {
-  line-height: 300px;
-  text-align: center;
-  font-size: 2rem;
-}
-
-.ox-card .elasticstack .text {
+.ox-card .elasticstack .content {
   overflow: auto;
-  height: calc(100% - 50px);
+  height: calc(100% - 60px);
   font-size: 16px;
   margin: 0 10px;
 }
@@ -83,4 +74,17 @@ html, body, .ox, .app {
 
 .ox-card .date-item:last-child {
   border-right: 1px solid #ccc;
+}
+
+.ox-card .share-bar {
+  height: 50px;
+  margin: 5px;
+  box-shadow: #aaaaaa 0px 0px 10px 0px;
+}
+
+.ox-card .share-bar-item {
+  width: 49%;
+  line-height: 50px;
+  display: inline-block;
+  text-align: center;
 }

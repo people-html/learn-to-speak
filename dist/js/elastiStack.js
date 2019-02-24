@@ -140,14 +140,23 @@
 			onEndTransFn = function() {
 				instance.element.removeEventListener( transEndEventName, onEndTransFn );
 				
-				// reset first item
-				setTransformStyle( instance.element, is3d ? 'translate3d(0,0,-180px)' : 'translate(0,0,0)' );
-				instance.element.style.left = instance.element.style.top = '0px';
-				instance.element.style.zIndex = -1;
-				classie.remove( instance.element, 'animate' );
-
+				
+				if (self.options.loop) {
+					// reset first item
+					setTransformStyle( instance.element, is3d ? 'translate3d(0,0,-20px)' : 'translate(0,0,0)' );
+					instance.element.style.left = instance.element.style.top = '0px';
+					instance.element.style.zIndex = -1;
+					classie.remove( instance.element, 'animate' );
+				} else {
+					self.container.removeChild(instance.element)
+				}
+				
+				// 前进
+				self.current ++
 				// reorder stack
-				self.current = self.current < self.itemsCount - 1 ? self.current + 1 : 0;
+				// 循环
+				if (self.current < 0) self.current = self.itemsCount - 1
+				if (self.current > self.itemsCount - 1) self.current = 0
 
 				setTimeout(() => {
 					// the upcoming one will animate..
@@ -246,25 +255,29 @@
 		this.initSetting();
 	}
 	
+	// 获取卡片总数
 	ElastiStack.prototype.getSize = function(){
 		return this.itemsCount ;
 	}
 	
-	
+	// 获取当前卡片index
 	ElastiStack.prototype.getCurrent = function(){
 		return this.current ;
 	}
 	
+	// 获取当前卡片元素
 	ElastiStack.prototype.getCurrentItem = function(){
 		return this.items[this.current] ;
 	}
 	
+	// 添加卡片方法
 	ElastiStack.prototype.insert = function(el,index){
 		this.container.insertBefore(el,this.container.childNodes[index]);
 		this.items.splice(index, 0, el);
 		this.initSetting();
 	}
 	
+	// 移除卡片方法
 	ElastiStack.prototype.remove = function(index){
 		if ( this.items.length === 0 ){
 			return ;
