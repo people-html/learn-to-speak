@@ -1,38 +1,5 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <title>学习有声</title>
-    <!-- 页面的元信息 -->
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1"/>
-    <link rel="stylesheet" href="./css/main.v5c2ckzcrkc.css">
-    <link rel="stylesheet" href="./css/component.css">
-    <link rel="stylesheet" href="./css/normalize.css">
-  </head>
-  <body>
-    <!-- 页面区域 -->
-    <div class="ox-card ox" id="ox-card"><div class="app">
-    <div class="show-box">
-      <ul class="elasticstack" id="elasticstack"></ul>
-    </div>
-    <div class="date-box">
-      
-    </div>
-  </div>
-</div>
-    <!-- 页面脚本 -->
-    <script src="./js/autoReload.js" type="text/javascript"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript" ></script>
-    <script src="./js/modernizr.js" type="text/javascript" ></script>
-    <script src="./js/draggabilly.js" type="text/javascript" ></script>
-    <script src="./js/elastiStack.js" type="text/javascript" ></script>
-    <script>
 var dateList = {
   "2月22": {content: "2", share: true},
   "2月23": {content: '<img src="./images/1.jpg"/>我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!我是一段超长超长的文本!', music: "http://cunchu.site/resource/bgm.mp3"},
   "2月24": {content: "3", share: true},
 }
-    </script>
-    <script src="./js/main.v5c2ckzcrkc.js" type="text/javascript"></script>
-  </body>
-</html>

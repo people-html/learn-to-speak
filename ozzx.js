@@ -28,6 +28,8 @@ module.exports = {
     choiceAnimation: false,
     // 全局样式文件
     globalStyle: './src/main.css',
+    // 全局js文件
+    globalScript: './src/main.js',
     // 输出文件自动追加版本号，可以用来消除缓存
     outFileAddVersion: true,
   },
