@@ -107,14 +107,14 @@
 	};
 
 	ElastiStack.prototype._setStackStyle = function() {
-		console.log(this.items)
 		for (var ind = 0; ind < this.items.length; ind++) {
 			const nowIndex = this.current + ind
 			const item = this.items[nowIndex >= this.items.length ? nowIndex - this.items.length : nowIndex]
-			console.log(item)
 			if (ind < 3) {
 				item.style.opacity = 1
 				item.style.zIndex = 4 - ind
+				// 添加动画标签
+				classie.add( item, 'animate' )
 				setTransformStyle( item, is3d ? 'translate3d(' + ind * 5 + 'px, 0, ' + ind * -10 + 'px)' : 'translate(' + ind * 5 + 'px, 0)' )
 			} else {
 				item.style.opacity = 0
