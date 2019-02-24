@@ -56,22 +56,13 @@
 		distDragBack : 200,
 		// 被移出距离
 		distDragMax : 450,
-		// 卡片是随机排列的
-		isRandom : false ,
+		// 是否循环切换
+		loop: false,
+		// 拖动轴
+		axis: 'x',
 		// 切换卡片事件
 		onUpdateStack : function( current ) { return false; }
 	};
-
-	function shuffle(array) {
-	  var m = array.length, t, i;
-	  while (m) {
-	    i = Math.floor(Math.random() * m--);
-	    t = array[m];
-	    array[m] = array[i];
-	    array[i] = t;
-	  }
-	  return array;
-	}
 
 	// 初始化设置
 	ElastiStack.prototype.initSetting = function(){
@@ -89,9 +80,6 @@
 	ElastiStack.prototype._init = function() {
 		// items
 		this.items = [].slice.call( this.container.children );
-		if ( this.options.isRandom ){
-		    shuffle(this.items);
-		}
 		// 当前卡片索引
 		this.current = 0;
 		// set initial styles
@@ -100,16 +88,21 @@
 	
 	// 注册事件
 	ElastiStack.prototype._initEvents = function() {
-		var self = this;
-		this.draggie.on( 'dragStart', function( i, e, p ) { self._onDragStart( i, e, p ); } );
-		this.draggie.on( 'dragMove', function( i, e, p ) { self._onDragMove( i, e, p ); } );
-		this.draggie.on( 'dragEnd', function( i, e, p ) { self._onDragEnd( i, e, p ); } );
-	};
+		this.draggie.on( 'dragStart', ( i, e, p ) => {
+			this._onDragStart( i, e, p )
+		})
+		this.draggie.on( 'dragMove', ( i, e, p ) => {
+			this._onDragMove( i, e, p )
+		})
+		this.draggie.on('dragEnd', ( i, e, p ) => {
+			this._onDragEnd( i, e, p )
+		})
+	}
 
 	ElastiStack.prototype._setStackStyle = function() {
 		for (var ind = 0; ind < this.items.length; ind++) {
 			const nowIndex = this.current + ind
-			const item = this.items[nowIndex >= this.items.length ? nowIndex - this.items.length : nowIndex]
+			const item = this.items[nowIndex >= this.items.length ? nowIndex % this.items.length : nowIndex]
 			if (ind < 3) {
 				item.style.opacity = 1
 				item.style.zIndex = 4 - ind
@@ -143,6 +136,7 @@
 
 		// after transition ends..
 		var self = this,
+			// 动画结束事件
 			onEndTransFn = function() {
 				instance.element.removeEventListener( transEndEventName, onEndTransFn );
 				
@@ -154,19 +148,11 @@
 
 				// reorder stack
 				self.current = self.current < self.itemsCount - 1 ? self.current + 1 : 0;
-				// new front items
-				var item1 = self._firstItem(),
-					item2 = self._secondItem(),
-					item3 = self._thirdItem();
 
-				// reset transition timing function
-				classie.remove( item1, 'move-back' );
-				if( item2 ) classie.remove( item2, 'move-back' );
-				if( item3 ) classie.remove( item3, 'move-back' );
-
-				setTimeout( function() {
+				setTimeout(() => {
 					// the upcoming one will animate..
-					classie.add( self._lastItem(), 'animate' );
+					const item = self.items[self.current >= self.items.length ? self.current % self.items.length : self.current]
+					classie.add( item, 'animate' );
 					// reset style
 					self._setStackStyle();
 				}, 25 );
@@ -190,17 +176,15 @@
 	};
 
 	ElastiStack.prototype._moveBack = function( instance ) {
-		var item2 = this._secondItem(), item3 = this._thirdItem();
 
-		classie.add( instance.element, 'move-back' );
 		classie.add( instance.element, 'animate' );
 		setTransformStyle( instance.element, is3d ? 'translate3d(0,0,0)' : 'translate(0,0)' );
 		instance.element.style.left = '0px';
 		instance.element.style.top = '0px';
 	}
 
+	// 卡片开始拖拽事件
 	ElastiStack.prototype._onDragStart = function( instance, event, pointer ) {
-		classie.remove( instance.element, 'move-back' );
 		classie.remove( instance.element, 'animate' );
 	};
 
@@ -221,14 +205,16 @@
 	};
 
 	ElastiStack.prototype._initDragg = function() {
-		this.draggie = new Draggabilly( this.items[ this.current ] );
+		this.draggie = new Draggabilly( this.items[ this.current ], {
+			axis: this.options.axis
+		})
 	};
 
 	ElastiStack.prototype._disableDragg = function() {
 		this.draggie.disable();
 	};
 
-	// returns true if x or y is bigger than distDragMax
+	// 判断是否移出指定位置
 	ElastiStack.prototype._outOfBounds = function( el ) {
 		return Math.abs( el.position.x ) > this.options.distDragMax || Math.abs( el.position.y ) > this.options.distDragMax;
 	};
@@ -253,62 +239,6 @@
 		}
 	};
 
-	// returns the first item in the stack
-	ElastiStack.prototype._firstItem = function() {
-		return this.items[ this.current ];
-	};
-	
-	// returns the second item in the stack
-	ElastiStack.prototype._secondItem = function() {
-		if( this.itemsCount >= 2 ) {
-			return this.current + 1 < this.itemsCount ? this.items[ this.current + 1 ] : this.items[ Math.abs( this.itemsCount - ( this.current + 1 ) ) ];
-		}
-	};
-	
-	// returns the third item in the stack
-	ElastiStack.prototype._thirdItem = function() { 
-		if( this.itemsCount >= 3 ) {
-			return this.current + 2 < this.itemsCount ? this.items[ this.current + 2 ] : this.items[ Math.abs( this.itemsCount - ( this.current + 2 ) ) ];
-		}
-	};
-
-	// returns the last item (of the first three) in the stack
-	ElastiStack.prototype._lastItem = function() { 
-		if( this.itemsCount >= 3 ) {
-			return this._thirdItem();
-		}
-		else {
-			return this._secondItem();
-		}
-	};
-
-	ElastiStack.prototype.turnRandom = function() { 
-		if ( this.options.isRandom ){
-			var nowItem = this.items[this.current];
-			this.items = [].slice.call( this.container.children );
-			this.current = this.items.indexOf(nowItem);
-			this.options.isRandom = false ;
-		} else {
-			var nowItem = this.items[this.current];
-			this.items = [].slice.call( this.container.children );
-		    shuffle(this.items);
-			this.current = this.items.indexOf(nowItem);
-			this.options.isRandom = true ;
-		}
-		var item1 = this._firstItem(), item2 = this._secondItem(), item3 = this._thirdItem();
-		for ( var i = 0 ; i < this.items.length ; i ++ ){
-			if ( this.items[i] !== item1 && this.items[i] !== item2 && this.items[i] !== item3  ){
-				this.items[i].style.opacity = 0 ;
-			} else {
-				this.items[i].style.opacity = 1 ;
-			}
-		}
-		this._setStackStyle();
-	};
-
-	ElastiStack.prototype.isRandom = function() { 
-		return this.options.isRandom ;
-	};
 	
 	ElastiStack.prototype.add = function(el){
 		this.container.appendChild(el);
