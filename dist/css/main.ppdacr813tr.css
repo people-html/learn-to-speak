@@ -5,6 +5,8 @@ html, body, .ox, .app {
   height: 100%;
   overflow: hidden;
 }
+
+* { touch-action: pan-y; }
 .ox-shareBar .share-bar {
   height: 60px;
   border: 1px solid #ccc;

@@ -21,7 +21,7 @@
 		return a;
 	}
 
-	// support
+	// 判断是否支持3D
 	var is3d = !!getStyleProperty( 'perspective' ),
 		supportTransitions = Modernizr.csstransitions,
 		// transition end event name
@@ -34,7 +34,8 @@
 		},
 		transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ],
 		isInit = false ;
-
+	
+	// 初始化
 	function ElastiStack( el, options ) {
 		this.container = el;
 		this.options = extend( {}, this.options );
@@ -42,12 +43,14 @@
   		this._init();
 	}
 
+	//根据不同浏览器设置不同样式
 	function setTransformStyle( el, tval ) {
 		el.style.WebkitTransform = tval;
 		el.style.msTransform = tval;
 		el.style.transform = tval;
 	}
 
+	// 默认配置
 	ElastiStack.prototype.options = {
 		// 弹回距离
 		distDragBack : 200,
@@ -55,8 +58,6 @@
 		distDragMax : 450,
 		// 卡片是随机排列的
 		isRandom : false ,
-		// 有弹性的
-		elastic: true,
 		// 切换卡片事件
 		onUpdateStack : function( current ) { return false; }
 	};
@@ -72,6 +73,7 @@
 	  return array;
 	}
 
+	// 初始化设置
 	ElastiStack.prototype.initSetting = function(){
 		this.itemsCount = this.items.length;
 		this._setStackStyle();
@@ -83,19 +85,20 @@
 		isInit = true ;
 	}
 	
+	// 初始化
 	ElastiStack.prototype._init = function() {
 		// items
 		this.items = [].slice.call( this.container.children );
 		if ( this.options.isRandom ){
 		    shuffle(this.items);
 		}
-		// current item's index (the one on the top of the stack)
+		// 当前卡片索引
 		this.current = 0;
 		// set initial styles
 		this.initSetting();
 	};
 	
-
+	// 注册事件
 	ElastiStack.prototype._initEvents = function() {
 		var self = this;
 		this.draggie.on( 'dragStart', function( i, e, p ) { self._onDragStart( i, e, p ); } );
@@ -104,23 +107,20 @@
 	};
 
 	ElastiStack.prototype._setStackStyle = function() {
-		var item1 = this._firstItem(), item2 = this._secondItem(), item3 = this._thirdItem();
-		if( item1 ) {
-			item1.style.opacity = 1;
-			item1.style.zIndex = 4;
-			setTransformStyle( item1, is3d ? 'translate3d(0,0,0)' : 'translate(0,0)' );
-		}
-
-		if( item2 ) {
-			item2.style.opacity = 1;
-			item2.style.zIndex = 3;
-			setTransformStyle( item2, is3d ? 'translate3d(5px,0,-10px)' : 'translate(0,0)' );
-		}
-
-		if( item3 ) {
-			item3.style.opacity = 1;
-			item3.style.zIndex = 2;
-			setTransformStyle( item3, is3d ? 'translate3d(10px,0,-20px)' : 'translate(0,0)' );
+		console.log(this.items)
+		for (var ind = 0; ind < this.items.length; ind++) {
+			const nowIndex = this.current + ind
+			const item = this.items[nowIndex >= this.items.length ? nowIndex - this.items.length : nowIndex]
+			console.log(item)
+			if (ind < 3) {
+				item.style.opacity = 1
+				item.style.zIndex = 4 - ind
+				setTransformStyle( item, is3d ? 'translate3d(' + ind * 5 + 'px, 0, ' + ind * -10 + 'px)' : 'translate(' + ind * 5 + 'px, 0)' )
+			} else {
+				item.style.opacity = 0
+				item.style.zIndex = 0
+				setTransformStyle( item, is3d ? 'translate3d(10px, 0, -20px)' : 'translate(10px, 0)' )
+			}
 		}
 	};
 
@@ -139,23 +139,6 @@
 		
 		// item also fades out
 		instance.element.style.opacity = 0;
-
-		
-		// 判断是否有弹性效果
-		if (this.options.elastic) {
-			// other items move back to stack
-			var item2 = this._secondItem(), item3 = this._thirdItem();
-			if( item2 ) {
-				classie.add( item2, 'move-back' );
-				classie.add( item2, 'animate' );
-				setTransformStyle( item2, is3d ? 'translate3d(5px,0,-10px)' : 'translate(0,0)' );
-			}
-			if( item3 ) {
-				classie.add( item3, 'move-back' );
-				classie.add( item3, 'animate' );
-				setTransformStyle( item3, is3d ? 'translate3d(10px,0,-20px)' : 'translate(0,0)' );
-			}
-		}
 		
 
 		// after transition ends..
@@ -214,50 +197,16 @@
 		setTransformStyle( instance.element, is3d ? 'translate3d(0,0,0)' : 'translate(0,0)' );
 		instance.element.style.left = '0px';
 		instance.element.style.top = '0px';
-
-		if( item2 ) {
-			classie.add( item2, 'move-back' );
-			classie.add( item2, 'animate' );
-			setTransformStyle( item2, is3d ? 'translate3d(5px,0,-10px)' : 'translate(0,0)' );
-		}
-		if( item3 ) {
-			classie.add( item3, 'move-back' );
-			classie.add( item3, 'animate' );
-			setTransformStyle( item3, is3d ? 'translate3d(10px,0,-20px)' : 'translate(0,0)' );
-		}
-	};
+	}
 
 	ElastiStack.prototype._onDragStart = function( instance, event, pointer ) {
-
-		// remove transition classes if any
-		var item2 = this._secondItem(), item3 = this._thirdItem();
-
 		classie.remove( instance.element, 'move-back' );
 		classie.remove( instance.element, 'animate' );
-
-		if( item2 ) {
-			classie.remove( item2, 'move-back' );
-			classie.remove( item2, 'animate' );
-		}
-		if( item3 ) {
-			classie.remove( item3, 'move-back' );
-			classie.remove( item3, 'animate' );
-		}
 	};
 
 	ElastiStack.prototype._onDragMove = function( instance, event, pointer ) {
 		if( this._outOfBounds( instance ) ) {
 			this._moveAway( instance );
-		}
-		else if (this.options.elastic) {
-			// the second and third items also move
-			var item2 = this._secondItem(), item3 = this._thirdItem();
-			if( item2 ) {
-				setTransformStyle( item2, is3d ? 'translate3d(' + ( instance.position.x * .6 ) + 'px,' + ( instance.position.y * .6 ) + 'px, -10px)' : 'translate(' + ( instance.position.x * .6 ) + 'px,' + ( instance.position.y * .6 ) + 'px)' );
-			}
-			if( item3 ) {
-				setTransformStyle( item3, is3d ? 'translate3d(' + ( instance.position.x * .3 ) + 'px,' + ( instance.position.y * .3 ) + 'px, -20px)' : 'translate(' + ( instance.position.x * .3 ) + 'px,' + ( instance.position.y * .3 ) + 'px)' );
-			}
 		}
 	};
 

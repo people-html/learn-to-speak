@@ -245,7 +245,6 @@ window.ozzx.script = {
         e.preventDefault();
       }, false);
       new ElastiStack(document.getElementById('elasticstack'), {
-        elastic: false,
         distDragBack: 100,
         distDragMax: 200,
         onUpdateStack: function onUpdateStack(activeIndex) {

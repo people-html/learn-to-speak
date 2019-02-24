@@ -5,3 +5,5 @@ html, body, .ox, .app {
   height: 100%;
   overflow: hidden;
 }
+
+* { touch-action: pan-y; }

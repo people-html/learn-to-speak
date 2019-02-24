@@ -33,9 +33,10 @@
       }
     },
     created: function() {
-      document.addEventListener('touchmove', function(e){e.preventDefault()}, false)
+      document.addEventListener('touchmove', (e) => {
+        e.preventDefault()
+      }, false)
       new ElastiStack( document.getElementById( 'elasticstack' ), {
-        elastic: false,
         distDragBack: 100,
         distDragMax: 200,
         onUpdateStack: (activeIndex) => {
