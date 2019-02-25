@@ -122,6 +122,13 @@
 
 
 	ElastiStack.prototype._moveAway = function( instance ) {
+		console.log(instance)
+		// 判断是否有下一个卡片
+		let next = this.items[this.current + 1]
+		if (!this.options.loop && !next) {
+			this._moveBack( instance )
+			return
+		}
 		// disable drag
 		this._disableDragg();
 		
@@ -145,15 +152,11 @@
 				instance.element.removeEventListener( transEndEventName, onEndTransFn );
 				
 				
-				if (self.options.loop) {
-					// reset first item
-					setTransformStyle( instance.element, is3d ? 'translate3d(' + self.options.ratioX * 2 + ', 0, ' + self.options.ratioZ * 2 + 'px)' : 'translate(0,0,0)' );
-					instance.element.style.left = instance.element.style.top = '0px';
-					instance.element.style.zIndex = -1;
-					classie.remove( instance.element, 'animate' );
-				} else {
-					self.container.removeChild(instance.element)
-				}
+				// reset first item
+				setTransformStyle( instance.element, is3d ? 'translate3d(' + self.options.ratioX * 2 + ', 0, ' + self.options.ratioZ * 2 + 'px)' : 'translate(0,0,0)' );
+				instance.element.style.left = instance.element.style.top = '0px';
+				instance.element.style.zIndex = -1;
+				classie.remove( instance.element, 'animate' );
 				
 				// 前进
 				self.current ++
@@ -201,15 +204,20 @@
 	};
 
 	ElastiStack.prototype._goBack = function( instance, event, pointer ) {
-		const last = this.items[this.current - 1]
+		
+		let last = this.items[this.current - 1]
+		// 判断是否允许循环
+		if (this.options.loop ) last = this.items[this.items.length - 1]
+		// 待优化
 		if (last) {
 			// 禁止拖动
 			this._disableDragg()
 			last.style.opacity = 0
 			// 添加动画标签
+			last.style.zIndex = 5;
 			classie.add( last, 'animate' )
 			var tVal = this._getTranslateVal( instance );
-
+			
 			// apply it	
 			setTransformStyle( last, is3d ? 'translate3d(' + tVal.x + 'px,' + tVal.y + 'px, 0px)' : 'translate(' + tVal.x + 'px,' + tVal.y + 'px)' );
 			// after transition ends..
@@ -219,18 +227,14 @@
 					last.removeEventListener( transEndEventName, onEndTransFn );
 					
 					
-					if (self.options.loop) {
-						// reset first item
-						setTransformStyle( last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0,0)' );
-						last.style.left = last.style.top = '0px';
-						last.style.zIndex = 4;
-						last.style.opacity = 1
-						setTimeout(() => {
-							classie.remove( last, 'animate' )
-						}, 300)
-					} else {
-						self.container.removeChild(last)
-					}
+					// reset first item
+					setTransformStyle( last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0,0)' );
+					last.style.left = last.style.top = '0px';
+					last.style.zIndex = 4;
+					last.style.opacity = 1
+					setTimeout(() => {
+						classie.remove( last, 'animate' )
+					}, 300)
 					
 					// 前进
 					self.current --
@@ -315,6 +319,9 @@
 		}
 	};
 
+	ElastiStack.prototype.next = function () {
+		
+	}
 	
 	ElastiStack.prototype.add = function(el){
 		this.container.appendChild(el);
@@ -361,9 +368,36 @@
 
 	}
 
-	// 移除卡片方法
+	// 模拟切换下一页
 	ElastiStack.prototype.next = function(index) {
-		this._moveAway( instance )
+		this._moveAway({
+			dragPoint: {
+				x: 260,
+				y: 0
+			},
+			element: this.items[this.current],
+			isDragging: false,
+			isEnabled: false,
+			position: {
+				x: 260,
+				y: 0
+			}
+		})
+	}
+	ElastiStack.prototype.last = function () {
+		this._goBack({
+			dragPoint: {
+				x: -260,
+				y: 0
+			},
+			element: this.items[this.current],
+			isDragging: false,
+			isEnabled: false,
+			position: {
+				x: -260,
+				y: 0
+			}
+		})
 	}
 
 	// add to global namespace

@@ -8,6 +8,7 @@
 .elasticstack li {
 	position: absolute;
 	z-index: 1;
+	transform: translate3d(0,0,-180px);
 	transform-style: preserve-3d;
 }
 
