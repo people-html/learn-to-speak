@@ -156,6 +156,7 @@
 				setTransformStyle( instance.element, is3d ? 'translate3d(' + self.options.ratioX * 2 + ', 0, ' + self.options.ratioZ * 2 + 'px)' : 'translate(0,0,0)' );
 				instance.element.style.left = instance.element.style.top = '0px';
 				instance.element.style.zIndex = -1;
+				// 从下往上切换可以直接放置到最后
 				classie.remove( instance.element, 'animate' );
 				
 				// 前进
@@ -206,8 +207,10 @@
 	ElastiStack.prototype._goBack = function( instance, event, pointer ) {
 		
 		let last = this.items[this.current - 1]
+		// console.log(last)
+		// 待优化
 		// 判断是否允许循环
-		if (this.options.loop ) last = this.items[this.items.length - 1]
+		if (this.options.loop && !last) last = this.items[this.items.length - 1]
 		// 待优化
 		if (last) {
 			// 禁止拖动
