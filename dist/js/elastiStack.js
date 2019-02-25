@@ -298,6 +298,11 @@
 
 	}
 
+	// 移除卡片方法
+	ElastiStack.prototype.next = function(index) {
+		this._moveAway( instance )
+	}
+
 	// add to global namespace
 	window.ElastiStack = ElastiStack;
 

@@ -15,3 +15,19 @@ html, body, .ox, .app {
 a {
   text-decoration: none;
 }
+.ox-card {
+  background-image: url('../images/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.ox-copyright {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+.middle-line {
+  width: 100%;
+  position: absolute;
+  height: 50%;
+  border-bottom: 1px solid #e6dbd0;
+}

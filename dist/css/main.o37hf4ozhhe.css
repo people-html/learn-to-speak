@@ -15,7 +15,41 @@ html, body, .ox, .app {
 a {
   text-decoration: none;
 }
-.ox-card .elasticstack {
+.ox-card {
+  background-image: url('../images/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.ox-copyright {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+.middle-line {
+  width: 100%;
+  position: absolute;
+  height: 50%;
+  border-bottom: 1px solid #e6dbd0;
+}
+.ox-copyright .copyright-box {
+  height: 170px;
+  color: #727272;
+  font-size: 12px;
+  position: relative;
+}
+
+.ox-copyright .copyright-box .copyright {
+  width: 500px;
+  height: 100px;
+  line-height: 20px;
+  text-align: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}.ox-card .elasticstack {
   width: 80%;
   height: 90%;
   position: absolute;
@@ -62,26 +96,43 @@ a {
   margin: 10px 0;
 }
 
+.ox-card .page-header {
+  height: 35%;
+  background-image: url(../images/header.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto 100%;
+  margin: 2% 0;
+}
+
 .ox-card .show-box {
-  height: calc(100% - 50px);
-  position: relative;
+  height: 40%;
+  width: 86%;
   overflow: hidden;
+  position: fixed;
+  left: 6%;
+  top: 30%;
 }
 
 .ox-card .date-box {
   line-height: 50px;
   display: flex;
   justify-content: center;
-  border-top: 1px solid #ccc;
+  position: fixed;
+  width: 100%;
+  bottom: 20%;
 }
 
 .ox-card .date-item {
-  border-left: 1px solid #ccc;
-  padding: 0 5px;
-}
-
-.ox-card .date-item:last-child {
-  border-right: 1px solid #ccc;
+  width: 50px;
+  background-color: #ded0c3;
+  z-index: 9;
+  text-align: center;
+  color: white;
+  border-radius: 50%;
+  font-size: 22px;
+  margin: 0 5px;
+  cursor: pointer;
 }
 
 .ox-card .share-bar {
@@ -95,6 +146,12 @@ a {
   line-height: 50px;
   display: inline-block;
   text-align: center;
+}
+
+.ox-card .record {
+  position: fixed;
+  right: 20%;
+  bottom: 20%;
 }.ox-share .share {
   background-color: #f6f6f6;
   width: 100%;

@@ -331,8 +331,7 @@ var globalConfig = {
     "src": "./src/draggabilly.pkgd.min.js"
   }, {
     "name": "elastiStack",
-    "src": "./src/elastiStack.js",
-    "bable": true
+    "src": "./src/elastiStack.js"
   }, {
     "name": "html2canvas",
     "src": "./src/html2canvas.min.js"
@@ -367,9 +366,11 @@ window.ozzx.script = {
     "created": function created() {
       document.addEventListener('touchmove', function (e) {
         e.preventDefault();
-      }, false); // 生成dom
+      }, false); // 判断是手机页面还是电脑页面
 
-      var dataBoxTemple = '';
+      console.log(ozzx.tool.getScreenInfo()); // 生成dom
+
+      var dataBoxTemple = '<div class="middle-line"></div>';
       var isFirst = true;
 
       for (var key in dateList) {
@@ -420,8 +421,8 @@ window.ozzx.script = {
       var _this = this;
 
       setTimeout(function () {
-        new ElastiStack(document.getElementById('elasticstack'), {
-          loop: false,
+        _this.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
+          loop: true,
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: function onUpdateStack(activeIndex) {
@@ -465,8 +466,12 @@ window.ozzx.script = {
         });
         document.getElementById('elasticstack').style.display = 'block';
       }, 0);
+    },
+    "nextCard": function nextCard() {
+      console.log(this.data.ElastiStack.next());
     }
   },
+  "copyright": {},
   "share": {
     "created": function created() {
       console.log('sd'); // 将dom导出为图片
@@ -476,4 +481,18 @@ window.ozzx.script = {
       });
     }
   }
+};
+/**
+* 获取屏幕信息
+* @return {object} 屏幕信息
+*/
+
+ozzx.tool.getScreenInfo = function () {
+  return {
+    clientWidth: document.body.clientWidth,
+    clientHeight: document.body.clientHeight,
+    ratio: document.body.clientWidth / document.body.clientHeight,
+    // 缩放比例
+    devicePixelRatio: window.devicePixelRatio || 1
+  };
 };
