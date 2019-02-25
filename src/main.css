@@ -7,3 +7,11 @@ html, body, .ox, .app {
 }
 
 * { touch-action: pan-y; }
+
+.clear {
+  clear: both;
+} 
+
+a {
+  text-decoration: none;
+}

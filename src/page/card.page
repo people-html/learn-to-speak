@@ -16,7 +16,6 @@
       ElastiStack: null
     },
     created: function() {
-      
       document.addEventListener('touchmove', (e) => {
         e.preventDefault()
       }, false)
@@ -49,7 +48,7 @@
           domTemple += `<audio src="${element.music}" controls="controls"></audio>`
         }
         if (element.share) {
-          domTemple += `<div class="share-bar"><div class="share-bar-item left">点赞</div><div class="share-bar-item right">分享</div></div>`
+          domTemple += `<div class="share-bar"><div class="share-bar-item left">点赞</div><div class="share-bar-item right"><a href="#share&in=moveToTop&out=moveFromBottom">分享</a></div></div>`
         }
         domTemple += `</li>`
       }

@@ -1,0 +1,102 @@
+<template>
+  <div class="share">
+    <div class="title">学习有声两会特别版</div>
+    <div class="share-box">
+      <div class="share-box-title">厉害了!</div>
+      <div class="share-box-text">你已完成2天学习有声两会特别版内容，请继续努力~~</div>
+      <div class="card-list" id="cardList">
+        <div class="card-list-item lock"></div>
+        <div class="card-list-item unlock"></div>
+        <div class="card-list-item unlock"></div>
+        <div class="card-list-item lock"></div>
+        <div class="card-list-item lock"></div>
+        <div class="card-list-item lock"></div>
+        <div class="card-list-item lock"></div>
+        <div class="card-list-item lock"></div>
+        <div class="card-list-item lock"></div>
+        <div class="clear"></div>
+      </div>
+      <div class="bottom-bar">
+        <div class="bottom-bar-item share-alert">骄傲的炫出</div>
+        <div class="bottom-bar-item learn-next"><a href="#card&in=moveToBottom&out=moveFromTop">继续学习</a></div>
+      </div>
+      <img class="share-image" id="shareImg" src=""/>
+    </div>
+  </div>
+</template>
+
+<script>
+  module.exports = {
+    created: function () {
+      console.log('sd')
+      // 将dom导出为图片
+      html2canvas(document.getElementById('cardList')).then(canvas => {
+        shareImg.src = canvas.toDataURL()
+      })
+    }
+  }
+</script>
+
+<style lang="less">
+.share {
+  background-color: #f6f6f6;
+  width: 100%;
+  height: 100%;
+}
+.title {
+  text-align: center;
+  line-height: 3em;
+  font-size: 1.8em;
+  color: red;
+}
+.share-box {
+  background-color: white;
+  margin: 10px;
+  height: 80%;
+  padding: 10px;
+}
+.share-box-title {
+  color: rgba(16, 142, 233, 1);
+  font-size: 1.6em;
+  line-height: 2em;
+}
+.share-box-text {
+  color: rgba(16, 142, 233, 1);
+}
+.card-list {
+  height: 70%;
+  margin: 10px 0;
+  .card-list-item {
+    width: calc(33.33% - 10px);
+    height: calc(33.33% - 10px);
+    float: left;
+    margin: 5px;
+  }
+  .lock {
+    background-color: skyblue;
+  }
+  .unlock {
+    background-color: #ccc;
+  }
+}
+
+.bottom-bar {
+  display: flex;
+  height: 40px;
+  line-height: 40px;
+  justify-content: space-around;
+}
+.bottom-bar-item {
+  width: 30%;
+  height: 100%;
+  border: 1px solid #ccc;
+  text-align: center;
+  border-radius: 5px;
+}
+.share-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 70%;
+}
+</style>

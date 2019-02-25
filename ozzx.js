@@ -25,7 +25,7 @@ module.exports = {
     // 是否压缩js
     minifyJs: false,
     // 强制打包所有样式
-    choiceAnimation: false,
+    choiceAnimation: true,
     // 全局样式文件
     globalStyle: './src/main.css',
     // 全局js文件
@@ -66,6 +66,10 @@ module.exports = {
     {
       name: 'elastiStack',
       src: './src/elastiStack.js'
+    },
+    {
+      name: 'html2canvas',
+      src: './src/html2canvas.min.js'
     }
   ],
   styleList: [
@@ -86,6 +90,11 @@ module.exports = {
       isPage: true,
       name: 'card',
       src: './src/page/card.page'
+    },
+    {
+      isPage: true,
+      name: 'share',
+      src: './src/page/share.page'
     }
   ]
 }

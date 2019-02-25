@@ -136,20 +136,156 @@ function pgNameHandler(dom) {
       pgNameHandler(tempDom);
     }
   }
+} // 获取URL #后面内容
+
+
+function getarg(url) {
+  var arg = url.split("#");
+  return arg[1];
 } // 页面资源加载完毕事件
 
 
 window.onload = function () {
-  var page = globalConfig.entry;
-  window.ozzx.activePage = page;
-  var entryDom = document.getElementById('ox-' + page);
+  // 取出URL地址判断当前所在页面
+  var pageArg = getarg(window.location.href); // 从配置项中取出程序入口
 
-  if (entryDom) {
-    runPageFunction(page, entryDom);
+  var page = pageArg ? pageArg.split('&')[0] : globalConfig.entry;
+
+  if (page) {
+    var entryDom = document.getElementById('ox-' + page);
+
+    if (entryDom) {
+      // 显示主页面
+      entryDom.style.display = 'block';
+      window.ozzx.activePage = page;
+      runPageFunction(page, entryDom);
+    } else {
+      console.error('入口文件设置错误!');
+    }
   } else {
-    console.error('找不到页面入口!');
+    console.error('未设置程序入口!');
   }
-};
+}; // url发生改变事件
+
+
+window.onhashchange = function (e) {
+  var oldUrlParam = getarg(e.oldURL);
+  var newUrlParam = getarg(e.newURL); // 如果没有跳转到任何页面则跳转到主页
+
+  if (newUrlParam === undefined) {
+    newUrlParam = globalConfig.entry;
+  } // 如果没有发生页面跳转则不需要进行操作
+  // 切换页面特效
+
+
+  switchPage(oldUrlParam, newUrlParam);
+}; // 页面切换效果
+// 获取URL参数
+
+
+function getQueryString(newUrlParam, name) {
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+  var r = newUrlParam.match(reg);
+  if (r != null) return unescape(r[2]);
+  return null;
+} // 无特效翻页
+
+
+function dispalyEffect(oldDom, newDom) {
+  if (oldDom) {
+    // 隐藏掉旧的节点
+    oldDom.style.display = 'none';
+  } // 查找页面跳转后的page
+
+
+  newDom.style.display = 'block';
+} // 切换页面动画
+
+
+function animation(oldDom, newDom, animationIn, animationOut) {
+  oldDom.addEventListener("animationend", oldDomFun);
+  newDom.addEventListener("animationend", newDomFun);
+  oldDom.style.position = 'absolute';
+  newDom.style.display = 'block';
+  newDom.style.position = 'absolute'; // document.body.style.overflow = 'hidden'
+
+  animationIn.split(',').forEach(function (value) {
+    console.log('add:' + value);
+    oldDom.classList.add('ox-page-' + value);
+  });
+  animationOut.split(',').forEach(function (value) {
+    console.log('add:' + value);
+    newDom.classList.add('ox-page-' + value);
+  }); // 旧DOM执行函数
+
+  function oldDomFun() {
+    // 隐藏掉旧的节点
+    oldDom.style.display = 'none'; // console.log(oldDom)
+
+    oldDom.style.position = ''; // 清除临时设置的class
+
+    animationIn.split(',').forEach(function (value) {
+      console.log('del:' + value);
+      oldDom.classList.remove('ox-page-' + value);
+    }); // 移除监听
+
+    oldDom.removeEventListener('animationend', oldDomFun, false);
+  } // 新DOM执行函数
+
+
+  function newDomFun() {
+    // 清除临时设置的style
+    newDom.style.position = '';
+    animationOut.split(',').forEach(function (value) {
+      console.log('del:' + value);
+      newDom.classList.remove('ox-page-' + value);
+    }); // 移除监听
+
+    newDom.removeEventListener('animationend', newDomFun, false);
+  }
+} // 切换页面前的准备工作
+
+
+function switchPage(oldUrlParam, newUrlParam) {
+  var oldPage = oldUrlParam;
+  var newPage = newUrlParam;
+  var newPagParamList = newPage.split('&');
+  if (newPage) newPage = newPagParamList[0]; // 查找页面跳转前的page页(dom节点)
+  // console.log(oldUrlParam)
+  // 如果源地址获取不到 那么一般是因为源页面为首页
+
+  if (oldPage === undefined) {
+    oldPage = globalConfig.entry;
+  } else {
+    oldPage = oldPage.split('&')[0];
+  }
+
+  var oldDom = document.getElementById('ox-' + oldPage);
+  var newDom = document.getElementById('ox-' + newPage);
+
+  if (!newDom) {
+    console.error('页面不存在!');
+    return;
+  } // 判断是否有动画效果
+
+
+  if (newPagParamList.length > 1) {
+    var animationIn = getQueryString(newUrlParam, 'in');
+    var animationOut = getQueryString(newUrlParam, 'out'); // 如果没用动画参数则使用默认效果
+
+    if (!animationIn || !animationOut) {
+      dispalyEffect(oldDom, newDom);
+      return;
+    }
+
+    animation(oldDom, newDom, animationIn, animationOut);
+  } else {
+    dispalyEffect(oldDom, newDom);
+  }
+
+  window.ozzx.activePage = newPage;
+  runPageFunction(newPage, newDom);
+}
 
 window.ozzx = {
   script: {},
@@ -169,7 +305,7 @@ var globalConfig = {
   "outPut": {
     "minifyCss": false,
     "minifyJs": false,
-    "choiceAnimation": false,
+    "choiceAnimation": true,
     "globalStyle": "./src/main.css",
     "globalScript": "./src/main.js",
     "outFileAddVersion": true
@@ -195,7 +331,11 @@ var globalConfig = {
     "src": "./src/draggabilly.pkgd.min.js"
   }, {
     "name": "elastiStack",
-    "src": "./src/elastiStack.js"
+    "src": "./src/elastiStack.js",
+    "bable": true
+  }, {
+    "name": "html2canvas",
+    "src": "./src/html2canvas.min.js"
   }],
   "styleList": [{
     "name": "component",
@@ -210,8 +350,12 @@ var globalConfig = {
     "name": "card",
     "src": "./src/page/card.page",
     "temple": "<temple name=\"card\" src=\"./src/page/card.page\" isPage=\"true\"></temple>"
-  }],
-  "isOnePage": true
+  }, {
+    "isPage": true,
+    "name": "share",
+    "src": "./src/page/share.page",
+    "temple": "<temple name=\"share\" src=\"./src/page/share.page\" isPage=\"true\"></temple>"
+  }]
 };
 window.ozzx.script = {
   "card": {
@@ -257,7 +401,7 @@ window.ozzx.script = {
         }
 
         if (element.share) {
-          domTemple += "<div class=\"share-bar\"><div class=\"share-bar-item left\">\u70B9\u8D5E</div><div class=\"share-bar-item right\">\u5206\u4EAB</div></div>";
+          domTemple += "<div class=\"share-bar\"><div class=\"share-bar-item left\">\u70B9\u8D5E</div><div class=\"share-bar-item right\"><a href=\"#share&in=moveToTop&out=moveFromBottom\">\u5206\u4EAB</a></div></div>";
         }
 
         domTemple += "</li>";
@@ -321,6 +465,15 @@ window.ozzx.script = {
         });
         document.getElementById('elasticstack').style.display = 'block';
       }, 0);
+    }
+  },
+  "share": {
+    "created": function created() {
+      console.log('sd'); // 将dom导出为图片
+
+      html2canvas(document.getElementById('cardList')).then(function (canvas) {
+        shareImg.src = canvas.toDataURL();
+      });
     }
   }
 };
