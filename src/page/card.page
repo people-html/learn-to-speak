@@ -25,7 +25,7 @@
       }, false)
       
       // 判断是手机页面还是电脑页面
-      console.log(ozzx.tool.getScreenInfo())
+      this.data.screenInfo = ozzx.tool.getScreenInfo()
       // 生成dom
       let dataBoxTemple = '<div class="middle-line"></div>'
       let isFirst = true
@@ -53,9 +53,6 @@
         if (element.music) {
           domTemple += `<audio src="${element.music}" controls="controls"></audio>`
         }
-        if (element.share) {
-          domTemple += `<div class="share-bar"><div class="share-bar-item left">点赞</div><div class="share-bar-item right"><a href="#share&in=moveToTop&out=moveFromBottom">分享</a></div></div>`
-        }
         domTemple += `</li>`
       }
       document.getElementById('elasticstack').style.display = 'none'
@@ -69,8 +66,11 @@
     },
     calculation: function () {
       setTimeout(() => {
+        console.log(this.data.screenInfo.clientHeight)
         this.data.ElastiStack = new ElastiStack( document.getElementById('elasticstack'), {
           loop: true,
+          ratioX: this.data.screenInfo.clientWidth * 0.02,
+          ratioZ: this.data.screenInfo.clientWidth * -0.02,
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: (activeIndex) => {
@@ -134,13 +134,15 @@
       width: 90%;
       height: 90%;
       background-color: white;
-      box-shadow: rgb(170, 170, 170) 0px 0px 10px 0px;
       left: 0;
       top: 0;
       right: 0;
       bottom: 0;
       margin: auto;
       transform: translate3d(10px, 0px, -20px);
+      border: 1px solid #ded0c3;
+      border-radius: 10px;
+      overflow: hidden;
     }
     .content {
       overflow: auto;
@@ -194,17 +196,6 @@
     font-size: 22px;
     margin: 0 5px;
     cursor: pointer;
-  }
-  .share-bar {
-    height: 50px;
-    margin: 5px;
-    box-shadow: rgb(170, 170, 170) 0px 0px 10px 0px;
-  }
-  .share-bar-item {
-    width: 49%;
-    line-height: 50px;
-    display: inline-block;
-    text-align: center;
   }
   .record {
     position: fixed;

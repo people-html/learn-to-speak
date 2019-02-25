@@ -67,7 +67,6 @@ a {
   width: 90%;
   height: 90%;
   background-color: white;
-  box-shadow: #aaaaaa 0px 0px 10px 0px;
   left: 0;
   top: 0;
   right: 0;
@@ -75,6 +74,9 @@ a {
   margin: auto;
   -webkit-transform: translate3d(10px, 0px, -20px);
           transform: translate3d(10px, 0px, -20px);
+  border: 1px solid #ded0c3;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .ox-card .elasticstack .content {
@@ -133,19 +135,6 @@ a {
   font-size: 22px;
   margin: 0 5px;
   cursor: pointer;
-}
-
-.ox-card .share-bar {
-  height: 50px;
-  margin: 5px;
-  box-shadow: #aaaaaa 0px 0px 10px 0px;
-}
-
-.ox-card .share-bar-item {
-  width: 49%;
-  line-height: 50px;
-  display: inline-block;
-  text-align: center;
 }
 
 .ox-card .record {

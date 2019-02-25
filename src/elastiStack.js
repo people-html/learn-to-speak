@@ -60,6 +60,8 @@
 		distDragMax : 450,
 		// 是否循环切换
 		loop: false,
+		ratioX: 5,
+		ratioZ: -10,
 		// 拖动轴
 		axis: 'x',
 		// 切换卡片事件
@@ -111,7 +113,7 @@
 				item.style.zIndex = 4 - ind
 				// 添加动画标签
 				classie.add( item, 'animate' )
-				setTransformStyle( item, is3d ? 'translate3d(' + ind * 5 + 'px, 0, ' + ind * -10 + 'px)' : 'translate(' + ind * 5 + 'px, 0)' )
+				setTransformStyle( item, is3d ? 'translate3d(' + ind * this.options.ratioX + 'px, 0, ' + ind * this.options.ratioZ + 'px)' : 'translate(' + ind * 5 + 'px, 0)' )
 			} else {
 				item.style.opacity = 0
 				item.style.zIndex = 0
@@ -146,7 +148,7 @@
 				
 				if (self.options.loop) {
 					// reset first item
-					setTransformStyle( instance.element, is3d ? 'translate3d(0,0,-20px)' : 'translate(0,0,0)' );
+					setTransformStyle( instance.element, is3d ? 'translate3d(' + self.options.ratioX * 2 + ', 0, ' + self.options.ratioZ * 2 + 'px)' : 'translate(0,0,0)' );
 					instance.element.style.left = instance.element.style.top = '0px';
 					instance.element.style.zIndex = -1;
 					classie.remove( instance.element, 'animate' );

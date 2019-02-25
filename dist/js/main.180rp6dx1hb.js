@@ -368,7 +368,7 @@ window.ozzx.script = {
         e.preventDefault();
       }, false); // 判断是手机页面还是电脑页面
 
-      console.log(ozzx.tool.getScreenInfo()); // 生成dom
+      this.data.screenInfo = ozzx.tool.getScreenInfo(); // 生成dom
 
       var dataBoxTemple = '<div class="middle-line"></div>';
       var isFirst = true;
@@ -401,10 +401,6 @@ window.ozzx.script = {
           domTemple += "<audio src=\"".concat(element.music, "\" controls=\"controls\"></audio>");
         }
 
-        if (element.share) {
-          domTemple += "<div class=\"share-bar\"><div class=\"share-bar-item left\">\u70B9\u8D5E</div><div class=\"share-bar-item right\"><a href=\"#share&in=moveToTop&out=moveFromBottom\">\u5206\u4EAB</a></div></div>";
-        }
-
         domTemple += "</li>";
       }
 
@@ -421,8 +417,11 @@ window.ozzx.script = {
       var _this = this;
 
       setTimeout(function () {
+        console.log(_this.data.screenInfo.clientHeight);
         _this.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
           loop: true,
+          ratioX: _this.data.screenInfo.clientWidth * 0.02,
+          ratioZ: _this.data.screenInfo.clientWidth * -0.02,
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: function onUpdateStack(activeIndex) {
