@@ -452,7 +452,9 @@ window.ozzx.script = {
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: function onUpdateStack(activeIndex) {
-            // 停止当前播放的音乐
+            // 有记者按的关系需要加1
+            activeIndex++; // 停止当前播放的音乐
+
             if (_this.data.audio !== null) {
               _this.data.audio.pause();
 
@@ -468,7 +470,7 @@ window.ozzx.script = {
             var textBox = $("#slideItem".concat(activeIndex, " .content")); // 查找音频区域
 
             var audio = $("#slideItem".concat(activeIndex, " audio")); // console.log(textBox)
-            // console.log(audio)
+            // console.log(audio, activeIndex)
 
             if (audio.length > 0) {
               // 播放音乐

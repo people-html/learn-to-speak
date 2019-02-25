@@ -98,6 +98,8 @@
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: (activeIndex) => {
+            // 有记者按的关系需要加1
+            activeIndex++
             // 停止当前播放的音乐
             if (this.data.audio !== null) {
               this.data.audio.pause()
@@ -112,7 +114,7 @@
             // 查找音频区域
             const audio = $(`#slideItem${activeIndex} audio`)
             // console.log(textBox)
-            // console.log(audio)
+            // console.log(audio, activeIndex)
             if (audio.length > 0) {
               // 播放音乐
               this.data.audio = audio[0]
@@ -223,12 +225,14 @@
       margin: 0 10px;
       user-select: none;
       margin: 10px 0;
+      height: 100%;
     }
     audio {
       width: 100%;
       position: absolute;
       bottom: 0;
       height: 50px;
+      left: 0;
     }
     img {
       width: 100%;

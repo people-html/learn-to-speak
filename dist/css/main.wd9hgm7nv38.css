@@ -147,6 +147,7 @@ p {
       -ms-user-select: none;
           user-select: none;
   margin: 10px 0;
+  height: 100%;
 }
 
 .ox-card .elasticstack audio {
@@ -154,6 +155,7 @@ p {
   position: absolute;
   bottom: 0;
   height: 50px;
+  left: 0;
 }
 
 .ox-card .elasticstack img {
