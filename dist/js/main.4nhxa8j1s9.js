@@ -447,8 +447,8 @@ window.ozzx.script = {
         // console.log(this.data.screenInfo.clientHeight)
         _this.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
           loop: true,
-          ratioX: _this.data.screenInfo.clientWidth * 0.02,
-          ratioZ: _this.data.screenInfo.clientWidth * -0.02,
+          ratioX: parseInt(_this.data.screenInfo.clientWidth * 0.02),
+          ratioZ: parseInt(_this.data.screenInfo.clientWidth * -0.02),
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: function onUpdateStack(activeIndex) {

@@ -93,8 +93,8 @@
         // console.log(this.data.screenInfo.clientHeight)
         this.data.ElastiStack = new ElastiStack( document.getElementById('elasticstack'), {
           loop: true,
-          ratioX: this.data.screenInfo.clientWidth * 0.02,
-          ratioZ: this.data.screenInfo.clientWidth * -0.02,
+          ratioX: parseInt(this.data.screenInfo.clientWidth * 0.02),
+          ratioZ: parseInt(this.data.screenInfo.clientWidth * -0.02),
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: (activeIndex) => {
