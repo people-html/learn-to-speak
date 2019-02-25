@@ -17,7 +17,8 @@
       // 当前正在播放的音乐
       audio: null,
       control:  null,
-      ElastiStack: null
+      ElastiStack: null,
+      activePageIndex: 0,
     },
     created: function() {
       document.addEventListener('touchmove', (e) => {
@@ -42,6 +43,10 @@
       pgNameHandler(document.getElementById('dataBox'))
       
       // this.calculation()
+      // 默认高亮第一页
+      setTimeout(() => {
+        document.getElementById('dataBox').children[1].classList.add('active')
+      }, 0)
     },
     changeCard: function (cardList) {
       // console.log(cardList)
@@ -49,7 +54,20 @@
       let ind = 0
       for (let key in cardList) {
         const element = cardList[key]
-        domTemple += `<li id="slideItem${ind++}"><div class="content">${element.content}</div>`
+        // 添加期目录
+        // 如果没有title，则title为空
+        if (!element.title) element.title = ""
+        // 第一页固定是编者按
+        if (++ind === 1) {
+          // 判断是否有image
+          if (element.img) {
+            domTemple += `<li id="slideItem${ind}"><div class="note-left"></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content">${element.content}</div>`
+          } else {
+            domTemple += `<li id="slideItem${ind}"><div class="note-left"></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
+          }
+        } else {
+          domTemple += `<li id="slideItem${ind}"><div class="content-left"><div class="num">${ind}</div></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
+        }
         if (element.music) {
           domTemple += `<audio src="${element.music}" controls="controls"></audio>`
         }
@@ -63,10 +81,16 @@
       // console.log(dateList, $.trim(dete))
       // console.log(`change dete to ${dete}`)
       this.changeCard(dateList[$.trim(dete)])
+      // 取消掉所有子页码的活跃状态
+      for(let ind = 0; ind < document.getElementById('dataBox').children.length; ind++) {
+        const dom = document.getElementById('dataBox').children[ind]
+        dom.classList.remove('active')
+      }
+      this.$el.classList.add('active')
     },
     calculation: function () {
       setTimeout(() => {
-        console.log(this.data.screenInfo.clientHeight)
+        // console.log(this.data.screenInfo.clientHeight)
         this.data.ElastiStack = new ElastiStack( document.getElementById('elasticstack'), {
           loop: true,
           ratioX: this.data.screenInfo.clientWidth * 0.02,
@@ -131,24 +155,74 @@
     li {
       display: block;
       position: absolute;
-      width: 90%;
-      height: 90%;
+      width: 86%;
+      height: 56%;
       background-color: white;
       left: 0;
       top: 0;
       right: 0;
       bottom: 0;
       margin: auto;
+      -webkit-transform: translate3d(10px, 0px, -20px);
       transform: translate3d(10px, 0px, -20px);
       border: 1px solid #ded0c3;
       border-radius: 10px;
       overflow: hidden;
+      padding: 6% 2%;
+    }
+    .content-left {
+      background-image: url(../images/stage.png);
+      width: 13%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-size: 100%;
+      float: left;
+      position: relative;
+      .num {
+        position: absolute;
+        color: white;
+        left: 49%;
+        top: 23%;
+        font-size: 30px;
+      }
+    }
+    .title {
+      color: #cb0f25;
+      font-weight: bold;
+      position: absolute;
+      width: 400px;
+      left: 15%;
+      top: 10%;
+      font-size: 20px;
+    }
+    .image-box {
+      width: 30%;
+      float: left;
+      position: relative;
+      height: 100%;
+      margin: 0 2%;
+      img {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+      }
+    }
+    .note-left {
+      background-image: url(../images/note.png);
+      width: 13%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-size: 100%;
+      float: left;
+      position: relative;
     }
     .content {
       overflow: auto;
-      height: calc(100% - 60px);
       font-size: 16px;
       margin: 0 10px;
+      user-select: none;
+      margin: 10px 0;
     }
     audio {
       width: 100%;
@@ -187,15 +261,26 @@
     bottom: 20%;
   }
   .date-item {
-    width: 50px;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
     background-color: #ded0c3;
     z-index: 9;
     text-align: center;
     color: white;
     border-radius: 50%;
-    font-size: 22px;
-    margin: 0 5px;
+    font-size: 20px;
+    margin: 15px;
     cursor: pointer;
+    transition: all 0.3s;
+  }
+  .active {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    margin: 8px;
+    font-size: 30px;
+    background-color: #f13f45;
   }
   .record {
     position: fixed;

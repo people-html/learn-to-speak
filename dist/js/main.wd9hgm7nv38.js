@@ -113,9 +113,8 @@ function pgNameHandler(dom) {
 
             if (parameterValue.charAt(0) === "'" && parameterValue.charAt(parameterValue.length - 1) === "'") {
               parameterArr[i] = parameterValue.substring(1, parameterValue.length - 1);
-            }
+            } // console.log(parameterArr[i])
 
-            console.log(parameterArr[i]); // console.log(parameterArr[i])
           }
 
           clickFor = clickFor.replace('(' + parameterList + ')', '');
@@ -126,7 +125,9 @@ function pgNameHandler(dom) {
         if (newPageFunction[clickFor]) {
           // 绑定window.ozzx对象
           // console.log(tempDom)
-          newPageFunction[clickFor].apply(newPageFunction, parameterArr);
+          newPageFunction[clickFor].apply(Object.assign(newPageFunction, {
+            $el: this
+          }), parameterArr);
         }
       };
     } // 递归处理所有子Dom结点
@@ -361,7 +362,8 @@ window.ozzx.script = {
     "data": {
       "audio": null,
       "control": null,
-      "ElastiStack": null
+      "ElastiStack": null,
+      "activePageIndex": 0
     },
     "created": function created() {
       document.addEventListener('touchmove', function (e) {
@@ -387,6 +389,11 @@ window.ozzx.script = {
       document.getElementById('dataBox').innerHTML = dataBoxTemple; // 刷新dom节点
 
       pgNameHandler(document.getElementById('dataBox')); // this.calculation()
+      // 默认高亮第一页
+
+      setTimeout(function () {
+        document.getElementById('dataBox').children[1].classList.add('active');
+      }, 0);
     },
     "changeCard": function changeCard(cardList) {
       // console.log(cardList)
@@ -394,8 +401,21 @@ window.ozzx.script = {
       var ind = 0;
 
       for (var key in cardList) {
-        var element = cardList[key];
-        domTemple += "<li id=\"slideItem".concat(ind++, "\"><div class=\"content\">").concat(element.content, "</div>");
+        var element = cardList[key]; // 添加期目录
+        // 如果没有title，则title为空
+
+        if (!element.title) element.title = ""; // 第一页固定是编者按
+
+        if (++ind === 1) {
+          // 判断是否有image
+          if (element.img) {
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content\">").concat(element.content, "</div>");
+          } else {
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
+          }
+        } else {
+          domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"content-left\"><div class=\"num\">").concat(ind, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
+        }
 
         if (element.music) {
           domTemple += "<audio src=\"".concat(element.music, "\" controls=\"controls\"></audio>");
@@ -411,13 +431,20 @@ window.ozzx.script = {
     "changeDete": function changeDete(dete) {
       // console.log(dateList, $.trim(dete))
       // console.log(`change dete to ${dete}`)
-      this.changeCard(dateList[$.trim(dete)]);
+      this.changeCard(dateList[$.trim(dete)]); // 取消掉所有子页码的活跃状态
+
+      for (var ind = 0; ind < document.getElementById('dataBox').children.length; ind++) {
+        var dom = document.getElementById('dataBox').children[ind];
+        dom.classList.remove('active');
+      }
+
+      this.$el.classList.add('active');
     },
     "calculation": function calculation() {
       var _this = this;
 
       setTimeout(function () {
-        console.log(_this.data.screenInfo.clientHeight);
+        // console.log(this.data.screenInfo.clientHeight)
         _this.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
           loop: true,
           ratioX: _this.data.screenInfo.clientWidth * 0.02,

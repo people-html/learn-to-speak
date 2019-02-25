@@ -31,6 +31,11 @@ a {
   height: 50%;
   border-bottom: 1px solid #e6dbd0;
 }
+p {
+  margin: 5px 0;
+  text-indent: 2rem;
+  line-height: 22px;
+}
 .ox-copyright .copyright-box {
   height: 170px;
   color: #727272;
@@ -64,8 +69,8 @@ a {
 .ox-card .elasticstack li {
   display: block;
   position: absolute;
-  width: 90%;
-  height: 90%;
+  width: 86%;
+  height: 56%;
   background-color: white;
   left: 0;
   top: 0;
@@ -73,17 +78,75 @@ a {
   bottom: 0;
   margin: auto;
   -webkit-transform: translate3d(10px, 0px, -20px);
-          transform: translate3d(10px, 0px, -20px);
+  transform: translate3d(10px, 0px, -20px);
   border: 1px solid #ded0c3;
   border-radius: 10px;
   overflow: hidden;
+  padding: 6% 2%;
+}
+
+.ox-card .elasticstack .content-left {
+  background-image: url(../images/stage.png);
+  width: 13%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  float: left;
+  position: relative;
+}
+
+.ox-card .elasticstack .content-left .num {
+  position: absolute;
+  color: white;
+  left: 49%;
+  top: 23%;
+  font-size: 30px;
+}
+
+.ox-card .elasticstack .title {
+  color: #cb0f25;
+  font-weight: bold;
+  position: absolute;
+  width: 400px;
+  left: 15%;
+  top: 10%;
+  font-size: 20px;
+}
+
+.ox-card .elasticstack .image-box {
+  width: 30%;
+  float: left;
+  position: relative;
+  height: 100%;
+  margin: 0 2%;
+}
+
+.ox-card .elasticstack .image-box img {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.ox-card .elasticstack .note-left {
+  background-image: url(../images/note.png);
+  width: 13%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  float: left;
+  position: relative;
 }
 
 .ox-card .elasticstack .content {
   overflow: auto;
-  height: calc(100% - 60px);
   font-size: 16px;
   margin: 0 10px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  margin: 10px 0;
 }
 
 .ox-card .elasticstack audio {
@@ -126,15 +189,27 @@ a {
 }
 
 .ox-card .date-item {
-  width: 50px;
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
   background-color: #ded0c3;
   z-index: 9;
   text-align: center;
   color: white;
   border-radius: 50%;
-  font-size: 22px;
-  margin: 0 5px;
+  font-size: 20px;
+  margin: 15px;
   cursor: pointer;
+  transition: all 0.3s;
+}
+
+.ox-card .active {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  margin: 8px;
+  font-size: 30px;
+  background-color: #f13f45;
 }
 
 .ox-card .record {

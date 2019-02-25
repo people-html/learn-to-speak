@@ -31,3 +31,8 @@ a {
   height: 50%;
   border-bottom: 1px solid #e6dbd0;
 }
+p {
+  margin: 5px 0;
+  text-indent: 2rem;
+  line-height: 22px;
+}
