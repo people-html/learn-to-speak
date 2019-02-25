@@ -39,6 +39,8 @@
 	function ElastiStack( el, options ) {
 		this.container = el;
 		this.options = extend( {}, this.options );
+		// 初始化变量
+		isInit = false
   		extend( this.options, options );
   		this._init();
 	}
@@ -66,10 +68,11 @@
 
 	// 初始化设置
 	ElastiStack.prototype.initSetting = function(){
+		
 		this.itemsCount = this.items.length;
 		this._setStackStyle();
-		if( this.itemsCount <= 1 ) return;
 		if ( !isInit ){
+			
 			this._initDragg();
 			this._initEvents();
 		}
@@ -214,6 +217,7 @@
 	};
 
 	ElastiStack.prototype._initDragg = function() {
+		
 		this.draggie = new Draggabilly( this.items[ this.current ], {
 			axis: this.options.axis
 		})

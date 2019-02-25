@@ -30,7 +30,6 @@ function runPageFunction(pageName, entryDom) {
     newPageFunction.created.apply(assign(newPageFunction, {
       $el: entryDom,
       data: newPageFunction.data,
-      methods: newPageFunction.methods,
       activePage: window.ozzx.activePage,
       domList: window.ozzx.domList
     }));
@@ -54,7 +53,6 @@ function runPageFunction(pageName, entryDom) {
       templateScript.created.apply(assign(newPageFunction.template[key], {
         $el: domList[0].children[0],
         data: templateScript.data,
-        methods: templateScript.methods,
         activePage: window.ozzx.activePage,
         domList: window.ozzx.domList
       }));
@@ -110,13 +108,14 @@ function pgNameHandler(dom) {
             // 判断参数是否为一个字符串
 
             if (parameterValue.charAt(0) === '"' && parameterValue.charAt(parameterValue.length - 1) === '"') {
-              parameterArr[i] = parameterValue.substring(1, parameterValue.length - 2);
+              parameterArr[i] = parameterValue.substring(1, parameterValue.length - 1);
             }
 
             if (parameterValue.charAt(0) === "'" && parameterValue.charAt(parameterValue.length - 1) === "'") {
-              parameterArr[i] = parameterValue.substring(1, parameterValue.length - 2);
-            } // console.log(parameterArr[i])
+              parameterArr[i] = parameterValue.substring(1, parameterValue.length - 1);
+            }
 
+            console.log(parameterArr[i]); // console.log(parameterArr[i])
           }
 
           clickFor = clickFor.replace('(' + parameterList + ')', '');
@@ -124,16 +123,10 @@ function pgNameHandler(dom) {
         // 如果有方法,则运行它
 
 
-        if (newPageFunction.methods[clickFor]) {
+        if (newPageFunction[clickFor]) {
           // 绑定window.ozzx对象
           // console.log(tempDom)
-          newPageFunction.methods[clickFor].apply({
-            $el: this,
-            activePage: window.ozzx.activePage,
-            domList: window.ozzx.domList,
-            data: newPageFunction.data,
-            methods: newPageFunction.methods
-          }, parameterArr);
+          newPageFunction[clickFor].apply(newPageFunction, parameterArr);
         }
       };
     } // 递归处理所有子Dom结点
@@ -224,21 +217,39 @@ window.ozzx.script = {
   "card": {
     "data": {
       "audio": null,
-      "control": null
+      "control": null,
+      "ElastiStack": null
     },
     "created": function created() {
-      var _this = this;
-
-      var elasticstack = document.getElementById('elasticstack');
       document.addEventListener('touchmove', function (e) {
         e.preventDefault();
       }, false); // 生成dom
 
-      var domTemple = '';
-      var ind = 0;
+      var dataBoxTemple = '';
+      var isFirst = true;
 
       for (var key in dateList) {
         var element = dateList[key];
+
+        if (isFirst) {
+          this.changeCard(element);
+          isFirst = false;
+        }
+
+        dataBoxTemple += "<div class=\"date-item\" @click=\"changeDete('".concat(key, "')\">").concat(key, "</div>");
+      }
+
+      document.getElementById('dataBox').innerHTML = dataBoxTemple; // 刷新dom节点
+
+      pgNameHandler(document.getElementById('dataBox')); // this.calculation()
+    },
+    "changeCard": function changeCard(cardList) {
+      // console.log(cardList)
+      var domTemple = '';
+      var ind = 0;
+
+      for (var key in cardList) {
+        var element = cardList[key];
         domTemple += "<li id=\"slideItem".concat(ind++, "\"><div class=\"content\">").concat(element.content, "</div>");
 
         if (element.music) {
@@ -252,9 +263,20 @@ window.ozzx.script = {
         domTemple += "</li>";
       }
 
-      elasticstack.innerHTML = domTemple;
+      document.getElementById('elasticstack').style.display = 'none';
+      document.getElementById('elasticstack').innerHTML = domTemple;
+      this.calculation();
+    },
+    "changeDete": function changeDete(dete) {
+      // console.log(dateList, $.trim(dete))
+      // console.log(`change dete to ${dete}`)
+      this.changeCard(dateList[$.trim(dete)]);
+    },
+    "calculation": function calculation() {
+      var _this = this;
+
       setTimeout(function () {
-        new ElastiStack(elasticstack, {
+        new ElastiStack(document.getElementById('elasticstack'), {
           loop: false,
           distDragBack: 100,
           distDragMax: 200,
@@ -297,7 +319,7 @@ window.ozzx.script = {
             }
           }
         });
-        elasticstack.style.display = 'block';
+        document.getElementById('elasticstack').style.display = 'block';
       }, 0);
     }
   }

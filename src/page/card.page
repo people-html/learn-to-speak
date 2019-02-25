@@ -3,9 +3,7 @@
     <div class="show-box">
       <ul class="elasticstack" id="elasticstack"></ul>
     </div>
-    <div class="date-box">
-      <div class="date-item" @for="(item, key) in dateList">{{key}}</div>
-    </div>
+    <div class="date-box" id="dataBox"></div>
   </div>
 </template>
 
@@ -14,19 +12,38 @@
     data: {
       // 当前正在播放的音乐
       audio: null,
-      control:  null
+      control:  null,
+      ElastiStack: null
     },
     created: function() {
-      const elasticstack = document.getElementById('elasticstack')
+      
       document.addEventListener('touchmove', (e) => {
         e.preventDefault()
       }, false)
       
       // 生成dom
-      let domTemple = ''
-      let ind = 0
+      let dataBoxTemple = ''
+      let isFirst = true
       for(let key in dateList) {
         const element = dateList[key]
+        if (isFirst) {
+          this.changeCard(element)
+          isFirst = false
+        }
+        dataBoxTemple += `<div class="date-item" @click="changeDete('${key}')">${key}</div>`
+      }
+      document.getElementById('dataBox').innerHTML = dataBoxTemple
+      // 刷新dom节点
+      pgNameHandler(document.getElementById('dataBox'))
+      
+      // this.calculation()
+    },
+    changeCard: function (cardList) {
+      // console.log(cardList)
+      let domTemple = ''
+      let ind = 0
+      for (let key in cardList) {
+        const element = cardList[key]
         domTemple += `<li id="slideItem${ind++}"><div class="content">${element.content}</div>`
         if (element.music) {
           domTemple += `<audio src="${element.music}" controls="controls"></audio>`
@@ -36,9 +53,18 @@
         }
         domTemple += `</li>`
       }
-      elasticstack.innerHTML = domTemple
+      document.getElementById('elasticstack').style.display = 'none'
+      document.getElementById('elasticstack').innerHTML = domTemple
+      this.calculation()
+    },
+    changeDete: function (dete) {
+      // console.log(dateList, $.trim(dete))
+      // console.log(`change dete to ${dete}`)
+      this.changeCard(dateList[$.trim(dete)])
+    },
+    calculation: function () {
       setTimeout(() => {
-        new ElastiStack( elasticstack, {
+        new ElastiStack( document.getElementById('elasticstack'), {
           loop: false,
           distDragBack: 100,
           distDragMax: 200,
@@ -76,7 +102,7 @@
             }
           }
         })
-        elasticstack.style.display = 'block'
+        document.getElementById('elasticstack').style.display = 'block'
       }, 0)
     }
   }
