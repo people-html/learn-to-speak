@@ -8,27 +8,10 @@
     </div>
     <div class="history" @name="history">
       <div class="left history-item">
-        <div class="history-left-card-box" @name="cardBox">
-          <div class="item">
-            <div class="num">1</div>
-            <div class="text">学习有声</div>
-            <div class="icon-box"></div>
-          </div>
-          <div class="item">
-            <div class="num">1</div>
-            <div class="text">学习有声</div>
-            <div class="icon-box"></div>
-          </div>
-          <div class="item">
-            <div class="num">1</div>
-            <div class="text">学习有声</div>
-            <div class="icon-box"></div>
-          </div>
-          <div class="clear"></div>
-        </div>
+        <div class="history-left-card-box" @name="cardBox"></div>
       </div>
       <div class="right history-item">
-        <div class="history-right-title">累计打卡<span>6</span>期</div>
+        <div class="history-right-title">累计打卡<span @name="times">6</span>期</div>
         <div class="qr-box">
           <img src="../images/qr.png" />
         </div>
@@ -51,32 +34,43 @@
       audio: null,
       control:  null,
       ElastiStack: null,
-      activePageIndex: 0,
+      activeDateIndex: 0,
+      readList: []
     },
     created: function() {
+      // 读取出打卡记录
+      const readList = localStorage.getItem("readList")
+      if (readList) {
+        this.data.readList = JSON.parse(readList)
+      }
       document.addEventListener('touchmove', (e) => {
         e.preventDefault()
       }, false)
       
       // 计算并设置dataBox宽度
-      this.domList.dataBox.style.width = (this.domList.dataBox.childNodes.length - 1) * 60 + 'px'
-      console.log(this.domList.dataBox.childNodes.length)
+      this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px'
+      // console.log(Object.keys(dateList).length)
       // 计算打卡页面
-      // 判断是手机页面还是电脑页面
-      this.data.screenInfo = ozzx.tool.getScreenInfo()
+      
+      this.checkIsPC()
       // 生成dom
-      let dataBoxTemple = '<div class="middle-line"></div>'
+      let dataBoxTemple = ''
       let historyTemple = ''
-      let isFirst = true
-      for(let key in dateList) {
-        const element = dateList[key]
-        if (isFirst) {
+      for(let ind in dateList) {
+        // console.log(dateList, ind)
+        
+        const element = dateList[ind]
+        // console.log(element)
+        if (ind == 0) {
           this.changeCard(element)
-          isFirst = false
+          // console.log('ssss')
+          dataBoxTemple += `<div class="date-item" @click="changeDete(${ind})">${dateName[ind].stage}</div>`
+        } else {
+          dataBoxTemple += `<div class="middle-line"></div><div class="date-item" @click="changeDete(${ind})">${dateName[ind].stage}</div>`
         }
-        dataBoxTemple += `<div class="date-item" @click="changeDete('${key}')">${key}</div>`
-        historyTemple += `<div class="item"><div class="num">${key}</div><div class="text">学习有声</div><div class="icon-box"></div></div>`
+        historyTemple += `<div class="item"><div class="num">${dateName[ind].stage}</div><div class="text">${dateName[ind].name}</div><div class="icon-box"></div></div>`
       }
+
       document.getElementById('dataBox').innerHTML = dataBoxTemple
       this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'
       // 延时设置打卡页面元素dom
@@ -89,11 +83,20 @@
       // this.calculation()
       // 默认高亮第一页
       setTimeout(() => {
-        document.getElementById('dataBox').children[1].classList.add('active')
+        document.getElementById('dataBox').children[0].classList.add('active')
       }, 0)
     },
+    checkIsPC: function () { // 判断是手机页面还是电脑页面
+      this.data.screenInfo = ozzx.tool.getScreenInfo()
+      console.log(this.data.screenInfo)
+      // 先计算宽高比是否大于1
+      if (this.data.screenInfo.ratio > 1) {
+        document.body.classList.add('pc')
+      } else {
+        document.body.classList.add('h5')
+      }
+    },
     changeCard: function (cardList) {
-      // console.log(cardList)
       let domTemple = ''
       let ind = 0
       for (let key in cardList) {
@@ -131,6 +134,18 @@
         dom.classList.remove('active')
       }
       this.$el.classList.add('active')
+      // 设置活跃日期
+      this.data.activeDateIndex = dete
+    },
+    saveReadInfo: function () {
+      this.data.readList[this.data.activeDateIndex] = true
+      localStorage
+      if (window.localStorage) {
+        localStorage.setItem('readList', JSON.stringify(this.data.readList))
+      } else {
+        console.error("不支持localStorage!")
+      }
+      console.log(localStorage.getItem("readList"))
     },
     calculation: function () {
       setTimeout(() => {
@@ -142,6 +157,8 @@
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: (activeIndex) => {
+            // 如果阅读了就标记这一页为已阅读
+            this.saveReadInfo()
             // console.log(activeIndex)
             // 第一页的时候隐藏左箭头
             if (activeIndex === 0) {
@@ -176,8 +193,11 @@
             if (audio.length > 0) {
               // 播放音乐
               this.data.audio = audio[0]
-              this.data.audio.src = 'http://cunchu.site/resource/bgm.mp3'
-              this.data.audio.play()
+              const musicSrc = dateList[this.data.activeDateIndex][activeIndex - 1].music
+              if (musicSrc) {
+                this.data.audio.src = musicSrc
+                this.data.audio.play()
+              }
               
               if (textBox.length > 0) {
                 // 滚动条长度
@@ -201,6 +221,16 @@
       this.data.ElastiStack.last()
     },
     openHistory: function () {
+      // 生成打卡记录
+      let historyTemple = ''
+      let times = 0
+      for(let ind in dateList) {
+        if (this.data.readList[ind]) times++
+        historyTemple += `<div class="item ${this.data.readList[ind] ? 'isread': ''}"><div class="num">${dateName[ind].stage}</div><div class="text">${dateName[ind].name}</div><div class="icon-box"></div></div>`
+      }
+      // 累计打卡次数
+      this.domList.times.innerHTML = times
+      this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'
       this.domList.history.style.display = 'block'
       this.domList.showBox.style.display = 'none'
     },
@@ -215,7 +245,7 @@
 <style lang="less">
   .elasticstack {
     width: 80%;
-    height: 90%;
+    height: 401px;
     position: absolute;
     left: 0;
     right: 0;
@@ -227,7 +257,7 @@
       display: block;
       position: absolute;
       width: 86%;
-      height: 58%;
+      height: 230px;
       background-color: white;
       left: 0;
       top: 0;
@@ -238,13 +268,12 @@
       transform: translate3d(10px, 0px, -20px);
       border: 1px solid #ded0c3;
       border-radius: 10px;
-      overflow: hidden;
-      padding: 5% 2%;
+      padding: 20px 10px;
     }
     .content-left {
       background-image: url(../images/stage.png);
       width: 90px;
-      height: 100%;
+      height: 200px;
       background-repeat: no-repeat;
       background-size: 100%;
       float: left;
@@ -253,8 +282,10 @@
         position: absolute;
         color: white;
         left: 49%;
-        top: 23%;
+        top: 22%;
         font-size: 30px;
+        height: 30px;
+        line-height: 25px;
       }
     }
     .title {
@@ -290,11 +321,11 @@
     }
     .content {
       overflow: auto;
-      font-size: 16px;
+      font-size: 14px;
       margin: 0 10px;
       user-select: none;
-      margin: 10px 0;
-      height: 100%;
+      margin: 40px 10px;
+      height: 160px;
     }
     audio {
       width: 100%;
@@ -317,21 +348,18 @@
     margin: 2% 0;
   }
   .show-box {
-    overflow: hidden;
     height: 40%;
-    width: 86%;
-    overflow: hidden;
-    position: fixed;
-    left: 6%;
+    width: 70%;
+    position: absolute;
+    left: 15%;
     top: 30%;
   }
   .date-box {
     line-height: 50px;
-    display: flex;
     justify-content: center;
-    position: fixed;
+    position: absolute;
     width: 100%;
-    bottom: 20%;
+    top: 70%;
     left: 0;
     right: 0;
     margin: 0 auto;
@@ -346,22 +374,24 @@
     color: white;
     border-radius: 50%;
     font-size: 20px;
-    margin: 15px;
+    margin: 11px;
     cursor: pointer;
     transition: all 0.3s;
+    float: left;
   }
   .active {
     width: 40px;
     height: 40px;
     line-height: 40px;
-    margin: 8px;
+    margin: 5px;
     font-size: 30px;
     background-color: #f13f45;
   }
   .record {
-    position: fixed;
+    position: absolute;
     right: 20%;
-    bottom: 20%;
+    top: 71%;
+    cursor: pointer;
   }
   .next {
     position: absolute;
@@ -390,15 +420,17 @@
   }
   // 打卡记录
   .history {
-    width: 70%;
+    width: 50%;
     height: 35%;
     top: 35%;
-    left: 20%;
+    left: 0;
+    right: 0;
     background-color: #e0d6ca;
     position: absolute;
     border-radius: 25px;
     overflow: hidden;
     display: none;
+    margin: auto;
     .history-item {
       height: 100%;
     }
@@ -417,10 +449,17 @@
         bottom: 0;
         .item {
           width: 40px;
-          color: #f4cda4;
+          
+          color: #c42735;
           background-color: #d93748;
           float: left;
           border-right: 1px solid #dcd1c1;
+        }
+        .isread {
+          color: #f4cda4;
+          .icon-box {
+            background-color: #d0c0a7;
+          }
         }
         .num {
           height: 40px;
@@ -439,7 +478,7 @@
         .icon-box {
           height: 40px;
           text-align: center;
-          background-color: #d0c0a7;
+          background-color: #ce2a3a;
           background-image: url(../images/calendar.png);
           background-repeat: no-repeat;
           background-position: center;
@@ -452,7 +491,6 @@
       width: 20%;
       float: left;
       padding: 5%;
-      height: 72%;
       position: relative;
       background-color: #d93748;
     }
@@ -494,6 +532,7 @@
       position: absolute;
       right: 5px;
       top: 5px;
+      cursor: pointer;
     }
   }
 </style>

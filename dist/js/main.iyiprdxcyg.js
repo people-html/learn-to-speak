@@ -125,10 +125,10 @@ function pgNameHandler(dom) {
         if (newPageFunction[clickFor]) {
           // 绑定window.ozzx对象
           // console.log(tempDom)
-          newPageFunction[clickFor].apply(Object.assign(newPageFunction, {
-            $el: this,
-            domList: window.ozzx.domList
-          }), parameterArr);
+          // 待测试不知道这样合并会不会对其它地方造成影响
+          newPageFunction.$el = this;
+          newPageFunction.domList = window.ozzx.domList;
+          newPageFunction[clickFor].apply(newPageFunction, parameterArr);
         }
       };
     } // 递归处理所有子Dom结点
@@ -314,7 +314,7 @@ var globalConfig = {
   },
   "serverPort": 8000,
   "server": true,
-  "autoReload": true,
+  "autoReload": false,
   "headList": [{
     "http-equiv": "content-type",
     "content": "text/html; charset=UTF-8"
@@ -332,6 +332,7 @@ var globalConfig = {
     "name": "draggabilly",
     "src": "./src/draggabilly.pkgd.min.js"
   }, {
+    "babel": true,
     "name": "elastiStack",
     "src": "./src/elastiStack.js"
   }, {
@@ -364,35 +365,44 @@ window.ozzx.script = {
       "audio": null,
       "control": null,
       "ElastiStack": null,
-      "activePageIndex": 0
+      "activeDateIndex": 0,
+      "readList": []
     },
     "created": function created() {
       var _this = this;
+
+      // 读取出打卡记录
+      var readList = localStorage.getItem("readList");
+
+      if (readList) {
+        this.data.readList = JSON.parse(readList);
+      }
 
       document.addEventListener('touchmove', function (e) {
         e.preventDefault();
       }, false); // 计算并设置dataBox宽度
 
-      this.domList.dataBox.style.width = (this.domList.dataBox.childNodes.length - 1) * 60 + 'px';
-      console.log(this.domList.dataBox.childNodes.length); // 计算打卡页面
-      // 判断是手机页面还是电脑页面
+      this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px'; // console.log(Object.keys(dateList).length)
+      // 计算打卡页面
 
-      this.data.screenInfo = ozzx.tool.getScreenInfo(); // 生成dom
+      this.checkIsPC(); // 生成dom
 
-      var dataBoxTemple = '<div class="middle-line"></div>';
+      var dataBoxTemple = '';
       var historyTemple = '';
-      var isFirst = true;
 
-      for (var key in dateList) {
-        var element = dateList[key];
+      for (var ind in dateList) {
+        // console.log(dateList, ind)
+        var element = dateList[ind]; // console.log(element)
 
-        if (isFirst) {
-          this.changeCard(element);
-          isFirst = false;
+        if (ind == 0) {
+          this.changeCard(element); // console.log('ssss')
+
+          dataBoxTemple += "<div class=\"date-item\" @click=\"changeDete(".concat(ind, ")\">").concat(dateName[ind].stage, "</div>");
+        } else {
+          dataBoxTemple += "<div class=\"middle-line\"></div><div class=\"date-item\" @click=\"changeDete(".concat(ind, ")\">").concat(dateName[ind].stage, "</div>");
         }
 
-        dataBoxTemple += "<div class=\"date-item\" @click=\"changeDete('".concat(key, "')\">").concat(key, "</div>");
-        historyTemple += "<div class=\"item\"><div class=\"num\">".concat(key, "</div><div class=\"text\">\u5B66\u4E60\u6709\u58F0</div><div class=\"icon-box\"></div></div>");
+        historyTemple += "<div class=\"item\"><div class=\"num\">".concat(dateName[ind].stage, "</div><div class=\"text\">").concat(dateName[ind].name, "</div><div class=\"icon-box\"></div></div>");
       }
 
       document.getElementById('dataBox').innerHTML = dataBoxTemple;
@@ -406,11 +416,21 @@ window.ozzx.script = {
       // 默认高亮第一页
 
       setTimeout(function () {
-        document.getElementById('dataBox').children[1].classList.add('active');
+        document.getElementById('dataBox').children[0].classList.add('active');
       }, 0);
     },
+    "checkIsPC": function checkIsPC() {
+      // 判断是手机页面还是电脑页面
+      this.data.screenInfo = ozzx.tool.getScreenInfo();
+      console.log(this.data.screenInfo); // 先计算宽高比是否大于1
+
+      if (this.data.screenInfo.ratio > 1) {
+        document.body.classList.add('pc');
+      } else {
+        document.body.classList.add('h5');
+      }
+    },
     "changeCard": function changeCard(cardList) {
-      // console.log(cardList)
       var domTemple = '';
       var ind = 0;
 
@@ -452,7 +472,21 @@ window.ozzx.script = {
         dom.classList.remove('active');
       }
 
-      this.$el.classList.add('active');
+      this.$el.classList.add('active'); // 设置活跃日期
+
+      this.data.activeDateIndex = dete;
+    },
+    "saveReadInfo": function saveReadInfo() {
+      this.data.readList[this.data.activeDateIndex] = true;
+      localStorage;
+
+      if (window.localStorage) {
+        localStorage.setItem('readList', JSON.stringify(this.data.readList));
+      } else {
+        console.error("不支持localStorage!");
+      }
+
+      console.log(localStorage.getItem("readList"));
     },
     "calculation": function calculation() {
       var _this2 = this;
@@ -466,8 +500,11 @@ window.ozzx.script = {
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: function onUpdateStack(activeIndex) {
-            // console.log(activeIndex)
+            // 如果阅读了就标记这一页为已阅读
+            _this2.saveReadInfo(); // console.log(activeIndex)
             // 第一页的时候隐藏左箭头
+
+
             if (activeIndex === 0) {
               // console.log(this.data.ElastiStack.itemsCount - 1)
               _this2.domList.last.style.display = 'none';
@@ -505,9 +542,13 @@ window.ozzx.script = {
             if (audio.length > 0) {
               // 播放音乐
               _this2.data.audio = audio[0];
-              _this2.data.audio.src = 'http://cunchu.site/resource/bgm.mp3';
+              var musicSrc = dateList[_this2.data.activeDateIndex][activeIndex - 1].music;
 
-              _this2.data.audio.play();
+              if (musicSrc) {
+                _this2.data.audio.src = musicSrc;
+
+                _this2.data.audio.play();
+              }
 
               if (textBox.length > 0) {
                 // 滚动条长度
@@ -532,6 +573,18 @@ window.ozzx.script = {
       this.data.ElastiStack.last();
     },
     "openHistory": function openHistory() {
+      // 生成打卡记录
+      var historyTemple = '';
+      var times = 0;
+
+      for (var ind in dateList) {
+        if (this.data.readList[ind]) times++;
+        historyTemple += "<div class=\"item ".concat(this.data.readList[ind] ? 'isread' : '', "\"><div class=\"num\">").concat(dateName[ind].stage, "</div><div class=\"text\">").concat(dateName[ind].name, "</div><div class=\"icon-box\"></div></div>");
+      } // 累计打卡次数
+
+
+      this.domList.times.innerHTML = times;
+      this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>';
       this.domList.history.style.display = 'block';
       this.domList.showBox.style.display = 'none';
     },

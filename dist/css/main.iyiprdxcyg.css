@@ -5,6 +5,17 @@ html, body, .ox, .app {
   height: 100%;
   overflow: hidden;
 }
+/* pc页面样式 */
+.pc {
+  min-width: 1080px;
+  min-height: 720px;
+}
+.pc .show-box {
+  min-width: 756px;
+}
+.pc .history {
+  min-width: 780px;
+}
 
 * { touch-action: pan-y; }
 
@@ -26,15 +37,30 @@ a {
   bottom: 0;
 }
 .middle-line {
-  width: 100%;
-  position: absolute;
-  height: 50%;
-  border-bottom: 1px solid #e6dbd0;
+  width: 20px;
+  border-bottom: 1px solid #e6dbce;
+  float: left;
+  height: 24px;
 }
 p {
   margin: 5px 0;
   text-indent: 2rem;
   line-height: 22px;
+}
+/* 滚动条样式 */
+
+
+.content::-webkit-scrollbar {/*滚动条整体样式*/
+  width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+  height: 1px;
+}
+.content::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  border-radius: 10px;
+  background: #f7a085;
+}
+.content::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  border-radius: 10px;
+  background: #EDEDED;
 }
 .ox-copyright .copyright-box {
   height: 170px;
@@ -56,7 +82,7 @@ p {
   margin: auto;
 }.ox-card .elasticstack {
   width: 80%;
-  height: 90%;
+  height: 401px;
   position: absolute;
   left: 0;
   right: 0;
@@ -70,7 +96,7 @@ p {
   display: block;
   position: absolute;
   width: 86%;
-  height: 58%;
+  height: 230px;
   background-color: white;
   left: 0;
   top: 0;
@@ -81,14 +107,13 @@ p {
   transform: translate3d(10px, 0px, -20px);
   border: 1px solid #ded0c3;
   border-radius: 10px;
-  overflow: hidden;
-  padding: 5% 2%;
+  padding: 20px 10px;
 }
 
 .ox-card .elasticstack .content-left {
   background-image: url(../images/stage.png);
   width: 90px;
-  height: 100%;
+  height: 200px;
   background-repeat: no-repeat;
   background-size: 100%;
   float: left;
@@ -99,8 +124,10 @@ p {
   position: absolute;
   color: white;
   left: 49%;
-  top: 23%;
+  top: 22%;
   font-size: 30px;
+  height: 30px;
+  line-height: 25px;
 }
 
 .ox-card .elasticstack .title {
@@ -140,14 +167,14 @@ p {
 
 .ox-card .elasticstack .content {
   overflow: auto;
-  font-size: 16px;
+  font-size: 14px;
   margin: 0 10px;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-  margin: 10px 0;
-  height: 100%;
+  margin: 40px 10px;
+  height: 160px;
 }
 
 .ox-card .elasticstack audio {
@@ -174,20 +201,18 @@ p {
 
 .ox-card .show-box {
   height: 40%;
-  width: 86%;
-  overflow: hidden;
-  position: fixed;
-  left: 6%;
+  width: 70%;
+  position: absolute;
+  left: 15%;
   top: 30%;
 }
 
 .ox-card .date-box {
   line-height: 50px;
-  display: flex;
   justify-content: center;
-  position: fixed;
+  position: absolute;
   width: 100%;
-  bottom: 20%;
+  top: 70%;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -203,24 +228,26 @@ p {
   color: white;
   border-radius: 50%;
   font-size: 20px;
-  margin: 15px;
+  margin: 11px;
   cursor: pointer;
   transition: all 0.3s;
+  float: left;
 }
 
 .ox-card .active {
   width: 40px;
   height: 40px;
   line-height: 40px;
-  margin: 8px;
+  margin: 5px;
   font-size: 30px;
   background-color: #f13f45;
 }
 
 .ox-card .record {
-  position: fixed;
+  position: absolute;
   right: 20%;
-  bottom: 20%;
+  top: 71%;
+  cursor: pointer;
 }
 
 .ox-card .next {
@@ -249,15 +276,17 @@ p {
 }
 
 .ox-card .history {
-  width: 70%;
+  width: 50%;
   height: 35%;
   top: 35%;
-  left: 20%;
+  left: 0;
+  right: 0;
   background-color: #e0d6ca;
   position: absolute;
   border-radius: 25px;
   overflow: hidden;
   display: none;
+  margin: auto;
 }
 
 .ox-card .history .history-item {
@@ -283,10 +312,18 @@ p {
 
 .ox-card .history .left .history-left-card-box .item {
   width: 40px;
-  color: #f4cda4;
+  color: #c42735;
   background-color: #d93748;
   float: left;
   border-right: 1px solid #dcd1c1;
+}
+
+.ox-card .history .left .history-left-card-box .isread {
+  color: #f4cda4;
+}
+
+.ox-card .history .left .history-left-card-box .isread .icon-box {
+  background-color: #d0c0a7;
 }
 
 .ox-card .history .left .history-left-card-box .num {
@@ -308,7 +345,7 @@ p {
 .ox-card .history .left .history-left-card-box .icon-box {
   height: 40px;
   text-align: center;
-  background-color: #d0c0a7;
+  background-color: #ce2a3a;
   background-image: url(../images/calendar.png);
   background-repeat: no-repeat;
   background-position: center;
@@ -319,7 +356,6 @@ p {
   width: 20%;
   float: left;
   padding: 5%;
-  height: 72%;
   position: relative;
   background-color: #d93748;
 }
@@ -367,6 +403,7 @@ p {
   position: absolute;
   right: 5px;
   top: 5px;
+  cursor: pointer;
 }.ox-share .share {
   background-color: #f6f6f6;
   width: 100%;

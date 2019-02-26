@@ -37,7 +37,7 @@ module.exports = {
   // 静态文件服务
   server: true,
   // 自动重新加载
-  autoReload: true,
+  autoReload: false,
   // head属性清单
   headList: [
     {
@@ -64,6 +64,7 @@ module.exports = {
       src: './src/draggabilly.pkgd.min.js'
     },
     {
+      babel: true,
       name: 'elastiStack',
       src: './src/elastiStack.js'
     },
