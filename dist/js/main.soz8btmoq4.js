@@ -314,7 +314,7 @@ var globalConfig = {
   },
   "serverPort": 8000,
   "server": true,
-  "autoReload": false,
+  "autoReload": true,
   "headList": [{
     "http-equiv": "content-type",
     "content": "text/html; charset=UTF-8"
@@ -366,7 +366,8 @@ window.ozzx.script = {
       "control": null,
       "ElastiStack": null,
       "activeDateIndex": 0,
-      "readList": []
+      "readList": [],
+      "isPC": true
     },
     "created": function created() {
       var _this = this;
@@ -380,10 +381,15 @@ window.ozzx.script = {
 
       document.addEventListener('touchmove', function (e) {
         e.preventDefault();
-      }, false); // 计算并设置dataBox宽度
+      }, false); // 计算并设置dataBox宽度 or 高度
 
-      this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px'; // console.log(Object.keys(dateList).length)
+      if (this.data.isPC) {
+        this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px';
+      } else {
+        this.domList.dataBox.style.height = dateList.length * 76 - 20 + 'px';
+      } // console.log(Object.keys(dateList).length)
       // 计算打卡页面
+
 
       this.checkIsPC(); // 生成dom
 
@@ -409,7 +415,11 @@ window.ozzx.script = {
       this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'; // 延时设置打卡页面元素dom
 
       setTimeout(function () {
-        _this.domList.cardBox.style.width = 41 * (_this.domList.cardBox.childNodes.length - 1) + 'px';
+        if (_this.data.isPC) {
+          _this.domList.cardBox.style.width = 41 * (_this.domList.cardBox.childNodes.length - 1) + 'px';
+        } else {
+          _this.domList.cardBox.style.height = 41 * (_this.domList.cardBox.childNodes.length - 1) + 'px';
+        }
       }, 1000); // 刷新dom节点
 
       pgNameHandler(document.getElementById('dataBox')); // this.calculation()
@@ -426,8 +436,10 @@ window.ozzx.script = {
 
       if (this.data.screenInfo.ratio > 1) {
         document.body.classList.add('pc');
+        this.data.isPC = true;
       } else {
         document.body.classList.add('h5');
+        this.data.isPC = false;
       }
     },
     "changeCard": function changeCard(cardList) {
@@ -443,7 +455,7 @@ window.ozzx.script = {
         if (++ind === 1) {
           // 判断是否有image
           if (element.img) {
-            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content\">").concat(element.content, "</div>");
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
           } else {
             domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
           }
@@ -502,21 +514,24 @@ window.ozzx.script = {
           onUpdateStack: function onUpdateStack(activeIndex) {
             // 如果阅读了就标记这一页为已阅读
             _this2.saveReadInfo(); // console.log(activeIndex)
-            // 第一页的时候隐藏左箭头
+            // 只有PC才有左右箭头
 
 
-            if (activeIndex === 0) {
-              // console.log(this.data.ElastiStack.itemsCount - 1)
-              _this2.domList.last.style.display = 'none';
-            } else {
-              _this2.domList.last.style.display = 'block';
-            } // 最后一页的时候没有向右箭头
+            if (_this2.data.isPC) {
+              // 第一页的时候隐藏左箭头
+              if (activeIndex === 0) {
+                // console.log(this.data.ElastiStack.itemsCount - 1)
+                _this2.domList.last.style.display = 'none';
+              } else {
+                _this2.domList.last.style.display = 'block';
+              } // 最后一页的时候没有向右箭头
 
 
-            if (activeIndex === _this2.data.ElastiStack.itemsCount - 1) {
-              _this2.domList.next.style.display = 'none';
-            } else {
-              _this2.domList.next.style.display = 'block';
+              if (activeIndex === _this2.data.ElastiStack.itemsCount - 1) {
+                _this2.domList.next.style.display = 'none';
+              } else {
+                _this2.domList.next.style.display = 'block';
+              }
             } // 有记者按的关系需要加1
 
 
@@ -587,10 +602,14 @@ window.ozzx.script = {
       this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>';
       this.domList.history.style.display = 'block';
       this.domList.showBox.style.display = 'none';
+      this.domList.dataBox.style.display = 'none';
+      this.domList.record.style.display = 'none';
     },
     "closeHistory": function closeHistory() {
       this.domList.history.style.display = 'none';
       this.domList.showBox.style.display = 'block';
+      this.domList.dataBox.style.display = 'block';
+      this.domList.record.style.display = 'block';
     }
   },
   "copyright": {},

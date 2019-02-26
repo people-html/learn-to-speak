@@ -17,12 +17,16 @@
         </div>
         <p>扫描二维码</p>
         <p>分享至朋友圈</p>
-        <div class="close-button" @click="closeHistory"></div>
+        <div class="next-box">
+          <div class="share next-box-button">生成海报</div>
+          <div class="next-read next-box-button" @click="closeHistory">继续学习</div>
+        </div>
       </div>
+      <div class="close-button" @click="closeHistory"></div>
       <div class="clear"></div>
     </div>
     <div class="date-box" @name="dataBox" id="dataBox"></div>
-    <div class="record"><img src="../images/record.png" @click="openHistory"/></div>
+    <div class="record" @name="record"><img src="../images/record.png" @click="openHistory"/></div>
     <temple name="copyright" src="./src/page/copyright.page"></temple>
   </div>
 </template>
@@ -35,7 +39,8 @@
       control:  null,
       ElastiStack: null,
       activeDateIndex: 0,
-      readList: []
+      readList: [],
+      isPC: true
     },
     created: function() {
       // 读取出打卡记录
@@ -47,8 +52,13 @@
         e.preventDefault()
       }, false)
       
-      // 计算并设置dataBox宽度
-      this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px'
+      // 计算并设置dataBox宽度 or 高度
+      if (this.data.isPC) {
+        this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px'
+      } else {
+        this.domList.dataBox.style.height = dateList.length * 76 - 20 + 'px'
+      }
+      
       // console.log(Object.keys(dateList).length)
       // 计算打卡页面
       
@@ -75,7 +85,12 @@
       this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'
       // 延时设置打卡页面元素dom
       setTimeout(() => {
-        this.domList.cardBox.style.width = 41 * (this.domList.cardBox.childNodes.length - 1) + 'px'
+        if (this.data.isPC) {
+          this.domList.cardBox.style.width = 41 * (this.domList.cardBox.childNodes.length - 1) + 'px'
+        } else {
+          this.domList.cardBox.style.height = 41 * (this.domList.cardBox.childNodes.length - 1) + 'px'
+        }
+        
       }, 1000)
       // 刷新dom节点
       pgNameHandler(document.getElementById('dataBox'))
@@ -92,8 +107,10 @@
       // 先计算宽高比是否大于1
       if (this.data.screenInfo.ratio > 1) {
         document.body.classList.add('pc')
+        this.data.isPC = true
       } else {
         document.body.classList.add('h5')
+        this.data.isPC = false
       }
     },
     changeCard: function (cardList) {
@@ -108,7 +125,7 @@
         if (++ind === 1) {
           // 判断是否有image
           if (element.img) {
-            domTemple += `<li id="slideItem${ind}"><div class="note-left"></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content">${element.content}</div>`
+            domTemple += `<li id="slideItem${ind}"><div class="note-left"></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
           } else {
             domTemple += `<li id="slideItem${ind}"><div class="note-left"></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
           }
@@ -160,19 +177,24 @@
             // 如果阅读了就标记这一页为已阅读
             this.saveReadInfo()
             // console.log(activeIndex)
-            // 第一页的时候隐藏左箭头
-            if (activeIndex === 0) {
-              // console.log(this.data.ElastiStack.itemsCount - 1)
-              this.domList.last.style.display = 'none'
-            } else {
-              this.domList.last.style.display = 'block'
+            
+            // 只有PC才有左右箭头
+            if (this.data.isPC) {
+              // 第一页的时候隐藏左箭头
+              if (activeIndex === 0) {
+                // console.log(this.data.ElastiStack.itemsCount - 1)
+                this.domList.last.style.display = 'none'
+              } else {
+                this.domList.last.style.display = 'block'
+              }
+              // 最后一页的时候没有向右箭头
+              if (activeIndex === this.data.ElastiStack.itemsCount - 1) {
+                this.domList.next.style.display = 'none'
+              } else {
+                this.domList.next.style.display = 'block'
+              }
             }
-            // 最后一页的时候没有向右箭头
-            if (activeIndex === this.data.ElastiStack.itemsCount - 1) {
-              this.domList.next.style.display = 'none'
-            } else {
-              this.domList.next.style.display = 'block'
-            }
+            
             // 有记者按的关系需要加1
             activeIndex++
             // 停止当前播放的音乐
@@ -233,10 +255,14 @@
       this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'
       this.domList.history.style.display = 'block'
       this.domList.showBox.style.display = 'none'
+      this.domList.dataBox.style.display = 'none'
+      this.domList.record.style.display = 'none'
     },
     closeHistory: function () {
       this.domList.history.style.display = 'none'
       this.domList.showBox.style.display = 'block'
+      this.domList.dataBox.style.display = 'block'
+      this.domList.record.style.display = 'block'
     }
   }
 </script>
@@ -391,7 +417,13 @@
     position: absolute;
     right: 20%;
     top: 71%;
+    width: 101px;
+    height: 35px;
     cursor: pointer;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
   .next {
     position: absolute;
@@ -533,6 +565,23 @@
       right: 5px;
       top: 5px;
       cursor: pointer;
+    }
+  }
+  .next-box {
+    display: none;
+    height: 30px;
+    line-height: 30px;
+    position: absolute;
+    bottom: 20%;
+    width: 100%;
+    justify-content: space-around;
+    .next-box-button {
+      background-color: red;
+      text-align: center;
+      color: white;
+      width: 100px;
+      border-radius: 20px;
+      font-size: 14px;
     }
   }
 </style>

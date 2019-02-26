@@ -37,7 +37,7 @@ module.exports = {
   // 静态文件服务
   server: true,
   // 自动重新加载
-  autoReload: false,
+  autoReload: true,
   // head属性清单
   headList: [
     {

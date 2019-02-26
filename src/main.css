@@ -4,17 +4,196 @@ html, body, .ox, .app {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 /* pc页面样式 */
 .pc {
   min-width: 1080px;
   min-height: 720px;
+  background-image: url("../images/bg.jpg");
 }
 .pc .show-box {
   min-width: 756px;
 }
 .pc .history {
   min-width: 780px;
+}
+
+/* 手机页面 */
+.h5 {
+  background-image: url("../images/h5-bg.jpg");
+}
+
+.h5 .page-header {
+  display: none;
+}
+.h5 .ox-copyright {
+  display: none;
+}
+
+.h5 .ox-card .show-box {
+  width: 80%;
+  height: 80%;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.h5 .ox-card .elasticstack {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding: 0;
+}
+
+.h5 .ox-card .elasticstack li {
+  width: 90%;
+  height: 90%;
+}
+
+.h5 .ox-card .elasticstack .note-left {
+  float: none;
+  height: 72px;
+  width: 110px;
+  background-image: url(../images/note-h5.png);
+  background-size: 100% 100%;
+}
+
+.h5 .ox-card .elasticstack .content-left {
+  float: none;
+  background-image: url(../images/stage-h5.png);
+  width: 68px;
+  height: 50px;
+  margin: 0 auto;
+}
+
+.h5 .ox-card .elasticstack .content-left .num {
+  font-size: 18px;
+  left: 31px;
+  top: 14px;
+}
+
+.h5 .ox-card .elasticstack .content {
+  height: calc(100% - 130px);
+  margin: 10px 5px;
+}
+
+.h5 .ox-card .elasticstack .mini {
+  height: calc(100% - 240px);
+}
+
+.h5 .ox-card .elasticstack .title {
+  position: relative;
+  top: 0;
+  left: 0;
+  text-align: center;
+  width: 100%;
+}
+.h5 .ox-card .next, .h5 .ox-card .last {
+  display: none;
+}
+.h5 .ox-card .record {
+  bottom: calc(10% - 40px);
+  top: unset;
+  right: 10%;
+  width: 80px;
+  height: 28px;
+}
+
+.h5 .ox-card .elasticstack .image-box {
+  float: none;
+  width: unset;
+  height: 157px;
+  margin: 0px 20px;
+}
+
+.h5 .ox-card .elasticstack .image-box img {
+  height: 100%;
+  width: unset;
+  left: 0;
+  right: 0;
+}
+.h5 .ox-card .date-box {
+  width: 50px;
+  left: calc(10% - 21px);
+  right: unset;
+  top: 28%;
+}
+
+.h5 .ox-card .date-box .date-item {
+  float: none;
+}
+
+.h5 .ox-card .date-box .middle-line {
+  float: none;
+  border-bottom: none;
+  width: 24px;
+  height: 20px;
+  border-right: 1px solid #e6dbce;
+}
+
+.h5 .ox-card .history {
+  width: 80%;
+  height: 80%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: white;
+  opacity: 0.8;
+  border-radius: 10px;
+}
+
+.h5 .ox-card .history .right {
+  height: 30%;
+  width: 100%;
+  padding: 0;
+  background-color: white;
+}
+
+.h5 .ox-card .history .right .qr-box, .h5 .ox-card .history .right p {
+  display: none;
+}
+.h5 .ox-card .history .left  {
+  float: none;
+  width: 100%;
+  height: 70%;
+}
+.h5 .ox-card .history .left .history-left-card-box .item {
+  float: none;
+  display: flex;
+  width: 100%;
+  height: 40px;
+  border-right: none;
+  border-bottom: 1px solid #dcd1c1;
+}
+.h5 .ox-card .history .left .history-left-card-box {
+  width: 80%;
+}
+
+.h5 .ox-card .history .left .history-left-card-box .item .num {
+  width: 40px;
+}
+.h5 .ox-card .history .left .history-left-card-box .item .text {
+  padding: 0;
+  width: calc(100% - 80px);
+  height: 40px;
+  line-height: 40px;
+}
+
+.h5 .ox-card .history .left .history-left-card-box .item .icon-box {
+  width: 40px;
+}
+
+.h5 .ox-card .next-box {
+  display: flex;
+}
+
+.h5 .ox-card .history .close-button {
+  display: none;
 }
 
 * { touch-action: pan-y; }
@@ -27,7 +206,6 @@ a {
   text-decoration: none;
 }
 .ox-card {
-  background-image: url('../images/bg.jpg');
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
