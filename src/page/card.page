@@ -1,12 +1,45 @@
 <template>
   <div class="app">
     <div class="page-header"></div>
-    <div class="show-box">
+    <div class="show-box" @name="showBox">
       <ul class="elasticstack" id="elasticstack"></ul>
+      <div class="last" @click="lastCard" @name="last"></div>
+      <div class="next" @click="nextCard" @name="next"></div>
     </div>
-    <!-- <div class="next" @click="nextCard">下一个</div> -->
-    <div class="date-box" id="dataBox"></div>
-    <div class="record"><img src="../images/record.png" /></div>
+    <div class="history" @name="history">
+      <div class="left history-item">
+        <div class="history-left-card-box" @name="cardBox">
+          <div class="item">
+            <div class="num">1</div>
+            <div class="text">学习有声</div>
+            <div class="icon-box"></div>
+          </div>
+          <div class="item">
+            <div class="num">1</div>
+            <div class="text">学习有声</div>
+            <div class="icon-box"></div>
+          </div>
+          <div class="item">
+            <div class="num">1</div>
+            <div class="text">学习有声</div>
+            <div class="icon-box"></div>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+      <div class="right history-item">
+        <div class="history-right-title">累计打卡<span>6</span>期</div>
+        <div class="qr-box">
+          <img src="../images/qr.png" />
+        </div>
+        <p>扫描二维码</p>
+        <p>分享至朋友圈</p>
+        <div class="close-button" @click="closeHistory"></div>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <div class="date-box" @name="dataBox" id="dataBox"></div>
+    <div class="record"><img src="../images/record.png" @click="openHistory"/></div>
     <temple name="copyright" src="./src/page/copyright.page"></temple>
   </div>
 </template>
@@ -25,10 +58,15 @@
         e.preventDefault()
       }, false)
       
+      // 计算并设置dataBox宽度
+      this.domList.dataBox.style.width = (this.domList.dataBox.childNodes.length - 1) * 60 + 'px'
+      console.log(this.domList.dataBox.childNodes.length)
+      // 计算打卡页面
       // 判断是手机页面还是电脑页面
       this.data.screenInfo = ozzx.tool.getScreenInfo()
       // 生成dom
       let dataBoxTemple = '<div class="middle-line"></div>'
+      let historyTemple = ''
       let isFirst = true
       for(let key in dateList) {
         const element = dateList[key]
@@ -37,8 +75,14 @@
           isFirst = false
         }
         dataBoxTemple += `<div class="date-item" @click="changeDete('${key}')">${key}</div>`
+        historyTemple += `<div class="item"><div class="num">${key}</div><div class="text">学习有声</div><div class="icon-box"></div></div>`
       }
       document.getElementById('dataBox').innerHTML = dataBoxTemple
+      this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'
+      // 延时设置打卡页面元素dom
+      setTimeout(() => {
+        this.domList.cardBox.style.width = 41 * (this.domList.cardBox.childNodes.length - 1) + 'px'
+      }, 1000)
       // 刷新dom节点
       pgNameHandler(document.getElementById('dataBox'))
       
@@ -92,12 +136,26 @@
       setTimeout(() => {
         // console.log(this.data.screenInfo.clientHeight)
         this.data.ElastiStack = new ElastiStack( document.getElementById('elasticstack'), {
-          loop: true,
+          loop: false,
           ratioX: parseInt(this.data.screenInfo.clientWidth * 0.02),
           ratioZ: parseInt(this.data.screenInfo.clientWidth * -0.02),
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: (activeIndex) => {
+            // console.log(activeIndex)
+            // 第一页的时候隐藏左箭头
+            if (activeIndex === 0) {
+              // console.log(this.data.ElastiStack.itemsCount - 1)
+              this.domList.last.style.display = 'none'
+            } else {
+              this.domList.last.style.display = 'block'
+            }
+            // 最后一页的时候没有向右箭头
+            if (activeIndex === this.data.ElastiStack.itemsCount - 1) {
+              this.domList.next.style.display = 'none'
+            } else {
+              this.domList.next.style.display = 'block'
+            }
             // 有记者按的关系需要加1
             activeIndex++
             // 停止当前播放的音乐
@@ -137,7 +195,18 @@
       }, 0)
     },
     nextCard: function () {
-      console.log(this.data.ElastiStack.next())
+      this.data.ElastiStack.next()
+    },
+    lastCard: function () {
+      this.data.ElastiStack.last()
+    },
+    openHistory: function () {
+      this.domList.history.style.display = 'block'
+      this.domList.showBox.style.display = 'none'
+    },
+    closeHistory: function () {
+      this.domList.history.style.display = 'none'
+      this.domList.showBox.style.display = 'block'
     }
   }
 </script>
@@ -158,7 +227,7 @@
       display: block;
       position: absolute;
       width: 86%;
-      height: 56%;
+      height: 58%;
       background-color: white;
       left: 0;
       top: 0;
@@ -170,11 +239,11 @@
       border: 1px solid #ded0c3;
       border-radius: 10px;
       overflow: hidden;
-      padding: 6% 2%;
+      padding: 5% 2%;
     }
     .content-left {
       background-image: url(../images/stage.png);
-      width: 13%;
+      width: 90px;
       height: 100%;
       background-repeat: no-repeat;
       background-size: 100%;
@@ -263,6 +332,9 @@
     position: fixed;
     width: 100%;
     bottom: 20%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
   }
   .date-item {
     width: 26px;
@@ -290,5 +362,138 @@
     position: fixed;
     right: 20%;
     bottom: 20%;
+  }
+  .next {
+    position: absolute;
+    background-repeat: no-repeat;
+    width: 45px;
+    height: 45px;
+    background-size: 100% 100%;
+    background-image: url(../images/right.png);
+    position: absolute;
+    right: 10px;
+    top: calc(50% - 22px);
+    cursor: pointer;
+  }
+  .last {
+    position: absolute;
+    background-repeat: no-repeat;
+    width: 45px;
+    height: 45px;
+    background-size: 100% 100%;
+    background-image: url(../images/left.png);
+    position: absolute;
+    left: 10px;
+    top: calc(50% - 22px);
+    cursor: pointer;
+    display: none;
+  }
+  // 打卡记录
+  .history {
+    width: 70%;
+    height: 35%;
+    top: 35%;
+    left: 20%;
+    background-color: #e0d6ca;
+    position: absolute;
+    border-radius: 25px;
+    overflow: hidden;
+    display: none;
+    .history-item {
+      height: 100%;
+    }
+    .left {
+      width: 70%;
+      float: left;
+      position: relative;
+      .history-left-card-box {
+        width: 200px;
+        height: 180px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        margin: auto;
+        bottom: 0;
+        .item {
+          width: 40px;
+          color: #f4cda4;
+          background-color: #d93748;
+          float: left;
+          border-right: 1px solid #dcd1c1;
+        }
+        .num {
+          height: 40px;
+          line-height: 40px;
+          text-align: center;
+          font-size: 22px;
+        }
+        .text {
+          height: 100px;
+          width: 20px;
+          text-align: center;
+          font-size: 14px;
+          word-wrap: break-word;
+          padding: 0 10px;
+        }
+        .icon-box {
+          height: 40px;
+          text-align: center;
+          background-color: #d0c0a7;
+          background-image: url(../images/calendar.png);
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: 22px;
+        }
+        
+      }
+    }
+    .right {
+      width: 20%;
+      float: left;
+      padding: 5%;
+      height: 72%;
+      position: relative;
+      background-color: #d93748;
+    }
+    .history-right-title {
+      color: #aa2125;
+      text-align: center;
+      font-size: 22px;
+      height: 20%;
+      span {
+        color: #f6d3a8;
+        font-size: 40px;
+        margin: 0 10px;
+      }
+    }
+    .qr-box {
+      height: 40%;
+      position: relative;
+      img {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+      }
+    }
+    p {
+      text-align: center;
+      color: #f0b092;
+      width: 84%
+    }
+    .close-button {
+      height: 40px;
+      width: 40px;
+      background-image: url(../images/close.png);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 30px;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+    }
   }
 </style>

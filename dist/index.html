@@ -5,7 +5,7 @@
     <!-- 页面的元信息 -->
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1"/>
-    <link rel="stylesheet" href="./css/main.4nhxa8j1s9.css">
+    <link rel="stylesheet" href="./css/main.kekbwjd2h0e.css">
     <link rel="stylesheet" href="./css/component.css">
     <link rel="stylesheet" href="./css/normalize.css">
   </head>
@@ -13,12 +13,45 @@
     <!-- 页面区域 -->
     <div class="ox-card ox" id="ox-card" style="display: none;"><div class="app">
     <div class="page-header"></div>
-    <div class="show-box">
+    <div class="show-box" @name="showBox">
       <ul class="elasticstack" id="elasticstack"></ul>
+      <div class="last" @click="lastCard" @name="last"></div>
+      <div class="next" @click="nextCard" @name="next"></div>
     </div>
-    <!-- <div class="next" @click="nextCard">下一个</div> -->
-    <div class="date-box" id="dataBox"></div>
-    <div class="record"><img src="../images/record.png"></div>
+    <div class="history" @name="history">
+      <div class="left history-item">
+        <div class="history-left-card-box" @name="cardBox">
+          <div class="item">
+            <div class="num">1</div>
+            <div class="text">学习有声</div>
+            <div class="icon-box"></div>
+          </div>
+          <div class="item">
+            <div class="num">1</div>
+            <div class="text">学习有声</div>
+            <div class="icon-box"></div>
+          </div>
+          <div class="item">
+            <div class="num">1</div>
+            <div class="text">学习有声</div>
+            <div class="icon-box"></div>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+      <div class="right history-item">
+        <div class="history-right-title">累计打卡<span>6</span>期</div>
+        <div class="qr-box">
+          <img src="../images/qr.png">
+        </div>
+        <p>扫描二维码</p>
+        <p>分享至朋友圈</p>
+        <div class="close-button" @click="closeHistory"></div>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <div class="date-box" @name="dataBox" id="dataBox"></div>
+    <div class="record"><img src="../images/record.png" @click="openHistory"></div>
     <div class="ox-copyright"><div class="copyright-box">
     <div class="copyright">
       <p>人 民 网 版 权 所 有 ，未 经 书 面 授 权 禁 止 使 用</p>
@@ -71,6 +104,6 @@ var dateList = {
   "3": [{content: "3", share: true}],
 }
     </script>
-    <script src="./js/main.4nhxa8j1s9.js" type="text/javascript"></script>
+    <script src="./js/main.kekbwjd2h0e.js" type="text/javascript"></script>
   </body>
 </html>

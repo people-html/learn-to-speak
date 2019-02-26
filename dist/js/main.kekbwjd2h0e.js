@@ -126,7 +126,8 @@ function pgNameHandler(dom) {
           // 绑定window.ozzx对象
           // console.log(tempDom)
           newPageFunction[clickFor].apply(Object.assign(newPageFunction, {
-            $el: this
+            $el: this,
+            domList: window.ozzx.domList
           }), parameterArr);
         }
       };
@@ -366,13 +367,20 @@ window.ozzx.script = {
       "activePageIndex": 0
     },
     "created": function created() {
+      var _this = this;
+
       document.addEventListener('touchmove', function (e) {
         e.preventDefault();
-      }, false); // 判断是手机页面还是电脑页面
+      }, false); // 计算并设置dataBox宽度
+
+      this.domList.dataBox.style.width = (this.domList.dataBox.childNodes.length - 1) * 60 + 'px';
+      console.log(this.domList.dataBox.childNodes.length); // 计算打卡页面
+      // 判断是手机页面还是电脑页面
 
       this.data.screenInfo = ozzx.tool.getScreenInfo(); // 生成dom
 
       var dataBoxTemple = '<div class="middle-line"></div>';
+      var historyTemple = '';
       var isFirst = true;
 
       for (var key in dateList) {
@@ -384,9 +392,15 @@ window.ozzx.script = {
         }
 
         dataBoxTemple += "<div class=\"date-item\" @click=\"changeDete('".concat(key, "')\">").concat(key, "</div>");
+        historyTemple += "<div class=\"item\"><div class=\"num\">".concat(key, "</div><div class=\"text\">\u5B66\u4E60\u6709\u58F0</div><div class=\"icon-box\"></div></div>");
       }
 
-      document.getElementById('dataBox').innerHTML = dataBoxTemple; // 刷新dom节点
+      document.getElementById('dataBox').innerHTML = dataBoxTemple;
+      this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'; // 延时设置打卡页面元素dom
+
+      setTimeout(function () {
+        _this.domList.cardBox.style.width = 41 * (_this.domList.cardBox.childNodes.length - 1) + 'px';
+      }, 1000); // 刷新dom节点
 
       pgNameHandler(document.getElementById('dataBox')); // this.calculation()
       // 默认高亮第一页
@@ -441,29 +455,45 @@ window.ozzx.script = {
       this.$el.classList.add('active');
     },
     "calculation": function calculation() {
-      var _this = this;
+      var _this2 = this;
 
       setTimeout(function () {
         // console.log(this.data.screenInfo.clientHeight)
-        _this.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
-          loop: true,
-          ratioX: parseInt(_this.data.screenInfo.clientWidth * 0.02),
-          ratioZ: parseInt(_this.data.screenInfo.clientWidth * -0.02),
+        _this2.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
+          loop: false,
+          ratioX: parseInt(_this2.data.screenInfo.clientWidth * 0.02),
+          ratioZ: parseInt(_this2.data.screenInfo.clientWidth * -0.02),
           distDragBack: 100,
           distDragMax: 200,
           onUpdateStack: function onUpdateStack(activeIndex) {
-            // 有记者按的关系需要加1
+            // console.log(activeIndex)
+            // 第一页的时候隐藏左箭头
+            if (activeIndex === 0) {
+              // console.log(this.data.ElastiStack.itemsCount - 1)
+              _this2.domList.last.style.display = 'none';
+            } else {
+              _this2.domList.last.style.display = 'block';
+            } // 最后一页的时候没有向右箭头
+
+
+            if (activeIndex === _this2.data.ElastiStack.itemsCount - 1) {
+              _this2.domList.next.style.display = 'none';
+            } else {
+              _this2.domList.next.style.display = 'block';
+            } // 有记者按的关系需要加1
+
+
             activeIndex++; // 停止当前播放的音乐
 
-            if (_this.data.audio !== null) {
-              _this.data.audio.pause();
+            if (_this2.data.audio !== null) {
+              _this2.data.audio.pause();
 
-              _this.data.audio.src = '';
+              _this2.data.audio.src = '';
             } // 停止上一个动画
 
 
-            if (_this.data.control !== null) {
-              _this.data.control.next = false;
+            if (_this2.data.control !== null) {
+              _this2.data.control.next = false;
             } // 查找文字区域
 
 
@@ -474,10 +504,10 @@ window.ozzx.script = {
 
             if (audio.length > 0) {
               // 播放音乐
-              _this.data.audio = audio[0];
-              _this.data.audio.src = 'http://cunchu.site/resource/bgm.mp3';
+              _this2.data.audio = audio[0];
+              _this2.data.audio.src = 'http://cunchu.site/resource/bgm.mp3';
 
-              _this.data.audio.play();
+              _this2.data.audio.play();
 
               if (textBox.length > 0) {
                 // 滚动条长度
@@ -485,8 +515,8 @@ window.ozzx.script = {
 
                 var overflow = scrollHeight - textBox[0].clientHeight;
 
-                _this.data.audio.ontimeupdate = function (e) {
-                  textBox.scrollTop(_this.data.audio.currentTime / _this.data.audio.duration * overflow);
+                _this2.data.audio.ontimeupdate = function (e) {
+                  textBox.scrollTop(_this2.data.audio.currentTime / _this2.data.audio.duration * overflow);
                 };
               }
             }
@@ -496,7 +526,18 @@ window.ozzx.script = {
       }, 0);
     },
     "nextCard": function nextCard() {
-      console.log(this.data.ElastiStack.next());
+      this.data.ElastiStack.next();
+    },
+    "lastCard": function lastCard() {
+      this.data.ElastiStack.last();
+    },
+    "openHistory": function openHistory() {
+      this.domList.history.style.display = 'block';
+      this.domList.showBox.style.display = 'none';
+    },
+    "closeHistory": function closeHistory() {
+      this.domList.history.style.display = 'none';
+      this.domList.showBox.style.display = 'block';
     }
   },
   "copyright": {},
