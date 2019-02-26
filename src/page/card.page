@@ -18,7 +18,7 @@
         <p>扫描二维码</p>
         <p>分享至朋友圈</p>
         <div class="next-box">
-          <div class="share next-box-button">生成海报</div>
+          <div class="share next-box-button"><a href="#share&amp;in=moveToTop&amp;out=moveFromBottom">生成海报</a></div>
           <div class="next-read next-box-button" @click="closeHistory">继续学习</div>
         </div>
       </div>

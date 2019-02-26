@@ -609,75 +609,31 @@ p {
   border-radius: 20px;
   font-size: 14px;
 }.ox-share .share {
-  background-color: #f6f6f6;
   width: 100%;
   height: 100%;
-}
-
-.ox-share .title {
-  text-align: center;
-  line-height: 3em;
-  font-size: 1.8em;
-  color: red;
-}
-
-.ox-share .share-box {
-  background-color: white;
-  margin: 10px;
-  height: 80%;
-  padding: 10px;
-}
-
-.ox-share .share-box-title {
-  color: #108ee9;
-  font-size: 1.6em;
-  line-height: 2em;
-}
-
-.ox-share .share-box-text {
-  color: #108ee9;
-}
-
-.ox-share .card-list {
-  height: 70%;
-  margin: 10px 0;
-}
-
-.ox-share .card-list .card-list-item {
-  width: calc(33.33% - 10px);
-  height: calc(33.33% - 10px);
-  float: left;
-  margin: 5px;
-}
-
-.ox-share .card-list .lock {
-  background-color: skyblue;
-}
-
-.ox-share .card-list .unlock {
-  background-color: #ccc;
-}
-
-.ox-share .bottom-bar {
-  display: flex;
-  height: 40px;
-  line-height: 40px;
-  justify-content: space-around;
-}
-
-.ox-share .bottom-bar-item {
-  width: 30%;
-  height: 100%;
-  border: 1px solid #ccc;
-  text-align: center;
-  border-radius: 5px;
+  background-size: 100% 100%;
+  background-image: url(../images/share-bg.jpg);
 }
 
 .ox-share .share-image {
   position: absolute;
   left: 0;
   top: 0;
-  width: 70%;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.ox-share .qr {
+  position: fixed;
+  bottom: 25%;
+  align-items: center;
+  width: 100%;
+}
+
+.ox-share .qr img {
+  margin: 0 auto;
+  display: block;
 }/* animation sets */
 
 /* move from / to  */

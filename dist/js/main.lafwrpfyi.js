@@ -615,11 +615,20 @@ window.ozzx.script = {
   "copyright": {},
   "share": {
     "created": function created() {
-      console.log('sd'); // 将dom导出为图片
+      var _this3 = this;
 
-      html2canvas(document.getElementById('cardList')).then(function (canvas) {
-        shareImg.src = canvas.toDataURL();
-      });
+      console.log(this.domList); // 避免阻塞
+
+      setTimeout(function () {
+        // 将dom导出为图片
+        html2canvas(_this3.domList.share, {
+          dpi: window.devicePixelRatio,
+          scale: 2
+        }).then(function (canvas) {
+          _this3.domList.shareImg.src = canvas.toDataURL();
+          _this3.domList.shareImg.style.display = 'block'; // document.body.appendChild(canvas)
+        });
+      }, 1000);
     }
   }
 };
