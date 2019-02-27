@@ -64,6 +64,8 @@
 		ratioZ: -10,
 		// 拖动轴
 		axis: 'x',
+		// 拖动句柄
+		handle: undefined,
 		// 切换卡片事件
 		onUpdateStack : function( current ) { return false; }
 	};
@@ -292,9 +294,12 @@
 	};
 
 	ElastiStack.prototype._initDragg = function() {
-		
+		console.log(this.items[ this.current ])
 		this.draggie = new Draggabilly( this.items[ this.current ], {
-			axis: this.options.axis
+			// 限制在父容器中移动
+			// containment: true,
+			axis: this.options.axis,
+			handle: this.options.handle
 		})
 	};
 

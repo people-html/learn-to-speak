@@ -372,7 +372,10 @@ window.ozzx.script = {
     "created": function created() {
       var _this = this;
 
-      // 读取出打卡记录
+      console.log('start'); // 解决返回上一页不会退回到学习页面
+
+      this.closeHistory(); // 读取出打卡记录
+
       var readList = localStorage.getItem("readList");
 
       if (readList) {
@@ -381,17 +384,17 @@ window.ozzx.script = {
 
       document.addEventListener('touchmove', function (e) {
         e.preventDefault();
-      }, false); // 计算并设置dataBox宽度 or 高度
+      }, false); // 检查是电脑还是移动端
+
+      this.checkIsPC(); // 计算并设置dataBox宽度 or 高度
 
       if (this.data.isPC) {
+        console.log('pc');
         this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px';
       } else {
         this.domList.dataBox.style.height = dateList.length * 76 - 20 + 'px';
-      } // console.log(Object.keys(dateList).length)
-      // 计算打卡页面
+      } // 生成dom
 
-
-      this.checkIsPC(); // 生成dom
 
       var dataBoxTemple = '';
       var historyTemple = '';
@@ -455,12 +458,12 @@ window.ozzx.script = {
         if (++ind === 1) {
           // 判断是否有image
           if (element.img) {
-            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
           } else {
-            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
           }
         } else {
-          domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"content-left\"><div class=\"num\">").concat(ind, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
+          domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"num\">").concat(ind, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
         }
 
         if (element.music) {
@@ -507,6 +510,7 @@ window.ozzx.script = {
         // console.log(this.data.screenInfo.clientHeight)
         _this2.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
           loop: false,
+          handle: ".handle",
           ratioX: parseInt(_this2.data.screenInfo.clientWidth * 0.02),
           ratioZ: parseInt(_this2.data.screenInfo.clientWidth * -0.02),
           distDragBack: 100,

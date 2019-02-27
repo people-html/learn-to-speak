@@ -43,6 +43,9 @@
       isPC: true
     },
     created: function() {
+      console.log('start')
+      // 解决返回上一页不会退回到学习页面
+      this.closeHistory()
       // 读取出打卡记录
       const readList = localStorage.getItem("readList")
       if (readList) {
@@ -51,18 +54,16 @@
       document.addEventListener('touchmove', (e) => {
         e.preventDefault()
       }, false)
-      
+      // 检查是电脑还是移动端
+      this.checkIsPC()
       // 计算并设置dataBox宽度 or 高度
       if (this.data.isPC) {
+        console.log('pc')
         this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px'
       } else {
         this.domList.dataBox.style.height = dateList.length * 76 - 20 + 'px'
       }
       
-      // console.log(Object.keys(dateList).length)
-      // 计算打卡页面
-      
-      this.checkIsPC()
       // 生成dom
       let dataBoxTemple = ''
       let historyTemple = ''
@@ -125,12 +126,12 @@
         if (++ind === 1) {
           // 判断是否有image
           if (element.img) {
-            domTemple += `<li id="slideItem${ind}"><div class="note-left"></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
+            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="note-left"></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
           } else {
-            domTemple += `<li id="slideItem${ind}"><div class="note-left"></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
+            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="note-left"></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
           }
         } else {
-          domTemple += `<li id="slideItem${ind}"><div class="content-left"><div class="num">${ind}</div></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
+          domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="num">${ind}</div></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
         }
         if (element.music) {
           domTemple += `<audio src="${element.music}" controls="controls"></audio>`
@@ -169,6 +170,7 @@
         // console.log(this.data.screenInfo.clientHeight)
         this.data.ElastiStack = new ElastiStack( document.getElementById('elasticstack'), {
           loop: false,
+          handle: ".handle",
           ratioX: parseInt(this.data.screenInfo.clientWidth * 0.02),
           ratioZ: parseInt(this.data.screenInfo.clientWidth * -0.02),
           distDragBack: 100,
@@ -295,6 +297,15 @@
       border: 1px solid #ded0c3;
       border-radius: 10px;
       padding: 20px 10px;
+      overflow: hidden;
+    }
+    .handle {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
     }
     .content-left {
       background-image: url(../images/stage.png);
@@ -322,6 +333,7 @@
       left: 15%;
       top: 10%;
       font-size: 20px;
+      z-index: -2;
     }
     .image-box {
       width: 30%;
@@ -329,6 +341,7 @@
       position: relative;
       height: 100%;
       margin: 0 2%;
+      z-index: -2;
       img {
         position: absolute;
         top: 0;
@@ -344,6 +357,7 @@
       background-size: 100%;
       float: left;
       position: relative;
+      z-index: -2;
     }
     .content {
       overflow: auto;
@@ -404,6 +418,7 @@
     cursor: pointer;
     transition: all 0.3s;
     float: left;
+    user-select: none;
   }
   .active {
     width: 40px;
