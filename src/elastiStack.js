@@ -129,7 +129,7 @@
 
 
 	ElastiStack.prototype._moveAway = function( instance ) {
-		console.log(instance)
+		// console.log(instance)
 		// 判断是否有下一个卡片
 		let next = this.items[this.current + 1]
 		if (!this.options.loop && !next) {
@@ -299,7 +299,7 @@
 	};
 
 	ElastiStack.prototype._initDragg = function() {
-		console.log(this.items[ this.current ])
+		// console.log(this.items[ this.current ])
 		if (this.options.enable) {
 			this.draggie = new Draggabilly( this.items[ this.current ], {
 				// 限制在父容器中移动

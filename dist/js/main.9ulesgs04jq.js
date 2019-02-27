@@ -386,35 +386,10 @@ window.ozzx.script = {
         e.preventDefault();
       }, false); // 检查是电脑还是移动端
 
-      this.checkIsPC(); // 计算并设置dataBox宽度 or 高度
+      this.checkIsPC();
+      this.changeDeteList(0); // 高亮第一个分页
 
-      if (this.data.isPC) {
-        console.log('pc');
-        this.domList.dataBox.style.width = dateList[0].length * 76 - 20 + 'px';
-      } else {
-        this.domList.dataBox.style.height = dateList[0].length * 76 - 20 + 'px';
-      } // 生成dom
-
-
-      var dataBoxTemple = '';
-      var historyTemple = '';
-
-      for (var ind in dateList[0]) {
-        var index = parseInt(ind) + 1;
-
-        if (ind == 0) {
-          // console.log('ssss')
-          dataBoxTemple += "<div class=\"date-item\" @click=\"changeDete(".concat(ind, ")\">").concat(index, "</div>");
-        } else {
-          dataBoxTemple += "<div class=\"middle-line\"></div><div class=\"date-item\" @click=\"changeDete(".concat(ind, ")\">").concat(index, "</div>");
-        }
-
-        historyTemple += "<div class=\"item\"><div class=\"num\">".concat(ind, "</div><div class=\"text\">").concat(dateName[ind].name, "</div><div class=\"icon-box\"></div></div>");
-      }
-
-      this.changeCard(dateList[0]);
-      document.getElementById('dataBox').innerHTML = dataBoxTemple;
-      this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'; // 延时设置打卡页面元素dom
+      this.changeCard(0); // 延时设置打卡页面元素dom
 
       setTimeout(function () {
         if (_this.data.isPC) {
@@ -424,12 +399,33 @@ window.ozzx.script = {
         }
       }, 1000); // 刷新dom节点
 
-      pgNameHandler(document.getElementById('dataBox')); // this.calculation()
-      // 默认高亮第一页
+      pgNameHandler(document.getElementById('dataBox'));
+    },
+    "changeDeteList": function changeDeteList(dataIndex) {
+      // 计算并设置dataBox宽度 or 高度
+      if (this.data.isPC) {
+        this.domList.dataBox.style.width = dateList[dataIndex].length * 76 - 20 + 'px';
+      } else {
+        this.domList.dataBox.style.height = dateList[dataIndex].length * 76 - 20 + 'px';
+      } // 生成dom
 
-      setTimeout(function () {
-        document.getElementById('dataBox').children[0].classList.add('active');
-      }, 0);
+
+      var dataBoxTemple = '';
+      var historyTemple = '';
+
+      for (var ind in dateList[dataIndex]) {
+        var index = parseInt(ind) + 1;
+
+        if (ind == 0) {
+          // console.log('ssss')
+          dataBoxTemple += "<div class=\"date-item active\" @click=\"changeCard(".concat(ind, ")\">").concat(index, "</div>");
+        } else {
+          dataBoxTemple += "<div class=\"middle-line\"></div><div class=\"date-item\" @click=\"changeCard(".concat(ind, ")\">").concat(index, "</div>");
+        } // historyTemple += `<div class="item"><div class="num">${ind}</div><div class="text">${dateName[ind].name}</div><div class="icon-box"></div></div>`
+
+      }
+
+      document.getElementById('dataBox').innerHTML = dataBoxTemple; // this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'
     },
     "checkIsPC": function checkIsPC() {
       // 判断是手机页面还是电脑页面
@@ -444,21 +440,21 @@ window.ozzx.script = {
         this.data.isPC = false;
       }
     },
-    "changeCard": function changeCard(cardList) {
+    "changeCard": function changeCard(index) {
       var domTemple = '';
-      var ind = 0;
 
-      for (var key in cardList) {
-        var element = cardList[key]; // 添加期目录
+      for (var key in dateList) {
+        var element = dateList[key][index];
+        var nextIndex = parseInt(index) + 1;
+        console.log(key, index); // 添加期目录
         // 如果没有title，则title为空
 
-        if (!element.title) element.title = "";
-        ind++; // 判断是否有image
+        if (!element.title) element.title = ""; // 判断是否有image
 
         if (element.img) {
-          domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"num\">").concat(ind, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
+          domTemple += "<li id=\"slideItem".concat(nextIndex, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"num\">").concat(nextIndex, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
         } else {
-          domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"num\">").concat(ind, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
+          domTemple += "<li id=\"slideItem".concat(nextIndex, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"num\">").concat(nextIndex, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
         }
 
         if (element.music) {
@@ -474,21 +470,18 @@ window.ozzx.script = {
       setTimeout(function () {
         // 刷新dom节点
         pgNameHandler(document.getElementById('elasticstack'));
-      }, 500);
+      }, 100); // 高亮对应的页号
+
+      this.changeDete(parseInt(index * 2));
     },
     "changeDete": function changeDete(dete) {
-      // console.log(dateList, $.trim(dete))
-      // console.log(`change dete to ${dete}`)
-      this.changeCard(dateList[$.trim(dete)]); // 取消掉所有子页码的活跃状态
-
+      // 取消掉所有子页码的活跃状态
       for (var ind = 0; ind < document.getElementById('dataBox').children.length; ind++) {
         var dom = document.getElementById('dataBox').children[ind];
         dom.classList.remove('active');
       }
 
-      this.$el.classList.add('active'); // 设置活跃日期
-
-      this.data.activeDateIndex = dete; // 判断是否为PC
+      document.getElementById('dataBox').children[dete].classList.add('active'); // 判断是否为PC
 
       if (this.data.isPC) {
         // 允许下一页,禁止上一页
@@ -523,10 +516,15 @@ window.ozzx.script = {
           // pc端禁止拖拽
           enable: !_this2.data.isPC,
           onUpdateStack: function onUpdateStack(activeIndex) {
-            // 如果阅读了就标记这一页为已阅读
-            _this2.saveReadInfo(); // console.log(activeIndex)
-            // 只有PC才有左右箭头
+            // ------------------------------
+            _this2.changeDeteList(activeIndex); // 设置活跃日期
 
+
+            _this2.data.activeDateIndex = activeIndex; // ------------------------------
+            // 如果阅读了就标记这一页为已阅读
+            // this.saveReadInfo()
+            // console.log(activeIndex)
+            // 只有PC才有左右箭头
 
             if (_this2.data.isPC) {
               // 第一页的时候隐藏左箭头
@@ -538,7 +536,7 @@ window.ozzx.script = {
               } // 最后一页的时候没有向右箭头
 
 
-              if (activeIndex === _this2.data.ElastiStack.itemsCount - 1) {
+              if (activeIndex === dateList.length - 1) {
                 _this2.domList.next.style.display = 'none';
               } else {
                 _this2.domList.next.style.display = 'block';
@@ -568,7 +566,7 @@ window.ozzx.script = {
             if (audio.length > 0) {
               // 播放音乐
               _this2.data.audio = audio[0];
-              var musicSrc = dateList[_this2.data.activeDateIndex][activeIndex - 1].music;
+              var musicSrc = dateList[activeIndex][activeIndex - 1].music;
 
               if (musicSrc) {
                 _this2.data.audio.src = musicSrc;
@@ -598,10 +596,18 @@ window.ozzx.script = {
                 };
               }
             }
+
+            setTimeout(function () {
+              // 刷新dom节点
+              pgNameHandler(document.getElementById('dataBox'));
+            }, 100);
           }
         });
         document.getElementById('elasticstack').style.display = 'block';
       }, 0);
+    },
+    "activeCard": function activeCard(index) {
+      this.changeDete(index * 2);
     },
     "nextCard": function nextCard() {
       this.data.ElastiStack.next();
