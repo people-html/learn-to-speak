@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <div class="main" @click="hiddenMain" @name="main"></div>
     <div class="page-header"></div>
     <div class="show-box" @name="showBox">
       <ul class="elasticstack" id="elasticstack"></ul>
@@ -58,28 +59,25 @@
       // 计算并设置dataBox宽度 or 高度
       if (this.data.isPC) {
         console.log('pc')
-        this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px'
+        this.domList.dataBox.style.width = dateList[0].length * 76 - 20 + 'px'
       } else {
-        this.domList.dataBox.style.height = dateList.length * 76 - 20 + 'px'
+        this.domList.dataBox.style.height = dateList[0].length * 76 - 20 + 'px'
       }
       
       // 生成dom
       let dataBoxTemple = ''
       let historyTemple = ''
-      for(let ind in dateList) {
-        // console.log(dateList, ind)
-        
-        const element = dateList[ind]
-        // console.log(element)
+      for(let ind in dateList[0]) {
+        const index = parseInt(ind) + 1
         if (ind == 0) {
-          this.changeCard(element)
           // console.log('ssss')
-          dataBoxTemple += `<div class="date-item" @click="changeDete(${ind})">${dateName[ind].stage}</div>`
+          dataBoxTemple += `<div class="date-item" @click="changeDete(${ind})">${index}</div>`
         } else {
-          dataBoxTemple += `<div class="middle-line"></div><div class="date-item" @click="changeDete(${ind})">${dateName[ind].stage}</div>`
+          dataBoxTemple += `<div class="middle-line"></div><div class="date-item" @click="changeDete(${ind})">${index}</div>`
         }
-        historyTemple += `<div class="item"><div class="num">${dateName[ind].stage}</div><div class="text">${dateName[ind].name}</div><div class="icon-box"></div></div>`
+        historyTemple += `<div class="item"><div class="num">${ind}</div><div class="text">${dateName[ind].name}</div><div class="icon-box"></div></div>`
       }
+      this.changeCard(dateList[0])
 
       document.getElementById('dataBox').innerHTML = dataBoxTemple
       this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'
@@ -121,25 +119,25 @@
         // 添加期目录
         // 如果没有title，则title为空
         if (!element.title) element.title = ""
-        // 第一页固定是编者按
-        if (++ind === 1) {
-          // 判断是否有image
-          if (element.img) {
-            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="note-left"></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
-          } else {
-            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="note-left"></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
-          }
+        ind++
+        // 判断是否有image
+        if (element.img) {
+          domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="num">${ind}</div></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
         } else {
           domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="num">${ind}</div></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
         }
         if (element.music) {
-          domTemple += `<audio src="${element.music}" controls="controls"></audio>`
+          domTemple += `<audio src="${element.music}"></audio><div class="audio-box"  @click="changeAudioprogress"><div class="audio-image"></div><div class="audio-bar"><div class="spot"></div><div class="progress"></div></div></div>`
         }
         domTemple += `</li>`
       }
       document.getElementById('elasticstack').style.display = 'none'
       document.getElementById('elasticstack').innerHTML = domTemple
       this.calculation()
+      setTimeout(() => {
+        // 刷新dom节点
+        pgNameHandler(document.getElementById('elasticstack'))
+      }, 500)
     },
     changeDete: function (dete) {
       // console.log(dateList, $.trim(dete))
@@ -153,6 +151,12 @@
       this.$el.classList.add('active')
       // 设置活跃日期
       this.data.activeDateIndex = dete
+      // 判断是否为PC
+      if (this.data.isPC) {
+        // 允许下一页,禁止上一页
+        this.domList.last.style.display = 'none'
+        this.domList.next.style.display = 'block'
+      }
     },
     saveReadInfo: function () {
       this.data.readList[this.data.activeDateIndex] = true
@@ -223,6 +227,15 @@
                 this.data.audio.src = musicSrc
                 this.data.audio.play()
               }
+              // 播放拖动块
+              const spot = $(`#slideItem${activeIndex} .spot`)
+              const progress = $(`#slideItem${activeIndex} .progress`)
+              this.data.audio.addEventListener("timeupdate", function (e) {
+                const value = (e.target.currentTime / e.target.duration).toFixed(4) * 100
+                // console.log((e.target.currentTime / e.target.duration).toFixed(4) * 100 + '%')
+                spot[0].style.left = value + '%'
+                progress[0].style.width = value + '%'
+              })
               
               if (textBox.length > 0) {
                 // 滚动条长度
@@ -266,12 +279,32 @@
       this.domList.showBox.style.display = 'block'
       this.domList.dataBox.style.display = 'block'
       this.domList.record.style.display = 'block'
+    },
+    changeAudioprogress: function (e) {
+      const ratio = this.$event.offsetX / this.$event.target.offsetWidth
+      // 设置时间
+      // console.log(this.data.audio.duration, ratio)
+      this.data.audio.currentTime  = this.data.audio.duration * ratio
+    },
+    hiddenMain: function (e) {
+      this.domList.main.style.top = "-100%"
     }
   }
 </script>
 
 
 <style lang="less">
+  .main {
+    background-image: url(../images/main.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    position: fixed;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    transition: top 1s;
+  }
   .elasticstack {
     width: 80%;
     height: 401px;
@@ -286,7 +319,7 @@
       display: block;
       position: absolute;
       width: 86%;
-      height: 230px;
+      height: 270px;
       background-color: white;
       left: 0;
       top: 0;
@@ -319,11 +352,13 @@
       .num {
         position: absolute;
         color: white;
-        left: 49%;
+        left: 37%;
         top: 22%;
-        font-size: 30px;
+        font-size: 26px;
         height: 30px;
         line-height: 25px;
+        width: 33px;
+        text-align: center;
       }
     }
     .title {
@@ -365,7 +400,7 @@
       font-size: 14px;
       margin: 0 10px;
       margin: 40px 10px;
-      height: 160px;
+      height: 200px;
       overflow-x: hidden;
       overflow-y: auto;
       p {
@@ -377,7 +412,7 @@
       width: 100%;
       position: absolute;
       bottom: 0;
-      height: 50px;
+      height: 40px;
       left: 0;
     }
     img {
@@ -397,18 +432,20 @@
     height: 40%;
     width: 70%;
     position: absolute;
-    left: 15%;
-    top: 30%;
+    top: 32%;
+    left: 0;
+    right: 0;
+    margin: auto;
   }
   .date-box {
     line-height: 50px;
     justify-content: center;
     position: absolute;
     width: 100%;
-    top: 70%;
+    top: 74%;
     left: 0;
     right: 0;
-    margin: 0 auto;
+    margin: auto;
   }
   .date-item {
     width: 26px;
@@ -424,6 +461,7 @@
     cursor: pointer;
     transition: all 0.3s;
     float: left;
+    overflow: hidden;
   }
   .active {
     width: 40px;
@@ -435,8 +473,8 @@
   }
   .record {
     position: absolute;
-    right: 20%;
-    top: 71%;
+    right: 16%;
+    top: 75%;
     width: 101px;
     height: 35px;
     cursor: pointer;
@@ -485,6 +523,7 @@
     margin: auto;
     .history-item {
       height: 100%;
+      overflow: auto;
     }
     .left {
       width: 70%;
@@ -499,6 +538,8 @@
         top: 0;
         margin: auto;
         bottom: 0;
+        max-height: 300px;
+        overflow: auto;
         .item {
           width: 40px;
           
@@ -518,6 +559,7 @@
           line-height: 40px;
           text-align: center;
           font-size: 22px;
+          overflow: hidden;
         }
         .text {
           height: 100px;
@@ -605,6 +647,50 @@
       a {
         color: white;
       }
+    }
+  }
+  .audio-box {
+    position: absolute;
+    height: 35px;
+    bottom: 10px;
+    left: 0;
+    width: 80%;
+    right: 0;
+    margin: auto;
+    .audio-image {
+      background-image: url(../images/audio.png);
+      float: left;
+      width: 35px;
+      height: 35px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    .audio-bar {
+      float: right;
+      width: 90%;
+      height: 17px;
+      position: relative;
+      border-bottom: 1px solid #ccc;
+    }
+    .spot {
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      position: absolute;
+      top: 12px;
+      border-radius: 50%;
+      left: 0;
+      position: relative;
+      user-select: none;
+      pointer-events: none;
+    }
+    .progress {
+      position: absolute;
+      top: 17px;
+      left: 0;
+      user-select: none;
+      pointer-events: none;
+      border-bottom: 1px solid red;
     }
   }
 </style>

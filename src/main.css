@@ -14,8 +14,8 @@ html, body, .ox, .app {
 
 /* pc页面样式 */
 .pc {
-  min-width: 1080px;
-  min-height: 720px;
+  min-width: 800px;
+  min-height: 600px;
   background-image: url("../images/bg.jpg");
 }
 .pc .show-box {
@@ -77,7 +77,7 @@ html, body, .ox, .app {
 
 .h5 .ox-card .elasticstack .content-left .num {
   font-size: 18px;
-  left: 31px;
+  left: 19px;
   top: 14px;
 }
 
@@ -125,8 +125,22 @@ html, body, .ox, .app {
   width: 50px;
   left: calc(10% - 21px);
   right: unset;
-  top: 28%;
+  top: 0;
+  bottom: 0;
 }
+
+.h5 .ox-card .audio-box .audio-bar {
+  width: calc(100% - 45px);
+}
+
+.h5 .ox-card .main {
+  top: 0;
+}
+
+.pc .ox-card .main {
+  top: -100%;
+}
+
 
 .h5 .ox-card .date-box .date-item {
   float: none;
@@ -244,4 +258,29 @@ p {
 .content::-webkit-scrollbar-track {/*滚动条里面轨道*/
   border-radius: 10px;
   background: #EDEDED;
+}
+
+/* 媒体查询 */
+
+@media screen and (max-height: 720px) {
+  .pc .ox-copyright {
+    display: none;
+  }
+  .pc .ox-card .date-box, .pc .ox-card .record{
+    top: unset;
+    bottom: 5%;
+    right: 20px;
+  }
+  .pc .ox-card .elasticstack {
+    top: 20%;
+  }
+}
+
+@media screen and (max-height: 780px) {
+  .pc .ox-copyright .copyright-box {
+    height: 100px;
+  }
+  .pc .ox-card .date-box, .pc .ox-card .record{
+    top: 77%;
+  }
 }

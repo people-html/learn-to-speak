@@ -335,10 +335,6 @@
 			y : el.position.y > 0 ? ty : ty * -1
 		}
 	};
-
-	ElastiStack.prototype.next = function () {
-		
-	}
 	
 	ElastiStack.prototype.add = function(el){
 		this.container.appendChild(el);
@@ -416,7 +412,21 @@
 			}
 		})
 	}
-
+	ElastiStack.prototype.jump = function(index) {
+		this._moveAway({
+			dragPoint: {
+				x: 260,
+				y: 0
+			},
+			element: this.items[index],
+			isDragging: false,
+			isEnabled: false,
+			position: {
+				x: 260,
+				y: 0
+			}
+		})
+	}
 	// add to global namespace
 	window.ElastiStack = ElastiStack;
 

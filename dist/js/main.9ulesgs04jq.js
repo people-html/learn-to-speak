@@ -82,7 +82,7 @@ function pgNameHandler(dom) {
     var clickFunc = tempDom.attributes['@click'];
 
     if (clickFunc) {
-      tempDom.onclick = function () {
+      tempDom.onclick = function (event) {
         var clickFor = this.attributes['@click'].textContent; // 判断页面是否有自己的方法
 
         var newPageFunction = window.ozzx.script[window.ozzx.activePage]; // console.log(this.attributes)
@@ -127,6 +127,7 @@ function pgNameHandler(dom) {
           // console.log(tempDom)
           // 待测试不知道这样合并会不会对其它地方造成影响
           newPageFunction.$el = this;
+          newPageFunction.$event = event;
           newPageFunction.domList = window.ozzx.domList;
           newPageFunction[clickFor].apply(newPageFunction, parameterArr);
         }
@@ -320,7 +321,7 @@ var globalConfig = {
     "content": "text/html; charset=UTF-8"
   }, {
     "name": "viewport",
-    "content": "initial-scale=1,user-scalable=no,maximum-scale=1,,user-scalable=no"
+    "content": "height=device-height,initial-scale=1,user-scalable=no,maximum-scale=1,,user-scalable=no"
   }],
   "scriptList": [{
     "name": "jquery-3.3.1",
@@ -338,9 +339,6 @@ var globalConfig = {
   }, {
     "name": "html2canvas",
     "src": "./src/html2canvas.min.js"
-  }, {
-    "name": "log",
-    "src": "http://people.com.cn/img/MAIN/2018/10/118767/js/lib/vconsole.3.3.bundle.min.js"
   }],
   "styleList": [{
     "name": "component",
@@ -392,30 +390,29 @@ window.ozzx.script = {
 
       if (this.data.isPC) {
         console.log('pc');
-        this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px';
+        this.domList.dataBox.style.width = dateList[0].length * 76 - 20 + 'px';
       } else {
-        this.domList.dataBox.style.height = dateList.length * 76 - 20 + 'px';
+        this.domList.dataBox.style.height = dateList[0].length * 76 - 20 + 'px';
       } // 生成dom
 
 
       var dataBoxTemple = '';
       var historyTemple = '';
 
-      for (var ind in dateList) {
-        // console.log(dateList, ind)
-        var element = dateList[ind]; // console.log(element)
+      for (var ind in dateList[0]) {
+        var index = parseInt(ind) + 1;
 
         if (ind == 0) {
-          this.changeCard(element); // console.log('ssss')
-
-          dataBoxTemple += "<div class=\"date-item\" @click=\"changeDete(".concat(ind, ")\">").concat(dateName[ind].stage, "</div>");
+          // console.log('ssss')
+          dataBoxTemple += "<div class=\"date-item\" @click=\"changeDete(".concat(ind, ")\">").concat(index, "</div>");
         } else {
-          dataBoxTemple += "<div class=\"middle-line\"></div><div class=\"date-item\" @click=\"changeDete(".concat(ind, ")\">").concat(dateName[ind].stage, "</div>");
+          dataBoxTemple += "<div class=\"middle-line\"></div><div class=\"date-item\" @click=\"changeDete(".concat(ind, ")\">").concat(index, "</div>");
         }
 
-        historyTemple += "<div class=\"item\"><div class=\"num\">".concat(dateName[ind].stage, "</div><div class=\"text\">").concat(dateName[ind].name, "</div><div class=\"icon-box\"></div></div>");
+        historyTemple += "<div class=\"item\"><div class=\"num\">".concat(ind, "</div><div class=\"text\">").concat(dateName[ind].name, "</div><div class=\"icon-box\"></div></div>");
       }
 
+      this.changeCard(dateList[0]);
       document.getElementById('dataBox').innerHTML = dataBoxTemple;
       this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'; // 延时设置打卡页面元素dom
 
@@ -455,21 +452,17 @@ window.ozzx.script = {
         var element = cardList[key]; // 添加期目录
         // 如果没有title，则title为空
 
-        if (!element.title) element.title = ""; // 第一页固定是编者按
+        if (!element.title) element.title = "";
+        ind++; // 判断是否有image
 
-        if (++ind === 1) {
-          // 判断是否有image
-          if (element.img) {
-            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
-          } else {
-            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"note-left\"></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
-          }
+        if (element.img) {
+          domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"num\">").concat(ind, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
         } else {
           domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"num\">").concat(ind, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
         }
 
         if (element.music) {
-          domTemple += "<audio src=\"".concat(element.music, "\" controls=\"controls\"></audio>");
+          domTemple += "<audio src=\"".concat(element.music, "\"></audio><div class=\"audio-box\"  @click=\"changeAudioprogress\"><div class=\"audio-image\"></div><div class=\"audio-bar\"><div class=\"spot\"></div><div class=\"progress\"></div></div></div>");
         }
 
         domTemple += "</li>";
@@ -478,6 +471,10 @@ window.ozzx.script = {
       document.getElementById('elasticstack').style.display = 'none';
       document.getElementById('elasticstack').innerHTML = domTemple;
       this.calculation();
+      setTimeout(function () {
+        // 刷新dom节点
+        pgNameHandler(document.getElementById('elasticstack'));
+      }, 500);
     },
     "changeDete": function changeDete(dete) {
       // console.log(dateList, $.trim(dete))
@@ -491,7 +488,13 @@ window.ozzx.script = {
 
       this.$el.classList.add('active'); // 设置活跃日期
 
-      this.data.activeDateIndex = dete;
+      this.data.activeDateIndex = dete; // 判断是否为PC
+
+      if (this.data.isPC) {
+        // 允许下一页,禁止上一页
+        this.domList.last.style.display = 'none';
+        this.domList.next.style.display = 'block';
+      }
     },
     "saveReadInfo": function saveReadInfo() {
       this.data.readList[this.data.activeDateIndex] = true;
@@ -571,7 +574,18 @@ window.ozzx.script = {
                 _this2.data.audio.src = musicSrc;
 
                 _this2.data.audio.play();
-              }
+              } // 播放拖动块
+
+
+              var spot = $("#slideItem".concat(activeIndex, " .spot"));
+              var progress = $("#slideItem".concat(activeIndex, " .progress"));
+
+              _this2.data.audio.addEventListener("timeupdate", function (e) {
+                var value = (e.target.currentTime / e.target.duration).toFixed(4) * 100; // console.log((e.target.currentTime / e.target.duration).toFixed(4) * 100 + '%')
+
+                spot[0].style.left = value + '%';
+                progress[0].style.width = value + '%';
+              });
 
               if (textBox.length > 0) {
                 // 滚动条长度
@@ -618,6 +632,15 @@ window.ozzx.script = {
       this.domList.showBox.style.display = 'block';
       this.domList.dataBox.style.display = 'block';
       this.domList.record.style.display = 'block';
+    },
+    "changeAudioprogress": function changeAudioprogress(e) {
+      var ratio = this.$event.offsetX / this.$event.target.offsetWidth; // 设置时间
+      // console.log(this.data.audio.duration, ratio)
+
+      this.data.audio.currentTime = this.data.audio.duration * ratio;
+    },
+    "hiddenMain": function hiddenMain(e) {
+      this.domList.main.style.top = "-100%";
     }
   },
   "copyright": {},

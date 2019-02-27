@@ -14,8 +14,8 @@ html, body, .ox, .app {
 
 /* pc页面样式 */
 .pc {
-  min-width: 1080px;
-  min-height: 720px;
+  min-width: 800px;
+  min-height: 600px;
   background-image: url("../images/bg.jpg");
 }
 .pc .show-box {
@@ -77,7 +77,7 @@ html, body, .ox, .app {
 
 .h5 .ox-card .elasticstack .content-left .num {
   font-size: 18px;
-  left: 31px;
+  left: 19px;
   top: 14px;
 }
 
@@ -125,8 +125,22 @@ html, body, .ox, .app {
   width: 50px;
   left: calc(10% - 21px);
   right: unset;
-  top: 28%;
+  top: 0;
+  bottom: 0;
 }
+
+.h5 .ox-card .audio-box .audio-bar {
+  width: calc(100% - 45px);
+}
+
+.h5 .ox-card .main {
+  top: 0;
+}
+
+.pc .ox-card .main {
+  top: -100%;
+}
+
 
 .h5 .ox-card .date-box .date-item {
   float: none;
@@ -245,6 +259,31 @@ p {
   border-radius: 10px;
   background: #EDEDED;
 }
+
+/* 媒体查询 */
+
+@media screen and (max-height: 720px) {
+  .pc .ox-copyright {
+    display: none;
+  }
+  .pc .ox-card .date-box, .pc .ox-card .record{
+    top: unset;
+    bottom: 5%;
+    right: 20px;
+  }
+  .pc .ox-card .elasticstack {
+    top: 20%;
+  }
+}
+
+@media screen and (max-height: 780px) {
+  .pc .ox-copyright .copyright-box {
+    height: 100px;
+  }
+  .pc .ox-card .date-box, .pc .ox-card .record{
+    top: 77%;
+  }
+}
 .ox-copyright .copyright-box {
   height: 170px;
   color: #727272;
@@ -263,7 +302,19 @@ p {
   top: 0;
   bottom: 0;
   margin: auto;
-}.ox-card .elasticstack {
+}.ox-card .main {
+  background-image: url(../images/main.jpg);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  transition: top 1s;
+}
+
+.ox-card .elasticstack {
   width: 80%;
   height: 401px;
   position: absolute;
@@ -279,7 +330,7 @@ p {
   display: block;
   position: absolute;
   width: 86%;
-  height: 230px;
+  height: 270px;
   background-color: white;
   left: 0;
   top: 0;
@@ -316,11 +367,13 @@ p {
 .ox-card .elasticstack .content-left .num {
   position: absolute;
   color: white;
-  left: 49%;
+  left: 37%;
   top: 22%;
-  font-size: 30px;
+  font-size: 26px;
   height: 30px;
   line-height: 25px;
+  width: 33px;
+  text-align: center;
 }
 
 .ox-card .elasticstack .title {
@@ -366,7 +419,7 @@ p {
   font-size: 14px;
   margin: 0 10px;
   margin: 40px 10px;
-  height: 160px;
+  height: 200px;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -383,7 +436,7 @@ p {
   width: 100%;
   position: absolute;
   bottom: 0;
-  height: 50px;
+  height: 40px;
   left: 0;
 }
 
@@ -405,8 +458,10 @@ p {
   height: 40%;
   width: 70%;
   position: absolute;
-  left: 15%;
-  top: 30%;
+  top: 32%;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 
 .ox-card .date-box {
@@ -414,10 +469,10 @@ p {
   justify-content: center;
   position: absolute;
   width: 100%;
-  top: 70%;
+  top: 74%;
   left: 0;
   right: 0;
-  margin: 0 auto;
+  margin: auto;
 }
 
 .ox-card .date-item {
@@ -434,6 +489,7 @@ p {
   cursor: pointer;
   transition: all 0.3s;
   float: left;
+  overflow: hidden;
 }
 
 .ox-card .active {
@@ -447,8 +503,8 @@ p {
 
 .ox-card .record {
   position: absolute;
-  right: 20%;
-  top: 71%;
+  right: 16%;
+  top: 75%;
   width: 101px;
   height: 35px;
   cursor: pointer;
@@ -500,6 +556,7 @@ p {
 
 .ox-card .history .history-item {
   height: 100%;
+  overflow: auto;
 }
 
 .ox-card .history .left {
@@ -517,6 +574,8 @@ p {
   top: 0;
   margin: auto;
   bottom: 0;
+  max-height: 300px;
+  overflow: auto;
 }
 
 .ox-card .history .left .history-left-card-box .item {
@@ -540,6 +599,7 @@ p {
   line-height: 40px;
   text-align: center;
   font-size: 22px;
+  overflow: hidden;
 }
 
 .ox-card .history .left .history-left-card-box .text {
@@ -636,6 +696,61 @@ p {
 
 .ox-card .next-box .next-box-button a {
   color: white;
+}
+
+.ox-card .audio-box {
+  position: absolute;
+  height: 35px;
+  bottom: 10px;
+  left: 0;
+  width: 80%;
+  right: 0;
+  margin: auto;
+}
+
+.ox-card .audio-box .audio-image {
+  background-image: url(../images/audio.png);
+  float: left;
+  width: 35px;
+  height: 35px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.ox-card .audio-box .audio-bar {
+  float: right;
+  width: 90%;
+  height: 17px;
+  position: relative;
+  border-bottom: 1px solid #ccc;
+}
+
+.ox-card .audio-box .spot {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  position: absolute;
+  top: 12px;
+  border-radius: 50%;
+  left: 0;
+  position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  pointer-events: none;
+}
+
+.ox-card .audio-box .progress {
+  position: absolute;
+  top: 17px;
+  left: 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  pointer-events: none;
+  border-bottom: 1px solid red;
 }.ox-share .share {
   width: 100%;
   height: 100%;
