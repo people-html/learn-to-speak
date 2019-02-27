@@ -54,6 +54,8 @@
 
 	// 默认配置
 	ElastiStack.prototype.options = {
+		// 是否启用卡片拖拽
+		enable: true,
 		// 弹回距离
 		distDragBack : 200,
 		// 被移出距离
@@ -95,8 +97,11 @@
 	
 	// 注册事件
 	ElastiStack.prototype._initEvents = function() {
+		if (!this.options.enable) return
 		this.draggie.on( 'dragStart', ( i, e, p ) => {
+			// 判断是否启用
 			this._onDragStart( i, e, p )
+			
 		})
 		this.draggie.on('dragEnd', ( i, e, p ) => {
 			this._onDragEnd( i, e, p )
@@ -295,15 +300,19 @@
 
 	ElastiStack.prototype._initDragg = function() {
 		console.log(this.items[ this.current ])
-		this.draggie = new Draggabilly( this.items[ this.current ], {
-			// 限制在父容器中移动
-			// containment: true,
-			axis: this.options.axis,
-			handle: this.options.handle
-		})
+		if (this.options.enable) {
+			this.draggie = new Draggabilly( this.items[ this.current ], {
+				// 限制在父容器中移动
+				// containment: true,
+				axis: this.options.axis,
+				handle: this.options.handle
+			})
+		}
+		
 	};
 
 	ElastiStack.prototype._disableDragg = function() {
+		if (!this.options.enable) return
 		this.draggie.disable();
 	};
 

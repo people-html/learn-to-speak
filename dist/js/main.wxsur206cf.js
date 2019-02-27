@@ -314,13 +314,13 @@ var globalConfig = {
   },
   "serverPort": 8000,
   "server": true,
-  "autoReload": true,
+  "autoReload": false,
   "headList": [{
     "http-equiv": "content-type",
     "content": "text/html; charset=UTF-8"
   }, {
     "name": "viewport",
-    "content": "initial-scale=1,user-scalable=no,maximum-scale=1"
+    "content": "initial-scale=1,user-scalable=no,maximum-scale=1,,user-scalable=no"
   }],
   "scriptList": [{
     "name": "jquery-3.3.1",
@@ -338,6 +338,9 @@ var globalConfig = {
   }, {
     "name": "html2canvas",
     "src": "./src/html2canvas.min.js"
+  }, {
+    "name": "log",
+    "src": "http://people.com.cn/img/MAIN/2018/10/118767/js/lib/vconsole.3.3.bundle.min.js"
   }],
   "styleList": [{
     "name": "component",
@@ -372,8 +375,7 @@ window.ozzx.script = {
     "created": function created() {
       var _this = this;
 
-      console.log('start'); // 解决返回上一页不会退回到学习页面
-
+      // 解决返回上一页不会退回到学习页面
       this.closeHistory(); // 读取出打卡记录
 
       var readList = localStorage.getItem("readList");
@@ -515,6 +517,8 @@ window.ozzx.script = {
           ratioZ: parseInt(_this2.data.screenInfo.clientWidth * -0.02),
           distDragBack: 100,
           distDragMax: 200,
+          // pc端禁止拖拽
+          enable: !_this2.data.isPC,
           onUpdateStack: function onUpdateStack(activeIndex) {
             // 如果阅读了就标记这一页为已阅读
             _this2.saveReadInfo(); // console.log(activeIndex)

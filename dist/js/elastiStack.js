@@ -58,6 +58,8 @@
 
 
   ElastiStack.prototype.options = {
+    // 是否启用卡片拖拽
+    enable: true,
     // 弹回距离
     distDragBack: 200,
     // 被移出距离
@@ -104,7 +106,9 @@
   ElastiStack.prototype._initEvents = function () {
     var _this = this;
 
+    if (!this.options.enable) return;
     this.draggie.on('dragStart', function (i, e, p) {
+      // 判断是否启用
       _this._onDragStart(i, e, p);
     });
     this.draggie.on('dragEnd', function (i, e, p) {
@@ -289,15 +293,19 @@
 
   ElastiStack.prototype._initDragg = function () {
     console.log(this.items[this.current]);
-    this.draggie = new Draggabilly(this.items[this.current], {
-      // 限制在父容器中移动
-      // containment: true,
-      axis: this.options.axis,
-      handle: this.options.handle
-    });
+
+    if (this.options.enable) {
+      this.draggie = new Draggabilly(this.items[this.current], {
+        // 限制在父容器中移动
+        // containment: true,
+        axis: this.options.axis,
+        handle: this.options.handle
+      });
+    }
   };
 
   ElastiStack.prototype._disableDragg = function () {
+    if (!this.options.enable) return;
     this.draggie.disable();
   }; // returns true if x or y is bigger than distDragBack
 

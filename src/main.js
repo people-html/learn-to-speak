@@ -21,3 +21,10 @@ var dateName = [
     name: "学习有声"
   }
 ]
+
+// 禁止微信上下拖动
+document.body.addEventListener("touchmove",function(event) {
+  if(!event.target.classList.contains('content')){ 
+    event.preventDefault(); 
+  } 
+}, {passive: false})

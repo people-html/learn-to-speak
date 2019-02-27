@@ -37,7 +37,7 @@ module.exports = {
   // 静态文件服务
   server: true,
   // 自动重新加载
-  autoReload: true,
+  autoReload: false,
   // head属性清单
   headList: [
     {
@@ -46,7 +46,7 @@ module.exports = {
     },
     {
       name: 'viewport',
-      content: 'initial-scale=1,user-scalable=no,maximum-scale=1',
+      content: 'initial-scale=1,user-scalable=no,maximum-scale=1,,user-scalable=no',
     }
   ],
   // 使用到的外部脚本清单
@@ -71,6 +71,10 @@ module.exports = {
     {
       name: 'html2canvas',
       src: './src/html2canvas.min.js'
+    },
+    {
+      name: 'log',
+      src: "http://people.com.cn/img/MAIN/2018/10/118767/js/lib/vconsole.3.3.bundle.min.js"
     }
   ],
   styleList: [

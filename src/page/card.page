@@ -43,7 +43,6 @@
       isPC: true
     },
     created: function() {
-      console.log('start')
       // 解决返回上一页不会退回到学习页面
       this.closeHistory()
       // 读取出打卡记录
@@ -175,6 +174,8 @@
           ratioZ: parseInt(this.data.screenInfo.clientWidth * -0.02),
           distDragBack: 100,
           distDragMax: 200,
+          // pc端禁止拖拽
+          enable: !this.data.isPC,
           onUpdateStack: (activeIndex) => {
             // 如果阅读了就标记这一页为已阅读
             this.saveReadInfo()
@@ -363,9 +364,14 @@
       overflow: auto;
       font-size: 14px;
       margin: 0 10px;
-      user-select: none;
       margin: 40px 10px;
       height: 160px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      p {
+        user-select: none;
+        pointer-events: none;
+      }
     }
     audio {
       width: 100%;
@@ -418,7 +424,6 @@
     cursor: pointer;
     transition: all 0.3s;
     float: left;
-    user-select: none;
   }
   .active {
     width: 40px;
