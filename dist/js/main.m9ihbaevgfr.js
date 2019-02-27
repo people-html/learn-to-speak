@@ -617,14 +617,22 @@ window.ozzx.script = {
     "created": function created() {
       var _this3 = this;
 
-      console.log(this.domList); // 避免阻塞
+      // console.log(this.domList)
+      // 获取到屏幕信息
+      var screenInfo = ozzx.tool.getScreenInfo(); // console.log(screenInfo)
+      // this.domList.learnInfo.style.width = '20%'
+      // this.domList.learnInfo.style.height = 20 * screenInfo.ratio + '%'
+      // console.log(this.domList.number.style)
+      // this.domList.number.style.lineHight = screenInfo.clientWidth * 0.2 + 'px'
+      // 避免阻塞
 
       setTimeout(function () {
         // 将dom导出为图片
         html2canvas(_this3.domList.share, {
-          dpi: window.devicePixelRatio,
-          scale: 2
+          scale: 2,
+          async: false
         }).then(function (canvas) {
+          console.log(canvas);
           _this3.domList.shareImg.src = canvas.toDataURL();
           _this3.domList.shareImg.style.display = 'block'; // document.body.appendChild(canvas)
         });

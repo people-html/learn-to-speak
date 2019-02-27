@@ -582,6 +582,9 @@
       width: 100px;
       border-radius: 20px;
       font-size: 14px;
+      a {
+        color: white;
+      }
     }
   }
 </style>

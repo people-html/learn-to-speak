@@ -608,11 +608,21 @@ p {
   width: 100px;
   border-radius: 20px;
   font-size: 14px;
+}
+
+.ox-card .next-box .next-box-button a {
+  color: white;
 }.ox-share .share {
   width: 100%;
   height: 100%;
-  background-size: 100% 100%;
-  background-image: url(../images/share-bg.jpg);
+}
+
+.ox-share .bg {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .ox-share .share-image {
@@ -634,6 +644,43 @@ p {
 .ox-share .qr img {
   margin: 0 auto;
   display: block;
+  width: 18%;
+  max-width: 220px;
+}
+
+.ox-share .learn-info {
+  position: fixed;
+  bottom: 36%;
+  width: 100px;
+  height: 100px;
+  background-color: #c62827;
+  border-radius: 50%;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.ox-share .learn-info .num {
+  position: absolute;
+  left: 0;
+  right: 15px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  color: white;
+  line-height: 100px;
+  text-align: center;
+  font-size: 80px;
+}
+
+.ox-share .learn-info .text {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  right: 15px;
+  bottom: 15px;
+  color: white;
 }/* animation sets */
 
 /* move from / to  */

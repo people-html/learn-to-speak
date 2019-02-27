@@ -1,6 +1,11 @@
 <template>
   <div class="share" @name="share">
+    <img class="bg" src="../images/share-bg.jpg"></img>
     <div class="share-box">
+      <div class="learn-info" @name="learnInfo">
+        <div class="num"  @name="number">6</div>
+        <div class="text">期</div>
+      </div>
       <div class="qr"><img src="../images/qr.png"/></div>
     </div>
     <img class="share-image" @name="shareImg" src=""/>
@@ -10,11 +15,19 @@
 <script>
   module.exports = {
     created: function () {
-      console.log(this.domList)
+      // console.log(this.domList)
+      // 获取到屏幕信息
+      const screenInfo = ozzx.tool.getScreenInfo()
+      // console.log(screenInfo)
+      // this.domList.learnInfo.style.width = '20%'
+      // this.domList.learnInfo.style.height = 20 * screenInfo.ratio + '%'
+      // console.log(this.domList.number.style)
+      // this.domList.number.style.lineHight = screenInfo.clientWidth * 0.2 + 'px'
       // 避免阻塞
       setTimeout(() => {
         // 将dom导出为图片
-        html2canvas(this.domList.share, {dpi: window.devicePixelRatio, scale: 2}).then(canvas => {
+        html2canvas(this.domList.share, {scale: 2, async: false}).then(canvas => {
+          console.log(canvas)
           this.domList.shareImg.src = canvas.toDataURL()
           this.domList.shareImg.style.display = 'block'
           // document.body.appendChild(canvas)
@@ -28,8 +41,13 @@
 .share {
   width: 100%;
   height: 100%;
-  background-size: 100% 100%;
-  background-image: url(../images/share-bg.jpg);
+}
+.bg {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 .share-image {
   position: absolute;
@@ -39,6 +57,7 @@
   height: 100%;
   display: none;
 }
+// 因为要转canvas的关系，元素需要放大2倍
 .qr {
   position: fixed;
   bottom: 25%;
@@ -47,6 +66,40 @@
   img {
     margin: 0 auto;
     display: block;
+    width: 18%;
+    max-width: 220px;
+  }
+}
+.learn-info {
+  position: fixed;
+  bottom: 36%;
+  width: 100px;
+  height: 100px;
+  background-color: #c62827;
+  border-radius: 50%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  .num {
+    position: absolute;
+    left: 0;
+    right: 15px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    color: white;
+    line-height: 100px;
+    text-align: center;
+    font-size: 80px;
+  }
+  .text {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    right: 15px;
+    bottom: 15px;
+    color: white;
   }
 }
 </style>
