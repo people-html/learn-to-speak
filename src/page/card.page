@@ -62,9 +62,9 @@
       // 延时设置打卡页面元素dom
       setTimeout(() => {
         if (this.data.isPC) {
-          this.domList.cardBox.style.width = 41 * (this.domList.cardBox.childNodes.length - 1) + 'px'
+          this.domList.cardBox.style.width = 41 * (dateName.length) + 'px'
         } else {
-          this.domList.cardBox.style.height = 41 * (this.domList.cardBox.childNodes.length - 1) + 'px'
+          this.domList.cardBox.style.height = 41 * (dateName.length) + 'px'
         }
         
       }, 1000)
@@ -73,17 +73,18 @@
   
     },
     changeDeteList: function (dataIndex) {
-      // 计算并设置dataBox宽度 or 高度
-      if (this.data.isPC) {
-        this.domList.dataBox.style.width = dateList[dataIndex].length * 76 - 20 + 'px'
-      } else {
-        this.domList.dataBox.style.height = dateList[dataIndex].length * 76 - 20 + 'px'
-      }
+      
       
       // 生成dom
       let dataBoxTemple = ''
       let historyTemple = ''
-      for(let ind in dateList[dataIndex]) {
+      // 计算出最长的期数
+      let long = 0
+      dateList.forEach(element => {
+        console.log(element.length)
+        if (element.length > long) long = element.length
+      })
+      for (let ind = 0; ind < long; ind++) {
         const index = parseInt(ind) + 1
         if (ind == 0) {
           // console.log('ssss')
@@ -91,9 +92,14 @@
         } else {
           dataBoxTemple += `<div class="middle-line"></div><div class="date-item" @click="changeCard(${ind})">${index}</div>`
         }
-        // historyTemple += `<div class="item"><div class="num">${ind}</div><div class="text">${dateName[ind].name}</div><div class="icon-box"></div></div>`
       }
       
+      // 计算并设置dataBox宽度 or 高度
+      if (this.data.isPC) {
+        this.domList.dataBox.style.width = long * 76 - 20 + 'px'
+      } else {
+        this.domList.dataBox.style.height = long * 76 - 20 + 'px'
+      }
 
       document.getElementById('dataBox').innerHTML = dataBoxTemple
       // this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'
@@ -101,7 +107,6 @@
     },
     checkIsPC: function () { // 判断是手机页面还是电脑页面
       this.data.screenInfo = ozzx.tool.getScreenInfo()
-      console.log(this.data.screenInfo)
       // 先计算宽高比是否大于1
       if (this.data.screenInfo.ratio > 1) {
         document.body.classList.add('pc')
@@ -112,12 +117,10 @@
       }
     },
     changeCard: function (index) {
-      
       let domTemple = ''
       for (let key in dateList) {
         const element = dateList[key][index]
         const nextIndex = parseInt(index) + 1
-        console.log(key, index)
         // 添加期目录
         // 如果没有title，则title为空
         if (!element.title) element.title = ""
@@ -165,11 +168,9 @@
       } else {
         console.error("不支持localStorage!")
       }
-      console.log(localStorage.getItem("readList"))
     },
     calculation: function () {
       setTimeout(() => {
-        // console.log(this.data.screenInfo.clientHeight)
         this.data.ElastiStack = new ElastiStack( document.getElementById('elasticstack'), {
           loop: false,
           handle: ".handle",
@@ -181,6 +182,7 @@
           enable: !this.data.isPC,
           onUpdateStack: (activeIndex) => {
             // ------------------------------
+
             this.changeDeteList(activeIndex)
             // 设置活跃日期
             this.data.activeDateIndex = activeIndex
@@ -209,6 +211,7 @@
             // 有记者按的关系需要加1
             activeIndex++
             // 停止当前播放的音乐
+            console.log(this.data);
             if (this.data.audio !== null) {
               this.data.audio.pause()
               this.data.audio.src = ''
@@ -222,7 +225,6 @@
             // 查找音频区域
             const audio = $(`#slideItem${activeIndex} audio`)
             // console.log(textBox)
-            // console.log(audio, activeIndex)
             if (audio.length > 0) {
               // 播放音乐
               this.data.audio = audio[0]
@@ -294,7 +296,7 @@
     changeAudioprogress: function (e) {
       const ratio = this.$event.offsetX / this.$event.target.offsetWidth
       // 设置时间
-      // console.log(this.data.audio.duration, ratio)
+      console.log(ratio);
       this.data.audio.currentTime  = this.data.audio.duration * ratio
     },
     hiddenMain: function (e) {

@@ -393,27 +393,26 @@ window.ozzx.script = {
 
       setTimeout(function () {
         if (_this.data.isPC) {
-          _this.domList.cardBox.style.width = 41 * (_this.domList.cardBox.childNodes.length - 1) + 'px';
+          _this.domList.cardBox.style.width = 41 * dateName.length + 'px';
         } else {
-          _this.domList.cardBox.style.height = 41 * (_this.domList.cardBox.childNodes.length - 1) + 'px';
+          _this.domList.cardBox.style.height = 41 * dateName.length + 'px';
         }
       }, 1000); // 刷新dom节点
 
       pgNameHandler(document.getElementById('dataBox'));
     },
     "changeDeteList": function changeDeteList(dataIndex) {
-      // 计算并设置dataBox宽度 or 高度
-      if (this.data.isPC) {
-        this.domList.dataBox.style.width = dateList[dataIndex].length * 76 - 20 + 'px';
-      } else {
-        this.domList.dataBox.style.height = dateList[dataIndex].length * 76 - 20 + 'px';
-      } // 生成dom
-
-
+      // 生成dom
       var dataBoxTemple = '';
-      var historyTemple = '';
+      var historyTemple = ''; // 计算出最长的期数
 
-      for (var ind in dateList[dataIndex]) {
+      var long = 0;
+      dateList.forEach(function (element) {
+        console.log(element.length);
+        if (element.length > long) long = element.length;
+      });
+
+      for (var ind = 0; ind < long; ind++) {
         var index = parseInt(ind) + 1;
 
         if (ind == 0) {
@@ -421,16 +420,21 @@ window.ozzx.script = {
           dataBoxTemple += "<div class=\"date-item active\" @click=\"changeCard(".concat(ind, ")\">").concat(index, "</div>");
         } else {
           dataBoxTemple += "<div class=\"middle-line\"></div><div class=\"date-item\" @click=\"changeCard(".concat(ind, ")\">").concat(index, "</div>");
-        } // historyTemple += `<div class="item"><div class="num">${ind}</div><div class="text">${dateName[ind].name}</div><div class="icon-box"></div></div>`
+        }
+      } // 计算并设置dataBox宽度 or 高度
 
+
+      if (this.data.isPC) {
+        this.domList.dataBox.style.width = long * 76 - 20 + 'px';
+      } else {
+        this.domList.dataBox.style.height = long * 76 - 20 + 'px';
       }
 
       document.getElementById('dataBox').innerHTML = dataBoxTemple; // this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'
     },
     "checkIsPC": function checkIsPC() {
       // 判断是手机页面还是电脑页面
-      this.data.screenInfo = ozzx.tool.getScreenInfo();
-      console.log(this.data.screenInfo); // 先计算宽高比是否大于1
+      this.data.screenInfo = ozzx.tool.getScreenInfo(); // 先计算宽高比是否大于1
 
       if (this.data.screenInfo.ratio > 1) {
         document.body.classList.add('pc');
@@ -445,8 +449,7 @@ window.ozzx.script = {
 
       for (var key in dateList) {
         var element = dateList[key][index];
-        var nextIndex = parseInt(index) + 1;
-        console.log(key, index); // 添加期目录
+        var nextIndex = parseInt(index) + 1; // 添加期目录
         // 如果没有title，则title为空
 
         if (!element.title) element.title = ""; // 判断是否有image
@@ -498,14 +501,11 @@ window.ozzx.script = {
       } else {
         console.error("不支持localStorage!");
       }
-
-      console.log(localStorage.getItem("readList"));
     },
     "calculation": function calculation() {
       var _this2 = this;
 
       setTimeout(function () {
-        // console.log(this.data.screenInfo.clientHeight)
         _this2.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
           loop: false,
           handle: ".handle",
@@ -546,6 +546,8 @@ window.ozzx.script = {
 
             activeIndex++; // 停止当前播放的音乐
 
+            console.log(_this2.data);
+
             if (_this2.data.audio !== null) {
               _this2.data.audio.pause();
 
@@ -561,7 +563,6 @@ window.ozzx.script = {
             var textBox = $("#slideItem".concat(activeIndex, " .content")); // 查找音频区域
 
             var audio = $("#slideItem".concat(activeIndex, " audio")); // console.log(textBox)
-            // console.log(audio, activeIndex)
 
             if (audio.length > 0) {
               // 播放音乐
@@ -641,8 +642,8 @@ window.ozzx.script = {
     },
     "changeAudioprogress": function changeAudioprogress(e) {
       var ratio = this.$event.offsetX / this.$event.target.offsetWidth; // 设置时间
-      // console.log(this.data.audio.duration, ratio)
 
+      console.log(ratio);
       this.data.audio.currentTime = this.data.audio.duration * ratio;
     },
     "hiddenMain": function hiddenMain(e) {

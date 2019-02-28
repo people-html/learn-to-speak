@@ -1,6 +1,6 @@
 <template>
   <div class="share" @name="share">
-    <img class="bg" src="../images/share-bg.jpg"></img>
+    <img class="bg" src="../images/share-bg.jpg">
     <div class="share-box">
       <div class="learn-info" @name="learnInfo">
         <div class="num"  @name="number">6</div>
