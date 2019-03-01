@@ -12,6 +12,22 @@ html, body, .ox, .app {
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
 
+.toast {
+  position: fixed;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.5);
+  bottom: 10%;
+  width: 40%;
+  height: 40px;
+  border-radius: 10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  line-height: 40px;
+  text-align: center;
+  color: white;
+}
+
 /* pc页面样式 */
 .pc {
   min-width: 800px;
@@ -28,6 +44,11 @@ html, body, .ox, .app {
 /* 手机页面 */
 .h5 {
   background-image: url("../images/h5-bg.jpg");
+  background-size: 100%;
+  background-color: #e9e3d7;
+}
+.h5 .ox-card .tips {
+  display: block;
 }
 
 .h5 .page-header {
@@ -45,6 +66,20 @@ html, body, .ox, .app {
   right: 0;
   bottom: 0;
   margin: auto;
+}
+
+.h5 .ox-share .learn-info {
+  width: 70px;
+  height: 70px;
+}
+
+.h5 .ox-share .learn-info .num {
+  line-height: 70px;
+  font-size: 50px;
+}
+
+.h5 .ox-share .learn-info .text {
+  right: 5px;
 }
 
 .h5 .ox-card .elasticstack {
@@ -101,7 +136,7 @@ html, body, .ox, .app {
   display: none;
 }
 .h5 .ox-card .record {
-  bottom: calc(10% - 40px);
+  bottom: calc(8% - 40px);
   top: unset;
   right: 10%;
   width: 80px;
@@ -284,6 +319,17 @@ p {
     top: 77%;
   }
 }
+
+@media screen and (max-height: 690px) {
+  .pc .ox-copyright .copyright-box {
+    height: 100px;
+  }
+  .pc .ox-card .date-box, .pc .ox-card .record{
+    bottom: 0;
+    top: unset;
+    margin: 10px auto;
+  }
+}
 .ox-copyright .copyright-box {
   height: 170px;
   color: #727272;
@@ -303,7 +349,7 @@ p {
   bottom: 0;
   margin: auto;
 }.ox-card .main {
-  background-image: url(../images/main.jpg);
+  background-image: url(../images/h5-bg.jpg);
   background-repeat: no-repeat;
   background-size: 100%;
   position: fixed;
@@ -311,7 +357,18 @@ p {
   width: 100%;
   height: 100%;
   z-index: 99;
-  transition: top 1s;
+  transition: opacity 1s;
+  overflow: hidden;
+}
+
+.ox-card .main .text {
+  width: 80%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
 }
 
 .ox-card .elasticstack {
@@ -374,6 +431,11 @@ p {
   line-height: 25px;
   width: 33px;
   text-align: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  pointer-events: none;
 }
 
 .ox-card .elasticstack .title {
@@ -385,6 +447,10 @@ p {
   top: 10%;
   font-size: 20px;
   z-index: -2;
+  height: 26px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ox-card .elasticstack .image-box {
@@ -552,6 +618,7 @@ p {
   overflow: hidden;
   display: none;
   margin: auto;
+  box-shadow: 2px 2px 5px #e6dada;
 }
 
 .ox-card .history .history-item {
@@ -677,8 +744,8 @@ p {
 
 .ox-card .next-box {
   display: none;
-  height: 30px;
-  line-height: 30px;
+  height: 35px;
+  line-height: 35px;
   position: absolute;
   bottom: 20%;
   width: 100%;
@@ -689,7 +756,7 @@ p {
   background-color: red;
   text-align: center;
   color: white;
-  width: 100px;
+  width: 40%;
   border-radius: 20px;
   font-size: 14px;
 }
@@ -715,6 +782,8 @@ p {
   height: 35px;
   background-repeat: no-repeat;
   background-position: center;
+  background-size: 27px !important;
+  cursor: pointer;
 }
 
 .ox-card .audio-box .audio-bar {
@@ -751,17 +820,73 @@ p {
           user-select: none;
   pointer-events: none;
   border-bottom: 1px solid red;
+}
+
+.ox-card .tips {
+  font-size: 12px;
+  text-align: right;
+  color: #a29292;
+  display: none;
+  position: absolute;
+  top: -20px;
+  right: 0;
+}
+
+.ox-card .alert {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.ox-card .alert .text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  color: white;
+  width: 12em;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  font-size: 1.6rem;
+}
+
+.ox-card .content-left-button {
+  position: absolute;
+  font-size: 12px;
+  color: #cc524b;
+  height: 50px;
+  line-height: 55px;
+  width: 70px;
+  text-align: center;
+}
+
+.ox-card .lest-bt {
+  left: -80px;
+}
+
+.ox-card .next-bt {
+  right: -80px;
 }.ox-share .share {
   width: 100%;
   height: 100%;
 }
 
 .ox-share .bg {
-  position: fixed;
+  width: 70%;
+  position: absolute;
   left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  margin: auto;
+  height: unset;
+  top: 15%;
 }
 
 .ox-share .share-image {
@@ -774,22 +899,21 @@ p {
 }
 
 .ox-share .qr {
-  position: fixed;
-  bottom: 25%;
   align-items: center;
   width: 100%;
+  height: 13%;
 }
 
 .ox-share .qr img {
   margin: 0 auto;
   display: block;
-  width: 18%;
+  height: 100%;
   max-width: 220px;
 }
 
 .ox-share .learn-info {
   position: fixed;
-  bottom: 36%;
+  top: 48%;
   width: 100px;
   height: 100px;
   background-color: #c62827;
@@ -820,6 +944,21 @@ p {
   right: 15px;
   bottom: 15px;
   color: white;
+}
+
+.ox-share .share-text {
+  width: 100%;
+  font-size: 12px;
+  text-align: center;
+  color: #a37f5a;
+  display: none;
+}
+
+.ox-share .share-box-bottom {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 40%;
 }/* animation sets */
 
 /* move from / to  */

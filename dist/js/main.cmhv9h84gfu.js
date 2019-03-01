@@ -315,7 +315,7 @@ var globalConfig = {
   },
   "serverPort": 8000,
   "server": true,
-  "autoReload": false,
+  "autoReload": true,
   "headList": [{
     "http-equiv": "content-type",
     "content": "text/html; charset=UTF-8"
@@ -366,14 +366,20 @@ window.ozzx.script = {
       "audio": null,
       "control": null,
       "ElastiStack": null,
+      "activeCardIndex": 0,
       "activeDateIndex": 0,
+      "startCardIndex": 0,
       "readList": [],
-      "isPC": true
+      "isPC": true,
+      "isPlaying": false
     },
     "created": function created() {
       var _this = this;
 
-      // 解决返回上一页不会退回到学习页面
+      setTimeout(function () {
+        _this.hiddenMain();
+      }, 1000); // 解决返回上一页不会退回到学习页面
+
       this.closeHistory(); // 读取出打卡记录
 
       var readList = localStorage.getItem("readList");
@@ -387,7 +393,7 @@ window.ozzx.script = {
       }, false); // 检查是电脑还是移动端
 
       this.checkIsPC();
-      this.changeDeteList(0); // 高亮第一个分页
+      this.creatDataList(); // 高亮第一个分页
 
       this.changeCard(0); // 延时设置打卡页面元素dom
 
@@ -401,14 +407,14 @@ window.ozzx.script = {
 
       pgNameHandler(document.getElementById('dataBox'));
     },
-    "changeDeteList": function changeDeteList(dataIndex) {
+    "creatDataList": function creatDataList() {
       // 生成dom
       var dataBoxTemple = '';
       var historyTemple = ''; // 计算出最长的期数
 
       var long = 0;
       dateList.forEach(function (element) {
-        console.log(element.length);
+        // console.log(element.length)
         if (element.length > long) long = element.length;
       });
 
@@ -417,17 +423,20 @@ window.ozzx.script = {
 
         if (ind == 0) {
           // console.log('ssss')
-          dataBoxTemple += "<div class=\"date-item active\" @click=\"changeCard(".concat(ind, ")\">").concat(index, "</div>");
+          dataBoxTemple += "<div class=\"date-item active\" @click=\"changeCard(".concat(index - 1, ")\">").concat(long - index + 1, "</div>");
         } else {
-          dataBoxTemple += "<div class=\"middle-line\"></div><div class=\"date-item\" @click=\"changeCard(".concat(ind, ")\">").concat(index, "</div>");
+          dataBoxTemple += "<div class=\"middle-line\"></div><div class=\"date-item\" @click=\"changeCard(".concat(index - 1, ")\">").concat(long - index + 1, "</div>");
         }
-      } // 计算并设置dataBox宽度 or 高度
+      }
 
+      dataBoxTemple += "<div class=\"clear\"></div>"; // 计算并设置dataBox宽度 or 高度
 
       if (this.data.isPC) {
         this.domList.dataBox.style.width = long * 76 - 20 + 'px';
+        this.domList.dataBox.style.height = '50px';
       } else {
-        this.domList.dataBox.style.height = long * 76 - 20 + 'px';
+        this.domList.dataBox.style.height = (long - 1) * 76 - 20 + 'px';
+        this.domList.dataBox.style.width = '50px';
       }
 
       document.getElementById('dataBox').innerHTML = dataBoxTemple; // this.domList.cardBox.innerHTML = historyTemple + '<div class="clear"></div>'
@@ -445,26 +454,45 @@ window.ozzx.script = {
       }
     },
     "changeCard": function changeCard(index) {
+      // 清空活跃卡片ID
+      this.data.activeCardIndex = 0;
+      this.data.activeDateIndex = dateList.length - parseInt(index); // 设置变量
+
       var domTemple = '';
+      var ind = 0;
+      var isFirst = true;
 
       for (var key in dateList) {
-        var element = dateList[key][index];
-        var nextIndex = parseInt(index) + 1; // 添加期目录
-        // 如果没有title，则title为空
+        // console.log(dateList[key], this.data.activeCardIndex)
+        var element = dateList[key][this.data.activeDateIndex]; // console.log(element, key, this.data.activeDateIndex)
+        // console.log(dateList[key], this.data.activeDateIndex, ind)
 
-        if (!element.title) element.title = ""; // 判断是否有image
+        if (element) {
+          if (isFirst) {
+            // console.log(ind)
+            this.data.startCardIndex = parseInt(ind);
+            isFirst = false;
+          }
 
-        if (element.img) {
-          domTemple += "<li id=\"slideItem".concat(nextIndex, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"num\">").concat(nextIndex, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
-        } else {
-          domTemple += "<li id=\"slideItem".concat(nextIndex, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"num\">").concat(nextIndex, "</div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
+          var nextIndex = parseInt(index) + 1; // 添加期目录
+          // 如果没有title，则title为空
+
+          if (!element.title) element.title = ""; // 判断是否有image
+
+          if (element.img) {
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"lest-bt content-left-button\" @click=\"lastCard\">< \u4E0A\u4E00\u9875 |</div><div class=\"num\">").concat(dateList.length - index + 1, "</div><div class=\"next-bt content-left-button\" @click=\"nextCard\">| \u4E0B\u4E00\u9875 ></div></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
+          } else {
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"lest-bt content-left-button\" @click=\"lastCard\">< \u4E0A\u4E00\u9875 |</div><div class=\"num\">").concat(dateList.length - index + 1, "</div><div class=\"next-bt content-left-button\" @click=\"nextCard\">| \u4E0B\u4E00\u9875 ></div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
+          }
+
+          if (element.music) {
+            domTemple += "<audio src=\"".concat(element.music, "\"></audio><div class=\"audio-box\"><div class=\"audio-image\" @click=\"audio\"></div><div class=\"audio-bar\" @click=\"changeAudioprogress\"><div class=\"spot\"></div><div class=\"progress\"></div></div></div>");
+          }
+
+          domTemple += "</li>";
         }
 
-        if (element.music) {
-          domTemple += "<audio src=\"".concat(element.music, "\"></audio><div class=\"audio-box\"  @click=\"changeAudioprogress\"><div class=\"audio-image\"></div><div class=\"audio-bar\"><div class=\"spot\"></div><div class=\"progress\"></div></div></div>");
-        }
-
-        domTemple += "</li>";
+        ind++;
       }
 
       document.getElementById('elasticstack').style.display = 'none';
@@ -478,6 +506,7 @@ window.ozzx.script = {
       this.changeDete(parseInt(index * 2));
     },
     "changeDete": function changeDete(dete) {
+      // console.log(dete)
       // 取消掉所有子页码的活跃状态
       for (var ind = 0; ind < document.getElementById('dataBox').children.length; ind++) {
         var dom = document.getElementById('dataBox').children[ind];
@@ -491,10 +520,11 @@ window.ozzx.script = {
         this.domList.last.style.display = 'none';
         this.domList.next.style.display = 'block';
       }
+
+      this.playMusic();
     },
     "saveReadInfo": function saveReadInfo() {
-      this.data.readList[this.data.activeDateIndex] = true;
-      localStorage;
+      this.data.readList[this.data.activeCardIndex] = true;
 
       if (window.localStorage) {
         localStorage.setItem('readList', JSON.stringify(this.data.readList));
@@ -505,116 +535,118 @@ window.ozzx.script = {
     "calculation": function calculation() {
       var _this2 = this;
 
-      setTimeout(function () {
-        _this2.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
-          loop: false,
-          handle: ".handle",
-          ratioX: parseInt(_this2.data.screenInfo.clientWidth * 0.02),
-          ratioZ: parseInt(_this2.data.screenInfo.clientWidth * -0.02),
-          distDragBack: 100,
-          distDragMax: 200,
-          // pc端禁止拖拽
-          enable: !_this2.data.isPC,
-          onUpdateStack: function onUpdateStack(activeIndex) {
-            // ------------------------------
-            _this2.changeDeteList(activeIndex); // 设置活跃日期
+      this.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
+        loop: false,
+        handle: ".handle",
+        ratioX: parseInt(this.data.screenInfo.clientWidth * 0.02),
+        ratioZ: parseInt(this.data.screenInfo.clientWidth * -0.02),
+        distDragBack: 100,
+        distDragMax: 200,
+        // pc端禁止拖拽
+        enable: !this.data.isPC,
+        atEnd: function atEnd() {
+          showToast('已经在最后了');
+        },
+        atStart: function atStart() {
+          showToast('已经在最前了');
+        },
+        onUpdateStack: function onUpdateStack(activeIndex) {
+          // 记录学习期数
+          _this2.saveReadInfo();
+
+          _this2.domList.tips.style.display = "none"; // 设置活跃日期
+
+          _this2.data.activeCardIndex = activeIndex + _this2.data.startCardIndex; // ------------------------------
+          // 如果阅读了就标记这一页为已阅读
+          // 只有PC才有左右箭头
+
+          if (_this2.data.isPC) {
+            // 第一页的时候隐藏左箭头
+            if (activeIndex === 0) {
+              // console.log(this.data.ElastiStack.itemsCount - 1)
+              _this2.domList.last.style.display = 'none';
+            } else {
+              _this2.domList.last.style.display = 'block';
+            } // 最后一页的时候没有向右箭头
 
 
-            _this2.data.activeDateIndex = activeIndex; // ------------------------------
-            // 如果阅读了就标记这一页为已阅读
-            // this.saveReadInfo()
-            // console.log(activeIndex)
-            // 只有PC才有左右箭头
-
-            if (_this2.data.isPC) {
-              // 第一页的时候隐藏左箭头
-              if (activeIndex === 0) {
-                // console.log(this.data.ElastiStack.itemsCount - 1)
-                _this2.domList.last.style.display = 'none';
-              } else {
-                _this2.domList.last.style.display = 'block';
-              } // 最后一页的时候没有向右箭头
-
-
-              if (activeIndex === dateList.length - 1) {
-                _this2.domList.next.style.display = 'none';
-              } else {
-                _this2.domList.next.style.display = 'block';
-              }
-            } // 有记者按的关系需要加1
-
-
-            activeIndex++; // 停止当前播放的音乐
-
-            console.log(_this2.data);
-
-            if (_this2.data.audio !== null) {
-              _this2.data.audio.pause();
-
-              _this2.data.audio.src = '';
-            } // 停止上一个动画
-
-
-            if (_this2.data.control !== null) {
-              _this2.data.control.next = false;
-            } // 查找文字区域
-
-
-            var textBox = $("#slideItem".concat(activeIndex, " .content")); // 查找音频区域
-
-            var audio = $("#slideItem".concat(activeIndex, " audio")); // console.log(textBox)
-
-            if (audio.length > 0) {
-              // 播放音乐
-              _this2.data.audio = audio[0];
-              var musicSrc = dateList[activeIndex][activeIndex - 1].music;
-
-              if (musicSrc) {
-                _this2.data.audio.src = musicSrc;
-
-                _this2.data.audio.play();
-              } // 播放拖动块
-
-
-              var spot = $("#slideItem".concat(activeIndex, " .spot"));
-              var progress = $("#slideItem".concat(activeIndex, " .progress"));
-
-              _this2.data.audio.addEventListener("timeupdate", function (e) {
-                var value = (e.target.currentTime / e.target.duration).toFixed(4) * 100; // console.log((e.target.currentTime / e.target.duration).toFixed(4) * 100 + '%')
-
-                spot[0].style.left = value + '%';
-                progress[0].style.width = value + '%';
-              });
-
-              if (textBox.length > 0) {
-                // 滚动条长度
-                var scrollHeight = textBox[0].scrollHeight; // 超出长度
-
-                var overflow = scrollHeight - textBox[0].clientHeight;
-
-                _this2.data.audio.ontimeupdate = function (e) {
-                  textBox.scrollTop(_this2.data.audio.currentTime / _this2.data.audio.duration * overflow);
-                };
-              }
+            if (!dateList[_this2.data.activeCardIndex + 1]) {
+              _this2.domList.next.style.display = 'none';
+            } else {
+              _this2.domList.next.style.display = 'block';
             }
-
-            setTimeout(function () {
-              // 刷新dom节点
-              pgNameHandler(document.getElementById('dataBox'));
-            }, 100);
           }
-        });
-        document.getElementById('elasticstack').style.display = 'block';
-      }, 0);
-    },
-    "activeCard": function activeCard(index) {
-      this.changeDete(index * 2);
+
+          setTimeout(function () {
+            // 刷新dom节点
+            pgNameHandler(document.getElementById('dataBox'));
+          }, 100);
+
+          _this2.playMusic();
+        }
+      });
+      document.getElementById('elasticstack').style.display = 'block';
     },
     "nextCard": function nextCard() {
       this.data.ElastiStack.next();
     },
     "lastCard": function lastCard() {
       this.data.ElastiStack.last();
+    },
+    "playMusic": function playMusic() {
+      var _this3 = this;
+
+      // 停止当前播放的音乐
+      // console.log(this.data);
+      if (this.data.audio !== null) {
+        this.data.audio.pause();
+        this.data.audio.src = '';
+      } // 停止上一个动画
+
+
+      if (this.data.control !== null) {
+        this.data.control.next = false;
+      } // 查找文字区域
+
+
+      var textBox = $("#slideItem".concat(this.data.activeCardIndex, " .content")); // 查找音频区域
+
+      var audio = $("#slideItem".concat(this.data.activeCardIndex, " audio")); // console.log(audio)
+      // console.log(textBox)
+
+      if (audio.length > 0) {
+        // 播放音乐
+        this.data.audio = audio[0];
+        var musicSrc = dateList[this.data.activeCardIndex][this.data.activeDateIndex].music;
+
+        if (musicSrc) {
+          this.data.audio.src = musicSrc;
+          this.data.audio.play();
+          console.log('开始播放音乐');
+        } // 播放拖动块
+
+
+        var spot = $("#slideItem".concat(this.data.activeCardIndex, " .spot"));
+        var progress = $("#slideItem".concat(this.data.activeCardIndex, " .progress"));
+
+        if (textBox.length > 0) {
+          setTimeout(function () {
+            // 滚动条长度
+            var scrollHeight = textBox[0].scrollHeight; // 超出长度
+
+            var overflow = scrollHeight - textBox[0].clientHeight;
+
+            _this3.data.audio.ontimeupdate = function (e) {
+              var value = (e.target.currentTime / e.target.duration).toFixed(4) * 100; // console.log((e.target.currentTime / e.target.duration).toFixed(4) * 100 + '%')
+
+              spot[0].style.left = value + '%';
+              progress[0].style.width = value + '%';
+              _this3.data.isPlaying = true;
+              textBox.scrollTop(_this3.data.audio.currentTime / _this3.data.audio.duration * overflow);
+            };
+          }, 0);
+        }
+      }
     },
     "openHistory": function openHistory() {
       // 生成打卡记录
@@ -647,16 +679,58 @@ window.ozzx.script = {
       this.data.audio.currentTime = this.data.audio.duration * ratio;
     },
     "hiddenMain": function hiddenMain(e) {
-      this.domList.main.style.top = "-100%";
+      var _this4 = this;
+
+      this.domList.main.style.opacity = 0;
+      setTimeout(function () {
+        _this4.domList.main.style.display = 'none';
+      }, 1000);
+    },
+    "audio": function audio() {
+      var _this5 = this;
+
+      if (!this.data.audio) return;
+
+      if (this.data.isPlaying) {
+        this.data.audio.pause();
+        this.$el.style.background = 'url(../images/pause.png) center no-repeat';
+        setTimeout(function () {
+          _this5.data.isPlaying = false;
+        }, 0);
+      } else {
+        this.data.audio.play();
+        this.$el.style.background = 'url(../images/audio.png) center no-repeat';
+      }
     }
   },
   "copyright": {},
   "share": {
     "created": function created() {
-      var _this3 = this;
-
-      // console.log(this.domList)
+      var times = 0;
+      document.body.classList.add('h5'); // console.log(this.domList)
       // 获取到屏幕信息
+
+      var readList = localStorage.getItem("readList");
+
+      if (readList) {
+        readList = JSON.parse(readList);
+        readList.forEach(function (element) {
+          if (element) times++;
+        });
+        this.domList.number.innerHTML = times;
+      }
+
+      console.log(ozzx.tool.getScreenInfo().ratio);
+
+      if (ozzx.tool.getScreenInfo().ratio > 0.65 && ozzx.tool.getScreenInfo().ratio < 0.77) {
+        // this.domList.learnInfo.style.top = '52%'
+        this.domList.bg.style.width = "60%";
+        this.domList.bgBt.style.width = "60%";
+      } else if (ozzx.tool.getScreenInfo().ratio >= 0.77) {
+        this.domList.bg.style.width = "50%";
+        this.domList.bgBt.style.width = "50%";
+      }
+
       var screenInfo = ozzx.tool.getScreenInfo(); // console.log(screenInfo)
       // this.domList.learnInfo.style.width = '20%'
       // this.domList.learnInfo.style.height = 20 * screenInfo.ratio + '%'
@@ -664,16 +738,14 @@ window.ozzx.script = {
       // this.domList.number.style.lineHight = screenInfo.clientWidth * 0.2 + 'px'
       // 避免阻塞
 
-      setTimeout(function () {
-        // 将dom导出为图片
-        html2canvas(_this3.domList.share, {
-          scale: 2,
-          async: false
-        }).then(function (canvas) {
-          console.log(canvas);
-          _this3.domList.shareImg.src = canvas.toDataURL();
-          _this3.domList.shareImg.style.display = 'block'; // document.body.appendChild(canvas)
-        });
+      setTimeout(function () {// 将dom导出为图片
+        // html2canvas(document.body, {async: false}).then(canvas => {
+        //   this.domList.shareImg.src = canvas.toDataURL("image/png")
+        //   this.domList.shareImg.style.display = 'block'
+        //   // document.body.appendChild(canvas)
+        //   console.log( this.domList.shareText)
+        //   this.domList.shareText.style.display = 'block'
+        // })
       }, 1000);
     }
   }

@@ -75,6 +75,12 @@
     // 切换卡片事件
     onUpdateStack: function onUpdateStack(current) {
       return false;
+    },
+    atStart: function atStart() {
+      return false;
+    },
+    atEnd: function atEnd() {
+      return false;
     }
   }; // 初始化设置
 
@@ -143,6 +149,7 @@
     if (!this.options.loop && !next) {
       this._moveBack(instance);
 
+      this.options.atEnd();
       return;
     } // disable drag
 
@@ -272,6 +279,9 @@
       } else {
         onEndTransFn.call();
       }
+    } else {
+      // 没有上一项的回调
+      this.options.atStart();
     }
   };
 

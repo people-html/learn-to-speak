@@ -1,8 +1,11 @@
 <template>
   <div class="app">
-    <div class="main" @click="hiddenMain" @name="main"></div>
+    <div class="main" @click="hiddenMain" @name="main">
+      <img class="text" src="../images/main.png"></img>
+    </div>
     <div class="page-header"></div>
     <div class="show-box" @name="showBox">
+      <div class="tips" @name="tips">左右滑动卡片切换音频内容</div>
       <ul class="elasticstack" id="elasticstack"></ul>
       <div class="last" @click="lastCard" @name="last"></div>
       <div class="next" @click="nextCard" @name="next"></div>
@@ -29,6 +32,7 @@
     <div class="date-box" @name="dataBox" id="dataBox"></div>
     <div class="record" @name="record"><img src="../images/record.png" @click="openHistory"/></div>
     <temple name="copyright" src="./src/page/copyright.page"></temple>
+    <div class="alert" id="alert"><div class="text">请在竖屏情况下观看!</div></div>
   </div>
 </template>
 
@@ -39,11 +43,17 @@
       audio: null,
       control:  null,
       ElastiStack: null,
+      activeCardIndex: 0,
       activeDateIndex: 0,
+      startCardIndex: 0,
       readList: [],
-      isPC: true
+      isPC: true,
+      isPlaying: false
     },
     created: function() {
+      setTimeout(() => {
+        this.hiddenMain()
+      }, 1000)
       // 解决返回上一页不会退回到学习页面
       this.closeHistory()
       // 读取出打卡记录
@@ -56,7 +66,7 @@
       }, false)
       // 检查是电脑还是移动端
       this.checkIsPC()
-      this.changeDeteList(0)
+      this.creatDataList()
       // 高亮第一个分页
       this.changeCard(0)
       // 延时设置打卡页面元素dom
@@ -72,33 +82,33 @@
       pgNameHandler(document.getElementById('dataBox'))
   
     },
-    changeDeteList: function (dataIndex) {
-      
-      
+    creatDataList: function () {
       // 生成dom
       let dataBoxTemple = ''
       let historyTemple = ''
       // 计算出最长的期数
       let long = 0
       dateList.forEach(element => {
-        console.log(element.length)
+        // console.log(element.length)
         if (element.length > long) long = element.length
       })
       for (let ind = 0; ind < long; ind++) {
         const index = parseInt(ind) + 1
         if (ind == 0) {
           // console.log('ssss')
-          dataBoxTemple += `<div class="date-item active" @click="changeCard(${ind})">${index}</div>`
+          dataBoxTemple += `<div class="date-item active" @click="changeCard(${index - 1})">${long - index + 1}</div>`
         } else {
-          dataBoxTemple += `<div class="middle-line"></div><div class="date-item" @click="changeCard(${ind})">${index}</div>`
+          dataBoxTemple += `<div class="middle-line"></div><div class="date-item" @click="changeCard(${index - 1})">${long - index + 1}</div>`
         }
       }
-      
+      dataBoxTemple += `<div class="clear"></div>`
       // 计算并设置dataBox宽度 or 高度
       if (this.data.isPC) {
-        this.domList.dataBox.style.width = long * 76 - 20 + 'px'
+        this.domList.dataBox.style.width = (long) * 76 - 20 + 'px'
+        this.domList.dataBox.style.height = '50px'
       } else {
-        this.domList.dataBox.style.height = long * 76 - 20 + 'px'
+        this.domList.dataBox.style.height = (long - 1) * 76 - 20 + 'px'
+        this.domList.dataBox.style.width = '50px'
       }
 
       document.getElementById('dataBox').innerHTML = dataBoxTemple
@@ -117,23 +127,42 @@
       }
     },
     changeCard: function (index) {
+      // 清空活跃卡片ID
+      this.data.activeCardIndex = 0
+      this.data.activeDateIndex = dateList.length - parseInt(index)
+      // 设置变量
       let domTemple = ''
+      let ind = 0
+      let isFirst = true
       for (let key in dateList) {
-        const element = dateList[key][index]
-        const nextIndex = parseInt(index) + 1
-        // 添加期目录
-        // 如果没有title，则title为空
-        if (!element.title) element.title = ""
-        // 判断是否有image
-        if (element.img) {
-          domTemple += `<li id="slideItem${nextIndex}"><div class="handle"></div><div class="content-left"><div class="num">${nextIndex}</div></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
-        } else {
-          domTemple += `<li id="slideItem${nextIndex}"><div class="handle"></div><div class="content-left"><div class="num">${nextIndex}</div></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
+
+        // console.log(dateList[key], this.data.activeCardIndex)
+        const element = dateList[key][this.data.activeDateIndex]
+        // console.log(element, key, this.data.activeDateIndex)
+        // console.log(dateList[key], this.data.activeDateIndex, ind)
+        if (element) {
+          if (isFirst) {
+            // console.log(ind)
+            this.data.startCardIndex = parseInt(ind)
+            isFirst = false
+          }
+          
+          const nextIndex = parseInt(index) + 1
+          // 添加期目录
+          // 如果没有title，则title为空
+          if (!element.title) element.title = ""
+          // 判断是否有image
+          if (element.img) {
+            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="lest-bt content-left-button" @click="lastCard">< 上一页 |</div><div class="num">${dateList.length - index + 1}</div><div class="next-bt content-left-button" @click="nextCard">| 下一页 ></div></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
+          } else {
+            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="lest-bt content-left-button" @click="lastCard">< 上一页 |</div><div class="num">${dateList.length - index + 1}</div><div class="next-bt content-left-button" @click="nextCard">| 下一页 ></div></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
+          }
+          if (element.music) {
+            domTemple += `<audio src="${element.music}"></audio><div class="audio-box"><div class="audio-image" @click="audio"></div><div class="audio-bar" @click="changeAudioprogress"><div class="spot"></div><div class="progress"></div></div></div>`
+          }
+          domTemple += `</li>`
         }
-        if (element.music) {
-          domTemple += `<audio src="${element.music}"></audio><div class="audio-box"  @click="changeAudioprogress"><div class="audio-image"></div><div class="audio-bar"><div class="spot"></div><div class="progress"></div></div></div>`
-        }
-        domTemple += `</li>`
+        ind++
       }
       document.getElementById('elasticstack').style.display = 'none'
       document.getElementById('elasticstack').innerHTML = domTemple
@@ -146,6 +175,7 @@
       this.changeDete(parseInt(index * 2))
     },
     changeDete: function (dete) {
+      // console.log(dete)
       // 取消掉所有子页码的活跃状态
       for(let ind = 0; ind < document.getElementById('dataBox').children.length; ind++) {
         const dom = document.getElementById('dataBox').children[ind]
@@ -159,10 +189,10 @@
         this.domList.last.style.display = 'none'
         this.domList.next.style.display = 'block'
       }
+      this.playMusic()
     },
     saveReadInfo: function () {
-      this.data.readList[this.data.activeDateIndex] = true
-      localStorage
+      this.data.readList[this.data.activeCardIndex] = true
       if (window.localStorage) {
         localStorage.setItem('readList', JSON.stringify(this.data.readList))
       } else {
@@ -170,106 +200,110 @@
       }
     },
     calculation: function () {
-      setTimeout(() => {
-        this.data.ElastiStack = new ElastiStack( document.getElementById('elasticstack'), {
-          loop: false,
-          handle: ".handle",
-          ratioX: parseInt(this.data.screenInfo.clientWidth * 0.02),
-          ratioZ: parseInt(this.data.screenInfo.clientWidth * -0.02),
-          distDragBack: 100,
-          distDragMax: 200,
-          // pc端禁止拖拽
-          enable: !this.data.isPC,
-          onUpdateStack: (activeIndex) => {
-            // ------------------------------
-
-            this.changeDeteList(activeIndex)
-            // 设置活跃日期
-            this.data.activeDateIndex = activeIndex
-            // ------------------------------
-            // 如果阅读了就标记这一页为已阅读
-            // this.saveReadInfo()
-            // console.log(activeIndex)
-            
-            // 只有PC才有左右箭头
-            if (this.data.isPC) {
-              // 第一页的时候隐藏左箭头
-              if (activeIndex === 0) {
-                // console.log(this.data.ElastiStack.itemsCount - 1)
-                this.domList.last.style.display = 'none'
-              } else {
-                this.domList.last.style.display = 'block'
-              }
-              // 最后一页的时候没有向右箭头
-              if (activeIndex === dateList.length - 1) {
-                this.domList.next.style.display = 'none'
-              } else {
-                this.domList.next.style.display = 'block'
-              }
+      this.data.ElastiStack = new ElastiStack( document.getElementById('elasticstack'), {
+        loop: false,
+        handle: ".handle",
+        ratioX: parseInt(this.data.screenInfo.clientWidth * 0.02),
+        ratioZ: parseInt(this.data.screenInfo.clientWidth * -0.02),
+        distDragBack: 100,
+        distDragMax: 200,
+        // pc端禁止拖拽
+        enable: !this.data.isPC,
+        atEnd: () => {
+          showToast('已经在最后了')
+        },
+        atStart: () => {
+          showToast('已经在最前了')
+        },
+        onUpdateStack: (activeIndex) => {
+          // 记录学习期数
+          this.saveReadInfo()
+          this.domList.tips.style.display = "none"
+          // 设置活跃日期
+          this.data.activeCardIndex = activeIndex + this.data.startCardIndex
+          // ------------------------------
+          // 如果阅读了就标记这一页为已阅读
+          
+          // 只有PC才有左右箭头
+          if (this.data.isPC) {
+            // 第一页的时候隐藏左箭头
+            if (activeIndex === 0) {
+              // console.log(this.data.ElastiStack.itemsCount - 1)
+              this.domList.last.style.display = 'none'
+            } else {
+              this.domList.last.style.display = 'block'
             }
-            
-            // 有记者按的关系需要加1
-            activeIndex++
-            // 停止当前播放的音乐
-            console.log(this.data);
-            if (this.data.audio !== null) {
-              this.data.audio.pause()
-              this.data.audio.src = ''
+            // 最后一页的时候没有向右箭头
+            if (!dateList[this.data.activeCardIndex + 1]) {
+              this.domList.next.style.display = 'none'
+            } else {
+              this.domList.next.style.display = 'block'
             }
-            // 停止上一个动画
-            if (this.data.control !== null) {
-              this.data.control.next = false
-            }
-            // 查找文字区域
-            const textBox = $(`#slideItem${activeIndex} .content`)
-            // 查找音频区域
-            const audio = $(`#slideItem${activeIndex} audio`)
-            // console.log(textBox)
-            if (audio.length > 0) {
-              // 播放音乐
-              this.data.audio = audio[0]
-              const musicSrc = dateList[activeIndex][activeIndex - 1].music
-              if (musicSrc) {
-                this.data.audio.src = musicSrc
-                this.data.audio.play()
-              }
-              // 播放拖动块
-              const spot = $(`#slideItem${activeIndex} .spot`)
-              const progress = $(`#slideItem${activeIndex} .progress`)
-              this.data.audio.addEventListener("timeupdate", function (e) {
-                const value = (e.target.currentTime / e.target.duration).toFixed(4) * 100
-                // console.log((e.target.currentTime / e.target.duration).toFixed(4) * 100 + '%')
-                spot[0].style.left = value + '%'
-                progress[0].style.width = value + '%'
-              })
-              
-              if (textBox.length > 0) {
-                // 滚动条长度
-                const scrollHeight = textBox[0].scrollHeight
-                // 超出长度
-                const overflow = scrollHeight - textBox[0].clientHeight
-                this.data.audio.ontimeupdate = (e) => {
-                  textBox.scrollTop(this.data.audio.currentTime / this.data.audio.duration * overflow)
-                }
-              }
-            }
-            setTimeout(() => {
-              // 刷新dom节点
-              pgNameHandler(document.getElementById('dataBox'))
-            }, 100)
           }
-        })
-        document.getElementById('elasticstack').style.display = 'block'
-      }, 0)
-    },
-    activeCard: function (index) {
-      this.changeDete(index * 2)
+          
+          setTimeout(() => {
+            // 刷新dom节点
+            pgNameHandler(document.getElementById('dataBox'))
+          }, 100)
+          this.playMusic()
+        }
+      })
+      document.getElementById('elasticstack').style.display = 'block'
     },
     nextCard: function () {
       this.data.ElastiStack.next()
     },
     lastCard: function () {
       this.data.ElastiStack.last()
+    },
+    playMusic: function () {
+      // 停止当前播放的音乐
+      // console.log(this.data);
+      if (this.data.audio !== null) {
+        this.data.audio.pause()
+        this.data.audio.src = ''
+      }
+      // 停止上一个动画
+      if (this.data.control !== null) {
+        this.data.control.next = false
+      }
+      // 查找文字区域
+      const textBox = $(`#slideItem${this.data.activeCardIndex} .content`)
+      
+      // 查找音频区域
+      const audio = $(`#slideItem${this.data.activeCardIndex} audio`)
+      // console.log(audio)
+      // console.log(textBox)
+      if (audio.length > 0) {
+        // 播放音乐
+        this.data.audio = audio[0]
+        const musicSrc = dateList[this.data.activeCardIndex][this.data.activeDateIndex].music
+        if (musicSrc) {
+          this.data.audio.src = musicSrc
+          this.data.audio.play()
+          console.log('开始播放音乐')
+        }
+        // 播放拖动块
+        const spot = $(`#slideItem${this.data.activeCardIndex} .spot`)
+        const progress = $(`#slideItem${this.data.activeCardIndex} .progress`)
+        
+        if (textBox.length > 0) {
+          setTimeout(() => {
+            // 滚动条长度
+            const scrollHeight = textBox[0].scrollHeight
+            // 超出长度
+            const overflow = scrollHeight - textBox[0].clientHeight
+            this.data.audio.ontimeupdate = (e) => {
+              const value = (e.target.currentTime / e.target.duration).toFixed(4) * 100
+              // console.log((e.target.currentTime / e.target.duration).toFixed(4) * 100 + '%')
+              spot[0].style.left = value + '%'
+              progress[0].style.width = value + '%'
+              this.data.isPlaying = true
+              textBox.scrollTop(this.data.audio.currentTime / this.data.audio.duration * overflow)
+            }
+          }, 0)
+        }
+      }
     },
     openHistory: function () {
       // 生成打卡记录
@@ -300,7 +334,23 @@
       this.data.audio.currentTime  = this.data.audio.duration * ratio
     },
     hiddenMain: function (e) {
-      this.domList.main.style.top = "-100%"
+      this.domList.main.style.opacity = 0
+      setTimeout(() => {
+        this.domList.main.style.display = 'none'
+      }, 1000)
+    },
+    audio: function () {
+      if (!this.data.audio) return
+      if (this.data.isPlaying) {
+        this.data.audio.pause()
+        this.$el.style.background = 'url(../images/pause.png) center no-repeat'
+        setTimeout(() => {
+          this.data.isPlaying = false
+        }, 0)
+      } else {
+        this.data.audio.play()
+        this.$el.style.background = 'url(../images/audio.png) center no-repeat'
+      }
     }
   }
 </script>
@@ -308,7 +358,7 @@
 
 <style lang="less">
   .main {
-    background-image: url(../images/main.jpg);
+    background-image: url(../images/h5-bg.jpg);
     background-repeat: no-repeat;
     background-size: 100%;
     position: fixed;
@@ -316,7 +366,17 @@
     width: 100%;
     height: 100%;
     z-index: 99;
-    transition: top 1s;
+    transition: opacity 1s;
+    overflow: hidden;
+    .text {
+      width: 80%;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
   }
   .elasticstack {
     width: 80%;
@@ -372,6 +432,8 @@
         line-height: 25px;
         width: 33px;
         text-align: center;
+        user-select: none;
+        pointer-events: none;
       }
     }
     .title {
@@ -383,6 +445,10 @@
       top: 10%;
       font-size: 20px;
       z-index: -2;
+      height: 26px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .image-box {
       width: 30%;
@@ -416,6 +482,8 @@
       height: 200px;
       overflow-x: hidden;
       overflow-y: auto;
+      // user-select: none;
+      // pointer-events: none;
       p {
         user-select: none;
         pointer-events: none;
@@ -534,6 +602,7 @@
     overflow: hidden;
     display: none;
     margin: auto;
+    box-shadow: 2px 2px 5px #e6dada;
     .history-item {
       height: 100%;
       overflow: auto;
@@ -644,8 +713,8 @@
   }
   .next-box {
     display: none;
-    height: 30px;
-    line-height: 30px;
+    height: 35px;
+    line-height: 35px;
     position: absolute;
     bottom: 20%;
     width: 100%;
@@ -654,7 +723,7 @@
       background-color: red;
       text-align: center;
       color: white;
-      width: 100px;
+      width: 40%;
       border-radius: 20px;
       font-size: 14px;
       a {
@@ -677,6 +746,8 @@
       height: 35px;
       background-repeat: no-repeat;
       background-position: center;
+      background-size: 27px !important;
+      cursor: pointer;
     }
     .audio-bar {
       float: right;
@@ -705,5 +776,53 @@
       pointer-events: none;
       border-bottom: 1px solid red;
     }
+  }
+  .tips {
+    font-size: 12px;
+    text-align: right;
+    color: #a29292;
+    display: none;
+    position: absolute;
+    top: -20px;
+    right: 0;
+  }
+  .alert {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.90);
+    .text {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      color: white;
+      width: 12em;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      font-size: 1.6rem;
+    }
+  }
+  .content-left-button {
+    position: absolute;
+    font-size: 12px;
+    color: #cc524b;
+    height: 50px;
+    line-height: 55px;
+    width: 70px;
+    text-align: center;
+  }
+  .lest-bt {
+    left: -80px;
+  }
+  .next-bt {
+    right: -80px;
   }
 </style>

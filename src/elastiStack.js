@@ -69,7 +69,9 @@
 		// 拖动句柄
 		handle: undefined,
 		// 切换卡片事件
-		onUpdateStack : function( current ) { return false; }
+		onUpdateStack : function( current ) { return false; },
+		atStart: function( ) { return false; },
+		atEnd: function( ) { return false; }
 	};
 
 	// 初始化设置
@@ -134,6 +136,7 @@
 		let next = this.items[this.current + 1]
 		if (!this.options.loop && !next) {
 			this._moveBack( instance )
+			this.options.atEnd()
 			return
 		}
 		// disable drag
@@ -277,6 +280,9 @@
 			else {
 				onEndTransFn.call();
 			}
+		} else {
+			// 没有上一项的回调
+			this.options.atStart()
 		}
 	}
 

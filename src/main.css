@@ -12,6 +12,22 @@ html, body, .ox, .app {
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
 
+.toast {
+  position: fixed;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.5);
+  bottom: 10%;
+  width: 40%;
+  height: 40px;
+  border-radius: 10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  line-height: 40px;
+  text-align: center;
+  color: white;
+}
+
 /* pc页面样式 */
 .pc {
   min-width: 800px;
@@ -28,6 +44,11 @@ html, body, .ox, .app {
 /* 手机页面 */
 .h5 {
   background-image: url("../images/h5-bg.jpg");
+  background-size: 100%;
+  background-color: #e9e3d7;
+}
+.h5 .ox-card .tips {
+  display: block;
 }
 
 .h5 .page-header {
@@ -45,6 +66,20 @@ html, body, .ox, .app {
   right: 0;
   bottom: 0;
   margin: auto;
+}
+
+.h5 .ox-share .learn-info {
+  width: 70px;
+  height: 70px;
+}
+
+.h5 .ox-share .learn-info .num {
+  line-height: 70px;
+  font-size: 50px;
+}
+
+.h5 .ox-share .learn-info .text {
+  right: 5px;
 }
 
 .h5 .ox-card .elasticstack {
@@ -101,7 +136,7 @@ html, body, .ox, .app {
   display: none;
 }
 .h5 .ox-card .record {
-  bottom: calc(10% - 40px);
+  bottom: calc(8% - 40px);
   top: unset;
   right: 10%;
   width: 80px;
@@ -282,5 +317,16 @@ p {
   }
   .pc .ox-card .date-box, .pc .ox-card .record{
     top: 77%;
+  }
+}
+
+@media screen and (max-height: 690px) {
+  .pc .ox-copyright .copyright-box {
+    height: 100px;
+  }
+  .pc .ox-card .date-box, .pc .ox-card .record{
+    bottom: 0;
+    top: unset;
+    margin: 10px auto;
   }
 }
