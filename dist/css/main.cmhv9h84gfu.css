@@ -40,7 +40,9 @@ html, body, .ox, .app {
 .pc .history {
   min-width: 780px;
 }
-
+.pc .content-left-button {
+  display: none;
+}
 /* 手机页面 */
 .h5 {
   background-image: url("../images/h5-bg.jpg");
