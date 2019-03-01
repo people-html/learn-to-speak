@@ -200,6 +200,7 @@
       }
     },
     calculation: function () {
+      const _this = this
       this.data.ElastiStack = new ElastiStack( document.getElementById('elasticstack'), {
         loop: false,
         handle: ".handle",
@@ -210,10 +211,18 @@
         // pc端禁止拖拽
         enable: !this.data.isPC,
         atEnd: () => {
-          showToast('已经在最后了')
+          if (this.data.activeDateIndex > 0) {
+            this.changeCard(dateList.length - (this.data.activeDateIndex - 1))
+          } else {
+            showToast('已经在最后了')
+          }
         },
         atStart: () => {
-          showToast('已经在最前了')
+          if (this.data.activeDateIndex < dateList.length) {
+            this.changeCard(dateList.length - (this.data.activeDateIndex + 1))
+          } else {
+            showToast('已经在最前了')
+          }
         },
         onUpdateStack: (activeIndex) => {
           // 记录学习期数

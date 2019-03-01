@@ -374,10 +374,10 @@ window.ozzx.script = {
       "isPlaying": false
     },
     "created": function created() {
-      var _this = this;
+      var _this2 = this;
 
       setTimeout(function () {
-        _this.hiddenMain();
+        _this2.hiddenMain();
       }, 1000); // 解决返回上一页不会退回到学习页面
 
       this.closeHistory(); // 读取出打卡记录
@@ -398,10 +398,10 @@ window.ozzx.script = {
       this.changeCard(0); // 延时设置打卡页面元素dom
 
       setTimeout(function () {
-        if (_this.data.isPC) {
-          _this.domList.cardBox.style.width = 41 * dateName.length + 'px';
+        if (_this2.data.isPC) {
+          _this2.domList.cardBox.style.width = 41 * dateName.length + 'px';
         } else {
-          _this.domList.cardBox.style.height = 41 * dateName.length + 'px';
+          _this2.domList.cardBox.style.height = 41 * dateName.length + 'px';
         }
       }, 1000); // 刷新dom节点
 
@@ -533,7 +533,9 @@ window.ozzx.script = {
       }
     },
     "calculation": function calculation() {
-      var _this2 = this;
+      var _this3 = this;
+
+      var _this = this;
 
       this.data.ElastiStack = new ElastiStack(document.getElementById('elasticstack'), {
         loop: false,
@@ -545,35 +547,43 @@ window.ozzx.script = {
         // pc端禁止拖拽
         enable: !this.data.isPC,
         atEnd: function atEnd() {
-          showToast('已经在最后了');
+          if (_this3.data.activeDateIndex > 0) {
+            _this3.changeCard(dateList.length - (_this3.data.activeDateIndex - 1));
+          } else {
+            showToast('已经在最后了');
+          }
         },
         atStart: function atStart() {
-          showToast('已经在最前了');
+          if (_this3.data.activeDateIndex < dateList.length) {
+            _this3.changeCard(dateList.length - (_this3.data.activeDateIndex + 1));
+          } else {
+            showToast('已经在最前了');
+          }
         },
         onUpdateStack: function onUpdateStack(activeIndex) {
           // 记录学习期数
-          _this2.saveReadInfo();
+          _this3.saveReadInfo();
 
-          _this2.domList.tips.style.display = "none"; // 设置活跃日期
+          _this3.domList.tips.style.display = "none"; // 设置活跃日期
 
-          _this2.data.activeCardIndex = activeIndex + _this2.data.startCardIndex; // ------------------------------
+          _this3.data.activeCardIndex = activeIndex + _this3.data.startCardIndex; // ------------------------------
           // 如果阅读了就标记这一页为已阅读
           // 只有PC才有左右箭头
 
-          if (_this2.data.isPC) {
+          if (_this3.data.isPC) {
             // 第一页的时候隐藏左箭头
             if (activeIndex === 0) {
               // console.log(this.data.ElastiStack.itemsCount - 1)
-              _this2.domList.last.style.display = 'none';
+              _this3.domList.last.style.display = 'none';
             } else {
-              _this2.domList.last.style.display = 'block';
+              _this3.domList.last.style.display = 'block';
             } // 最后一页的时候没有向右箭头
 
 
-            if (!dateList[_this2.data.activeCardIndex + 1]) {
-              _this2.domList.next.style.display = 'none';
+            if (!dateList[_this3.data.activeCardIndex + 1]) {
+              _this3.domList.next.style.display = 'none';
             } else {
-              _this2.domList.next.style.display = 'block';
+              _this3.domList.next.style.display = 'block';
             }
           }
 
@@ -582,7 +592,7 @@ window.ozzx.script = {
             pgNameHandler(document.getElementById('dataBox'));
           }, 100);
 
-          _this2.playMusic();
+          _this3.playMusic();
         }
       });
       document.getElementById('elasticstack').style.display = 'block';
@@ -594,7 +604,7 @@ window.ozzx.script = {
       this.data.ElastiStack.last();
     },
     "playMusic": function playMusic() {
-      var _this3 = this;
+      var _this4 = this;
 
       // 停止当前播放的音乐
       // console.log(this.data);
@@ -636,13 +646,13 @@ window.ozzx.script = {
 
             var overflow = scrollHeight - textBox[0].clientHeight;
 
-            _this3.data.audio.ontimeupdate = function (e) {
+            _this4.data.audio.ontimeupdate = function (e) {
               var value = (e.target.currentTime / e.target.duration).toFixed(4) * 100; // console.log((e.target.currentTime / e.target.duration).toFixed(4) * 100 + '%')
 
               spot[0].style.left = value + '%';
               progress[0].style.width = value + '%';
-              _this3.data.isPlaying = true;
-              textBox.scrollTop(_this3.data.audio.currentTime / _this3.data.audio.duration * overflow);
+              _this4.data.isPlaying = true;
+              textBox.scrollTop(_this4.data.audio.currentTime / _this4.data.audio.duration * overflow);
             };
           }, 0);
         }
@@ -679,15 +689,15 @@ window.ozzx.script = {
       this.data.audio.currentTime = this.data.audio.duration * ratio;
     },
     "hiddenMain": function hiddenMain(e) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.domList.main.style.opacity = 0;
       setTimeout(function () {
-        _this4.domList.main.style.display = 'none';
+        _this5.domList.main.style.display = 'none';
       }, 1000);
     },
     "audio": function audio() {
-      var _this5 = this;
+      var _this6 = this;
 
       if (!this.data.audio) return;
 
@@ -695,7 +705,7 @@ window.ozzx.script = {
         this.data.audio.pause();
         this.$el.style.background = 'url(../images/pause.png) center no-repeat';
         setTimeout(function () {
-          _this5.data.isPlaying = false;
+          _this6.data.isPlaying = false;
         }, 0);
       } else {
         this.data.audio.play();
@@ -706,6 +716,8 @@ window.ozzx.script = {
   "copyright": {},
   "share": {
     "created": function created() {
+      var _this7 = this;
+
       var times = 0;
       document.body.classList.add('h5'); // console.log(this.domList)
       // 获取到屏幕信息
@@ -738,14 +750,15 @@ window.ozzx.script = {
       // this.domList.number.style.lineHight = screenInfo.clientWidth * 0.2 + 'px'
       // 避免阻塞
 
-      setTimeout(function () {// 将dom导出为图片
-        // html2canvas(document.body, {async: false}).then(canvas => {
-        //   this.domList.shareImg.src = canvas.toDataURL("image/png")
-        //   this.domList.shareImg.style.display = 'block'
-        //   // document.body.appendChild(canvas)
-        //   console.log( this.domList.shareText)
-        //   this.domList.shareText.style.display = 'block'
-        // })
+      setTimeout(function () {
+        // 将dom导出为图片
+        html2canvas(document.body, {
+          async: false
+        }).then(function (canvas) {
+          _this7.domList.shareImg.src = canvas.toDataURL("image/png");
+          _this7.domList.shareImg.style.display = 'block';
+          _this7.domList.shareText.style.opacity = 1;
+        });
       }, 1000);
     }
   }
