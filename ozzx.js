@@ -47,6 +47,14 @@ module.exports = {
     {
       name: 'viewport',
       content: 'height=device-height,initial-scale=1,user-scalable=no,maximum-scale=1,,user-scalable=no',
+    },
+    {
+      name: 'renderer',
+      content: 'webkit'
+    },
+    {
+      'http-equiv': 'X-UA-Compatible',
+      content: 'IE=edge,chrome=1'
     }
   ],
   // 使用到的外部脚本清单

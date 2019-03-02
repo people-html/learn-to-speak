@@ -45,11 +45,19 @@ html, body, .ox, .app {
 .pc .content-left-button {
   display: none;
 }
+.pc .ox-card .elasticstack .content p {
+  user-select: unset;
+}
 /* 手机页面 */
 .h5 {
   background-image: url("../images/h5-bg.jpg");
   background-size: 100%;
   background-color: #e9e3d7;
+  overflow: hidden;
+}
+
+.h5 .app {
+  overflow: hidden;
 }
 
 .h5 .page-header {
@@ -74,8 +82,8 @@ html, body, .ox, .app {
 }
 
 .h5 .ox-share .learn-info {
-  width: 70px;
-  height: 70px;
+  width: 20vw;
+  height: 20vw;
 }
 
 .h5 .ox-share .learn-info .num {
@@ -84,7 +92,7 @@ html, body, .ox, .app {
 }
 
 .h5 .ox-share .learn-info .text {
-  right: 5px;
+  right: 2vw;
 }
 
 .h5 .ox-card .elasticstack {
@@ -127,7 +135,7 @@ html, body, .ox, .app {
 }
 
 .h5 .ox-card .elasticstack .mini {
-  height: calc(100% - 240px);
+  height: calc(100% - 275px);
 }
 
 .h5 .ox-card .elasticstack .title {
@@ -142,11 +150,11 @@ html, body, .ox, .app {
   display: none;
 }
 .h5 .ox-card .record {
-  bottom: calc(8% - 40px);
+  bottom: calc(9% - 40px);
   top: unset;
   right: 10%;
-  width: 80px;
-  height: 28px;
+  width: 101px;
+  height: 35px;
 }
 
 .h5 .ox-card .elasticstack .image-box {

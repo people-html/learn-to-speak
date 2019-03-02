@@ -171,8 +171,6 @@
 					// console.log('移动结束')
 					instance.element.style.display = 'none'
 				}
-				// 从下往上切换可以直接放置到最后
-				classie.remove( instance.element, 'animate' );
 				
 				// 前进
 				self.current ++
@@ -181,14 +179,8 @@
 				if (self.current < 0) self.current = self.itemsCount - 1
 				if (self.current > self.itemsCount - 1) self.current = 0
 
-				setTimeout(() => {
-					// the upcoming one will animate..
-					const item = self.items[self.current >= self.items.length ? self.current % self.items.length : self.current]
-					classie.add( item, 'animate' );
-					// reset style
-					self._setStackStyle();
-				}, 25 );
-
+				// 回归
+				self._setStackStyle();
 				// add dragging capability
 				self._initDragg();
 
@@ -234,7 +226,10 @@
 			// 禁止拖动
 			this._disableDragg()
 			last.style.opacity = 0
-			last.style.zIndex = 4
+			setTimeout(() => {
+				last.style.zIndex = 5
+			}, 100)
+			
 			
 			// 添加动画标签
 			
@@ -247,15 +242,14 @@
 			var self = this,
 				// 动画结束事件
 				onEndTransFn = function() {
+					
+					// 开始进入回来状态
 					last.removeEventListener( transEndEventName, onEndTransFn );
 					
 					// reset first item
-					setTransformStyle( last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0,0)' );
-					last.style.left = last.style.top = '0px';
+					// setTransformStyle( last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0, 0)' );
+					// last.style.left = last.style.top = '0px';
 					last.style.opacity = 1
-					setTimeout(() => {
-						classie.remove( last, 'animate' )
-					}, 300)
 					
 					// 前进
 					self.current --
@@ -264,13 +258,7 @@
 					if (self.current < 0) self.current = self.itemsCount - 1
 					if (self.current > self.itemsCount - 1) self.current = 0
 
-					setTimeout(() => {
-						// the upcoming one will animate..
-						const item = self.items[self.current >= self.items.length ? self.current % self.items.length : self.current]
-						classie.add( item, 'animate' );
-						// reset style
-						self._setStackStyle();
-					}, 25 );
+					self._setStackStyle()
 
 					// add dragging capability
 					self._initDragg();

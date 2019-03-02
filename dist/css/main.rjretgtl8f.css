@@ -45,11 +45,22 @@ html, body, .ox, .app {
 .pc .content-left-button {
   display: none;
 }
+.pc .ox-card .elasticstack .content p {
+  -webkit-user-select: unset;
+     -moz-user-select: unset;
+      -ms-user-select: unset;
+          user-select: unset;
+}
 /* 手机页面 */
 .h5 {
   background-image: url("../images/h5-bg.jpg");
   background-size: 100%;
   background-color: #e9e3d7;
+  overflow: hidden;
+}
+
+.h5 .app {
+  overflow: hidden;
 }
 
 .h5 .page-header {
@@ -74,8 +85,8 @@ html, body, .ox, .app {
 }
 
 .h5 .ox-share .learn-info {
-  width: 70px;
-  height: 70px;
+  width: 20vw;
+  height: 20vw;
 }
 
 .h5 .ox-share .learn-info .num {
@@ -84,7 +95,7 @@ html, body, .ox, .app {
 }
 
 .h5 .ox-share .learn-info .text {
-  right: 5px;
+  right: 2vw;
 }
 
 .h5 .ox-card .elasticstack {
@@ -127,7 +138,7 @@ html, body, .ox, .app {
 }
 
 .h5 .ox-card .elasticstack .mini {
-  height: calc(100% - 240px);
+  height: calc(100% - 275px);
 }
 
 .h5 .ox-card .elasticstack .title {
@@ -142,11 +153,11 @@ html, body, .ox, .app {
   display: none;
 }
 .h5 .ox-card .record {
-  bottom: calc(8% - 40px);
+  bottom: calc(9% - 40px);
   top: unset;
   right: 10%;
-  width: 80px;
-  height: 28px;
+  width: 101px;
+  height: 35px;
 }
 
 .h5 .ox-card .elasticstack .image-box {
@@ -371,7 +382,7 @@ p {
   width: 100%;
   height: 100%;
   z-index: 99;
-  transition: opacity 1s;
+  transition: opacity 1.5s;
   overflow: hidden;
 }
 
@@ -457,8 +468,8 @@ p {
   font-weight: bold;
   position: absolute;
   width: 400px;
-  left: 15%;
-  top: 10%;
+  left: 100px;
+  top: 20px;
   font-size: 20px;
   z-index: -2;
   height: 26px;
@@ -468,11 +479,11 @@ p {
 }
 
 .ox-card .elasticstack .image-box {
-  width: 30%;
+  width: 26%;
   float: left;
   position: relative;
   height: 100%;
-  margin: 0 2%;
+  margin-right: 2%;
   z-index: -2;
 }
 
@@ -526,7 +537,7 @@ p {
 }
 
 .ox-card .page-header {
-  height: 35%;
+  height: 37%;
   background-image: url(../images/header.png);
   background-repeat: no-repeat;
   background-position: center;
@@ -603,8 +614,10 @@ p {
   background-image: url(../images/right.png);
   position: absolute;
   right: 0px;
-  top: 179px;
+  top: 0;
   cursor: pointer;
+  bottom: 0;
+  margin: auto;
 }
 
 .ox-card .last {
@@ -872,10 +885,13 @@ p {
   position: absolute;
   font-size: 14px;
   color: #cc524b;
-  height: 50px;
-  line-height: 55px;
+  height: 30px;
+  line-height: 30px;
   width: 70px;
   text-align: center;
+  border: 1px solid #cc524b;
+  border-radius: 5px;
+  margin: 10px 0;
 }
 
 .ox-card .lest-bt {
@@ -890,13 +906,10 @@ p {
 }
 
 .ox-share .bg {
-  width: 70%;
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  height: unset;
-  top: 15%;
+  height: 48vw;
+  margin: 6vw auto;
+  display: block;
+  margin-top: 15vw;
 }
 
 .ox-share .share {
@@ -917,8 +930,8 @@ p {
 .ox-share .qr {
   align-items: center;
   width: 100%;
-  height: calc(100% - 185px);
-  margin: 10px 0;
+  height: 90px;
+  margin: 15px 0;
 }
 
 .ox-share .qr img {
@@ -943,7 +956,7 @@ p {
   height: 50px;
   line-height: 50px;
   font-size: 40px;
-  width: 50px;
+  width: 15vw;
   top: 0px;
   bottom: 0;
   position: absolute;
@@ -978,9 +991,7 @@ p {
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: 40%;
   padding: 5% 0;
-  margin-bottom: 10%;
 }
 
 .ox-share .share-box-bottom .info-text {

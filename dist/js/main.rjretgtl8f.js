@@ -322,6 +322,12 @@ var globalConfig = {
   }, {
     "name": "viewport",
     "content": "height=device-height,initial-scale=1,user-scalable=no,maximum-scale=1,,user-scalable=no"
+  }, {
+    "name": "renderer",
+    "content": "webkit"
+  }, {
+    "http-equiv": "X-UA-Compatible",
+    "content": "IE=edge,chrome=1"
   }],
   "scriptList": [{
     "name": "jquery-3.3.1",
@@ -379,7 +385,7 @@ window.ozzx.script = {
 
       setTimeout(function () {
         _this2.hiddenMain();
-      }, 1000); // 解决返回上一页不会退回到学习页面
+      }, 2000); // 解决返回上一页不会退回到学习页面
 
       this.closeHistory(); // 读取出打卡记录
 
@@ -456,7 +462,8 @@ window.ozzx.script = {
       }
     },
     "changeCard": function changeCard(index) {
-      // 清空活跃卡片ID
+      console.log('改变卡片!'); // 清空活跃卡片ID
+
       this.data.activeCardIndex = 0; // console.log(index)
 
       this.data.activeDateIndex = dateName.length - parseInt(index); // console.log(this.data.activeDateIndex)
@@ -485,9 +492,9 @@ window.ozzx.script = {
           if (!element.title) element.title = ""; // 判断是否有image
 
           if (element.img) {
-            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"lest-bt content-left-button\" @click=\"lastCard\">< \u4E0A\u4E00\u9875 |</div><div class=\"num\">").concat(dateName.length - index, "</div><div class=\"next-bt content-left-button\" @click=\"nextCard\">| \u4E0B\u4E00\u9875 ></div></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"lest-bt content-left-button\" @click=\"lastCard\">< \u4E0A\u4E00\u9875</div><div class=\"num\">").concat(dateName.length - index, "</div><div class=\"next-bt content-left-button\" @click=\"nextCard\">\u4E0B\u4E00\u9875 ></div></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
           } else {
-            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"lest-bt content-left-button\" @click=\"lastCard\">< \u4E0A\u4E00\u9875 |</div><div class=\"num\">").concat(dateName.length - index, "</div><div class=\"next-bt content-left-button\" @click=\"nextCard\">| \u4E0B\u4E00\u9875 ></div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"lest-bt content-left-button\" @click=\"lastCard\">< \u4E0A\u4E00\u9875</div><div class=\"num\">").concat(dateName.length - index, "</div><div class=\"next-bt content-left-button\" @click=\"nextCard\">\u4E0B\u4E00\u9875 ></div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
           }
 
           if (element.music) {
@@ -509,7 +516,30 @@ window.ozzx.script = {
       }, 100); // 高亮对应的页号
 
       this.changeDete(parseInt(index * 2));
-      this.playMusic();
+      this.playMusic(); // const dom = $('.lest-bt')
+      // dom[0].style.display = 'none'
+
+      var activeCard = this.data.activeCardIndex + this.data.startCardIndex;
+
+      if (this.data.isPC) {
+        // 第一页的时候隐藏左箭头
+        this.domList.last.style.display = 'none';
+
+        if ($('#elasticstack')[0].children.length === 1) {
+          this.domList.next.style.display = 'none';
+        } else {
+          this.domList.next.style.display = 'block';
+        }
+      } else {
+        // 第一页的时候隐藏左箭头
+        $("#slideItem".concat(activeCard, " .lest-bt"))[0].style.display = 'none';
+
+        if ($('#elasticstack')[0].children.length === 1) {
+          $("#slideItem".concat(activeCard, " .next-bt"))[0].style.display = 'none';
+        } else {
+          $("#slideItem".concat(activeCard, " .next-bt"))[0].style.display = 'block';
+        }
+      }
     },
     "changeDete": function changeDete(dete) {
       // console.log(dete)
@@ -566,14 +596,16 @@ window.ozzx.script = {
           }
         },
         onUpdateStack: function onUpdateStack(activeIndex) {
-          console.log(activeIndex); // 记录学习期数
-
+          // 记录学习期数
           _this4.saveReadInfo(); // 设置活跃日期
 
 
-          _this4.data.activeCardIndex = activeIndex; // ------------------------------
+          _this4.data.activeCardIndex = activeIndex + _this4.data.startCardIndex; // const activeCard = this.data.activeCardIndex + this.data.startCardIndex
+
+          console.log(_this4.data.activeCardIndex); // ------------------------------
           // 如果阅读了就标记这一页为已阅读
           // 只有PC才有左右箭头
+          // console.log(activeIndex)
 
           if (_this4.data.isPC) {
             // 第一页的时候隐藏左箭头
@@ -585,10 +617,26 @@ window.ozzx.script = {
             } // 最后一页的时候没有向右箭头
 
 
-            if (!dateList[_this4.data.activeCardIndex + 1]) {
+            if ($('#elasticstack')[0].children.length === activeIndex + 1) {
               _this4.domList.next.style.display = 'none';
             } else {
               _this4.domList.next.style.display = 'block';
+            }
+          } else {
+            // 第一页的时候隐藏左箭头
+            if (activeIndex === 0) {
+              // console.log(this.data.ElastiStack.itemsCount - 1)
+              $("#slideItem".concat(_this4.data.activeCardIndex, " .lest-bt"))[0].style.display = 'none';
+            } else {
+              $("#slideItem".concat(_this4.data.activeCardIndex, " .lest-bt"))[0].style.display = 'block';
+            } // 最后一页的时候没有向右箭头
+            // console.log($('#elasticstack')[0].children.length, activeIndex + 1, this.data.activeCardIndex)
+
+
+            if ($('#elasticstack')[0].children.length === activeIndex + 1) {
+              $("#slideItem".concat(_this4.data.activeCardIndex, " .next-bt"))[0].style.display = 'none';
+            } else {
+              $("#slideItem".concat(_this4.data.activeCardIndex, " .next-bt"))[0].style.display = 'block';
             }
           }
 
@@ -613,8 +661,8 @@ window.ozzx.script = {
     "playMusic": function playMusic() {
       var _this5 = this;
 
-      var activeCard = this.data.activeCardIndex + this.data.startCardIndex;
-      console.log(activeCard, this.data.activeDateIndex - 1); // 停止当前播放的音乐
+      var activeCard = this.data.activeCardIndex + this.data.startCardIndex; // console.log(activeCard, this.data.activeDateIndex - 1)
+      // 停止当前播放的音乐
 
       if (this.data.audio !== null) {
         this.data.audio.pause();
@@ -634,8 +682,8 @@ window.ozzx.script = {
 
       if (audio.length > 0) {
         // 播放音乐
-        this.data.audio = audio[0];
-        console.log(activeCard, this.data.activeDateIndex - 1);
+        this.data.audio = audio[0]; // console.log(activeCard, this.data.activeDateIndex - 1)
+
         var musicSrc = dateList[activeCard][this.data.activeDateIndex - 1].music;
 
         if (musicSrc) {
@@ -709,7 +757,6 @@ window.ozzx.script = {
     "audio": function audio() {
       var _this7 = this;
 
-      console.log('ssss');
       if (!this.data.audio) return;
 
       if (this.data.isPlaying) {

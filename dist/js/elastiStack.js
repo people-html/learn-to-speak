@@ -178,23 +178,17 @@
       if (!self.options.loop) {
         // console.log('移动结束')
         instance.element.style.display = 'none';
-      } // 从下往上切换可以直接放置到最后
+      } // 前进
 
-
-      classie.remove(instance.element, 'animate'); // 前进
 
       self.current++; // reorder stack
       // 循环
 
       if (self.current < 0) self.current = self.itemsCount - 1;
-      if (self.current > self.itemsCount - 1) self.current = 0;
-      setTimeout(function () {
-        // the upcoming one will animate..
-        var item = self.items[self.current >= self.items.length ? self.current % self.items.length : self.current];
-        classie.add(item, 'animate'); // reset style
+      if (self.current > self.itemsCount - 1) self.current = 0; // 回归
 
-        self._setStackStyle();
-      }, 25); // add dragging capability
+      self._setStackStyle(); // add dragging capability
+
 
       self._initDragg(); // init drag events on new current item
 
@@ -244,7 +238,9 @@
       _this2._disableDragg();
 
       last.style.opacity = 0;
-      last.style.zIndex = 4; // 添加动画标签
+      setTimeout(function () {
+        last.style.zIndex = 5;
+      }, 100); // 添加动画标签
 
       classie.add(last, 'animate');
 
@@ -256,27 +252,21 @@
       var self = _this2,
           // 动画结束事件
       onEndTransFn = function onEndTransFn() {
+        // 开始进入回来状态
         last.removeEventListener(transEndEventName, onEndTransFn); // reset first item
+        // setTransformStyle( last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0, 0)' );
+        // last.style.left = last.style.top = '0px';
 
-        setTransformStyle(last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0,0)');
-        last.style.left = last.style.top = '0px';
-        last.style.opacity = 1;
-        setTimeout(function () {
-          classie.remove(last, 'animate');
-        }, 300); // 前进
+        last.style.opacity = 1; // 前进
 
         self.current--; // reorder stack
         // 循环
 
         if (self.current < 0) self.current = self.itemsCount - 1;
         if (self.current > self.itemsCount - 1) self.current = 0;
-        setTimeout(function () {
-          // the upcoming one will animate..
-          var item = self.items[self.current >= self.items.length ? self.current % self.items.length : self.current];
-          classie.add(item, 'animate'); // reset style
 
-          self._setStackStyle();
-        }, 25); // add dragging capability
+        self._setStackStyle(); // add dragging capability
+
 
         self._initDragg(); // init drag events on new current item
 
