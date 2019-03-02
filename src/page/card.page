@@ -1,18 +1,17 @@
 <template>
   <div class="app">
     <div class="main" @click="hiddenMain" @name="main">
-      <img class="text" src="../images/main.png"></img>
+      <img class="text" src="../images/main.png"/>
     </div>
     <div class="page-header"></div>
     <div class="show-box" @name="showBox">
-      <div class="tips" @name="tips">左右滑动卡片切换音频内容</div>
       <ul class="elasticstack" id="elasticstack"></ul>
       <div class="last" @click="lastCard" @name="last"></div>
       <div class="next" @click="nextCard" @name="next"></div>
     </div>
     <div class="history" @name="history">
       <div class="left history-item">
-        <div class="history-left-card-box" @name="cardBox"></div>
+        <div class="history-left-card-box content" @name="cardBox"></div>
       </div>
       <div class="right history-item">
         <div class="history-right-title">累计打卡<span @name="times">6</span>期</div>
@@ -48,7 +47,8 @@
       startCardIndex: 0,
       readList: [],
       isPC: true,
-      isPlaying: false
+      isPlaying: false,
+      long: 0
     },
     created: function() {
       setTimeout(() => {
@@ -60,10 +60,9 @@
       const readList = localStorage.getItem("readList")
       if (readList) {
         this.data.readList = JSON.parse(readList)
+      } else {
+        this.data.readList = []
       }
-      document.addEventListener('touchmove', (e) => {
-        e.preventDefault()
-      }, false)
       // 检查是电脑还是移动端
       this.checkIsPC()
       this.creatDataList()
@@ -72,15 +71,13 @@
       // 延时设置打卡页面元素dom
       setTimeout(() => {
         if (this.data.isPC) {
-          this.domList.cardBox.style.width = 41 * (dateName.length) + 'px'
+          this.domList.cardBox.style.width = 42 * (dateName.length) + 'px'
         } else {
-          this.domList.cardBox.style.height = 41 * (dateName.length) + 'px'
+          this.domList.cardBox.style.height = 42 * (dateName.length) + 'px'
         }
-        
       }, 1000)
       // 刷新dom节点
       pgNameHandler(document.getElementById('dataBox'))
-  
     },
     creatDataList: function () {
       // 生成dom
@@ -90,24 +87,24 @@
       let long = 0
       dateList.forEach(element => {
         // console.log(element.length)
-        if (element.length > long) long = element.length
+        if (element.length > this.data.long) this.data.long = element.length
       })
-      for (let ind = 0; ind < long; ind++) {
+      for (let ind = 0; ind < this.data.long; ind++) {
         const index = parseInt(ind) + 1
         if (ind == 0) {
           // console.log('ssss')
-          dataBoxTemple += `<div class="date-item active" @click="changeCard(${index - 1})">${long - index + 1}</div>`
+          dataBoxTemple += `<div class="date-item active" @click="changeCard(${index - 1})">${this.data.long - index + 1}</div>`
         } else {
-          dataBoxTemple += `<div class="middle-line"></div><div class="date-item" @click="changeCard(${index - 1})">${long - index + 1}</div>`
+          dataBoxTemple += `<div class="middle-line"></div><div class="date-item" @click="changeCard(${index - 1})">${this.data.long - index + 1}</div>`
         }
       }
       dataBoxTemple += `<div class="clear"></div>`
       // 计算并设置dataBox宽度 or 高度
       if (this.data.isPC) {
-        this.domList.dataBox.style.width = (long) * 76 - 20 + 'px'
+        this.domList.dataBox.style.width = (this.data.long) * 76 - 20 + 'px'
         this.domList.dataBox.style.height = '50px'
       } else {
-        this.domList.dataBox.style.height = (long - 1) * 76 - 20 + 'px'
+        this.domList.dataBox.style.height = (this.data.long - 1) * 68 - 20 + 'px'
         this.domList.dataBox.style.width = '50px'
       }
 
@@ -129,7 +126,9 @@
     changeCard: function (index) {
       // 清空活跃卡片ID
       this.data.activeCardIndex = 0
-      this.data.activeDateIndex = dateList.length - parseInt(index)
+      // console.log(index)
+      this.data.activeDateIndex = dateName.length - parseInt(index)
+      // console.log(this.data.activeDateIndex)
       // 设置变量
       let domTemple = ''
       let ind = 0
@@ -137,9 +136,10 @@
       for (let key in dateList) {
 
         // console.log(dateList[key], this.data.activeCardIndex)
-        const element = dateList[key][this.data.activeDateIndex]
+        const element = dateList[key][this.data.activeDateIndex - 1]
         // console.log(element, key, this.data.activeDateIndex)
         // console.log(dateList[key], this.data.activeDateIndex, ind)
+        // console.log(dateList[key][this.data.activeDateIndex - 1])
         if (element) {
           if (isFirst) {
             // console.log(ind)
@@ -153,9 +153,9 @@
           if (!element.title) element.title = ""
           // 判断是否有image
           if (element.img) {
-            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="lest-bt content-left-button" @click="lastCard">< 上一页 |</div><div class="num">${dateList.length - index + 1}</div><div class="next-bt content-left-button" @click="nextCard">| 下一页 ></div></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
+            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="lest-bt content-left-button" @click="lastCard">< 上一页 |</div><div class="num">${dateName.length - index }</div><div class="next-bt content-left-button" @click="nextCard">| 下一页 ></div></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
           } else {
-            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="lest-bt content-left-button" @click="lastCard">< 上一页 |</div><div class="num">${dateList.length - index + 1}</div><div class="next-bt content-left-button" @click="nextCard">| 下一页 ></div></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
+            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="lest-bt content-left-button" @click="lastCard">< 上一页 |</div><div class="num">${dateName.length - index }</div><div class="next-bt content-left-button" @click="nextCard">| 下一页 ></div></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
           }
           if (element.music) {
             domTemple += `<audio src="${element.music}"></audio><div class="audio-box"><div class="audio-image" @click="audio"></div><div class="audio-bar" @click="changeAudioprogress"><div class="spot"></div><div class="progress"></div></div></div>`
@@ -173,6 +173,7 @@
       }, 100)
       // 高亮对应的页号
       this.changeDete(parseInt(index * 2))
+      this.playMusic()
     },
     changeDete: function (dete) {
       // console.log(dete)
@@ -189,15 +190,15 @@
         this.domList.last.style.display = 'none'
         this.domList.next.style.display = 'block'
       }
-      this.playMusic()
     },
     saveReadInfo: function () {
-      this.data.readList[this.data.activeCardIndex] = true
+      this.data.readList[this.data.activeDateIndex - 1] = true
       if (window.localStorage) {
         localStorage.setItem('readList', JSON.stringify(this.data.readList))
       } else {
         console.error("不支持localStorage!")
       }
+      // console.log(this.data.readList)
     },
     calculation: function () {
       const _this = this
@@ -209,27 +210,27 @@
         distDragBack: 100,
         distDragMax: 200,
         // pc端禁止拖拽
-        enable: !this.data.isPC,
+        enable: false,
         atEnd: () => {
-          if (this.data.activeDateIndex > 0) {
-            this.changeCard(dateList.length - (this.data.activeDateIndex - 1))
+          if (this.data.activeDateIndex > 1) {
+            this.changeCard(dateName.length - (this.data.activeDateIndex - 1))
           } else {
-            showToast('已经在最后了')
+            showToast('已经是最后一期了')
           }
         },
         atStart: () => {
-          if (this.data.activeDateIndex < dateList.length) {
-            this.changeCard(dateList.length - (this.data.activeDateIndex + 1))
+          if (this.data.activeDateIndex < dateName.length) {
+            this.changeCard(dateName.length - (this.data.activeDateIndex + 1))
           } else {
-            showToast('已经在最前了')
+            showToast('已经是最新一期了')
           }
         },
         onUpdateStack: (activeIndex) => {
+          console.log(activeIndex)
           // 记录学习期数
           this.saveReadInfo()
-          this.domList.tips.style.display = "none"
           // 设置活跃日期
-          this.data.activeCardIndex = activeIndex + this.data.startCardIndex
+          this.data.activeCardIndex = activeIndex
           // ------------------------------
           // 如果阅读了就标记这一页为已阅读
           
@@ -260,14 +261,17 @@
       document.getElementById('elasticstack').style.display = 'block'
     },
     nextCard: function () {
+      this.saveReadInfo()
       this.data.ElastiStack.next()
     },
     lastCard: function () {
+      this.saveReadInfo()
       this.data.ElastiStack.last()
     },
     playMusic: function () {
+      const activeCard = this.data.activeCardIndex + this.data.startCardIndex
+      console.log(activeCard, this.data.activeDateIndex - 1)
       // 停止当前播放的音乐
-      // console.log(this.data);
       if (this.data.audio !== null) {
         this.data.audio.pause()
         this.data.audio.src = ''
@@ -277,24 +281,25 @@
         this.data.control.next = false
       }
       // 查找文字区域
-      const textBox = $(`#slideItem${this.data.activeCardIndex} .content`)
+      const textBox = $(`#slideItem${activeCard} .content`)
       
       // 查找音频区域
-      const audio = $(`#slideItem${this.data.activeCardIndex} audio`)
+      const audio = $(`#slideItem${activeCard} audio`)
       // console.log(audio)
       // console.log(textBox)
       if (audio.length > 0) {
         // 播放音乐
         this.data.audio = audio[0]
-        const musicSrc = dateList[this.data.activeCardIndex][this.data.activeDateIndex].music
+        console.log(activeCard, this.data.activeDateIndex - 1)
+        const musicSrc = dateList[activeCard][this.data.activeDateIndex - 1].music
         if (musicSrc) {
           this.data.audio.src = musicSrc
           this.data.audio.play()
           console.log('开始播放音乐')
         }
         // 播放拖动块
-        const spot = $(`#slideItem${this.data.activeCardIndex} .spot`)
-        const progress = $(`#slideItem${this.data.activeCardIndex} .progress`)
+        const spot = $(`#slideItem${activeCard} .spot`)
+        const progress = $(`#slideItem${activeCard} .progress`)
         
         if (textBox.length > 0) {
           setTimeout(() => {
@@ -318,7 +323,7 @@
       // 生成打卡记录
       let historyTemple = ''
       let times = 0
-      for(let ind in dateList) {
+      for(let ind in dateName) {
         if (this.data.readList[ind]) times++
         historyTemple += `<div class="item ${this.data.readList[ind] ? 'isread': ''}"><div class="num">${dateName[ind].stage}</div><div class="text">${dateName[ind].name}</div><div class="icon-box"></div></div>`
       }
@@ -346,9 +351,11 @@
       this.domList.main.style.opacity = 0
       setTimeout(() => {
         this.domList.main.style.display = 'none'
+        this.domList.showBox.style.display = 'block'
       }, 1000)
     },
     audio: function () {
+      console.log('ssss')
       if (!this.data.audio) return
       if (this.data.isPlaying) {
         this.data.audio.pause()
@@ -400,7 +407,7 @@
     li {
       display: block;
       position: absolute;
-      width: 86%;
+      width: 90%;
       height: 270px;
       background-color: white;
       left: 0;
@@ -410,7 +417,7 @@
       margin: auto;
       -webkit-transform: translate3d(10px, 0px, -20px);
       transform: translate3d(10px, 0px, -20px);
-      border: 1px solid #ded0c3;
+      box-shadow: 2px 2px 5px #e6dada;
       border-radius: 10px;
       padding: 20px 10px;
       overflow: hidden;
@@ -488,7 +495,7 @@
       font-size: 14px;
       margin: 0 10px;
       margin: 40px 10px;
-      height: 200px;
+      max-height: 200px;
       overflow-x: hidden;
       overflow-y: auto;
       // user-select: none;
@@ -581,8 +588,8 @@
     background-size: 100% 100%;
     background-image: url(../images/right.png);
     position: absolute;
-    right: 10px;
-    top: calc(50% - 22px);
+    right: 0px;
+    top: 179px;
     cursor: pointer;
   }
   .last {
@@ -594,7 +601,7 @@
     background-image: url(../images/left.png);
     position: absolute;
     left: 10px;
-    top: calc(50% - 22px);
+    top: 179px;
     cursor: pointer;
     display: none;
   }
@@ -633,7 +640,6 @@
         overflow: auto;
         .item {
           width: 40px;
-          
           color: #c42735;
           background-color: #d93748;
           float: left;
@@ -641,6 +647,8 @@
         }
         .isread {
           color: #f4cda4;
+          user-select: none;
+          pointer-events: none;
           .icon-box {
             background-color: #d0c0a7;
           }
@@ -659,6 +667,7 @@
           font-size: 14px;
           word-wrap: break-word;
           padding: 0 10px;
+          overflow: hidden;
         }
         .icon-box {
           height: 40px;
@@ -667,7 +676,7 @@
           background-image: url(../images/calendar.png);
           background-repeat: no-repeat;
           background-position: center;
-          background-size: 22px;
+          background-size: 18px;
         }
         
       }
@@ -786,15 +795,6 @@
       border-bottom: 1px solid red;
     }
   }
-  .tips {
-    font-size: 12px;
-    text-align: right;
-    color: #a29292;
-    display: none;
-    position: absolute;
-    top: -20px;
-    right: 0;
-  }
   .alert {
     position: fixed;
     left: 0;
@@ -821,7 +821,7 @@
   }
   .content-left-button {
     position: absolute;
-    font-size: 12px;
+    font-size: 14px;
     color: #cc524b;
     height: 50px;
     line-height: 55px;

@@ -166,6 +166,11 @@
 				setTransformStyle( instance.element, is3d ? 'translate3d(' + self.options.ratioX * 2 + ', 0, ' + self.options.ratioZ * 2 + 'px)' : 'translate(0,0,0)' );
 				instance.element.style.left = instance.element.style.top = '0px';
 				instance.element.style.zIndex = -1;
+				// 待测试
+				if (!self.options.loop) {
+					// console.log('移动结束')
+					instance.element.style.display = 'none'
+				}
 				// 从下往上切换可以直接放置到最后
 				classie.remove( instance.element, 'animate' );
 				
@@ -215,19 +220,24 @@
 	};
 
 	ElastiStack.prototype._goBack = function( instance, event, pointer ) {
-		
 		let last = this.items[this.current - 1]
-		// console.log(last)
-		// 待优化
+		if (!last) {
+			// 没有上一项的回调
+			this.options.atStart()
+			return
+		}
+		last.style.display = 'block'
+		// last.style.zIndex = 5;
 		// 判断是否允许循环
 		if (this.options.loop && !last) last = this.items[this.items.length - 1]
-		// 待优化
-		if (last) {
+		setTimeout(() => {
 			// 禁止拖动
 			this._disableDragg()
 			last.style.opacity = 0
+			last.style.zIndex = 4
+			
 			// 添加动画标签
-			last.style.zIndex = 5;
+			
 			classie.add( last, 'animate' )
 			var tVal = this._getTranslateVal( instance );
 			
@@ -239,11 +249,9 @@
 				onEndTransFn = function() {
 					last.removeEventListener( transEndEventName, onEndTransFn );
 					
-					
 					// reset first item
 					setTransformStyle( last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0,0)' );
 					last.style.left = last.style.top = '0px';
-					last.style.zIndex = 4;
 					last.style.opacity = 1
 					setTimeout(() => {
 						classie.remove( last, 'animate' )
@@ -280,10 +288,8 @@
 			else {
 				onEndTransFn.call();
 			}
-		} else {
-			// 没有上一项的回调
-			this.options.atStart()
-		}
+		}, 0)
+		
 	}
 
 	ElastiStack.prototype._onDragEnd = function( instance, event, pointer ) {

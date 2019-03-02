@@ -4,7 +4,7 @@
     
     <div class="share-box-bottom">
       <div class="learn-info" @name="learnInfo">
-        <div class="num"  @name="number">0</div>
+        <div class="num" @name="number">0</div>
         <div class="text">期</div>
       </div>
       <div class="qr"><img src="../images/qr.png"/></div>
@@ -38,10 +38,8 @@
       if (ozzx.tool.getScreenInfo().ratio > 0.65 && ozzx.tool.getScreenInfo().ratio < 0.77) {
         // this.domList.learnInfo.style.top = '52%'
         this.domList.bg.style.width = "60%"
-        this.domList.bgBt.style.width = "60%"
       } else if (ozzx.tool.getScreenInfo().ratio >= 0.77) {
         this.domList.bg.style.width = "50%"
-        this.domList.bgBt.style.width = "50%"
       }
       const screenInfo = ozzx.tool.getScreenInfo()
       
@@ -94,7 +92,8 @@
 .qr {
   align-items: center;
   width: 100%;
-  height: calc(100% - 165px);
+  height: calc(100% - 185px);
+  margin: 10px 0;
   img {
     margin: 0 auto;
     display: block;
@@ -108,14 +107,19 @@
   border-radius: 50%;
   background-color: #c62827;
   position: relative;
-  margin: 10px auto;
+  margin: 0 auto;
   .num {
-    position: absolute;
     color: white;
     text-align: center;
-    line-height: 70px;
-    font-size: 50px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 40px;
     width: 50px;
+    top: 0px;
+    bottom: 0;
+    position: absolute;
+    margin: auto;
+    font-family: Arial;
   }
   .text {
     position: absolute;
@@ -134,6 +138,8 @@
   color: #a37f5a;
   opacity: 0;
   line-height: 30px;
+  animation: fade 2s infinite;
+  animation-fill-mode: forwards;
 }
 .share-box-bottom {
   position: fixed;
@@ -155,6 +161,23 @@
       height: 25px;
       padding: 10px 0;
     }
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 1.0;
+  }
+  20% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  80% {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1.0;
   }
 }
 </style>
