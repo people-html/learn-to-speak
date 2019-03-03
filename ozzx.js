@@ -61,7 +61,7 @@ module.exports = {
   scriptList: [
     {
       name: 'jquery-3.3.1',
-      src: 'https://code.jquery.com/jquery-3.3.1.min.js'
+      src: 'http://tools.people.com.cn/libs/jquery/1.11.1/jquery-1.11.1.min.js'
     },
     {
       name: 'modernizr',

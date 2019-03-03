@@ -331,7 +331,7 @@ var globalConfig = {
   }],
   "scriptList": [{
     "name": "jquery-3.3.1",
-    "src": "https://code.jquery.com/jquery-3.3.1.min.js"
+    "src": "http://tools.people.com.cn/libs/jquery/1.11.1/jquery-1.11.1.min.js"
   }, {
     "name": "modernizr",
     "src": "./src/modernizr.custom.js"
@@ -377,8 +377,7 @@ window.ozzx.script = {
       "startCardIndex": 0,
       "readList": [],
       "isPC": true,
-      "isPlaying": false,
-      "long": 0
+      "isPlaying": false
     },
     "created": function created() {
       var _this2 = this;
@@ -414,36 +413,28 @@ window.ozzx.script = {
       pgNameHandler(document.getElementById('dataBox'));
     },
     "creatDataList": function creatDataList() {
-      var _this3 = this;
-
       // 生成dom
       var dataBoxTemple = '';
-      var historyTemple = ''; // 计算出最长的期数
+      var historyTemple = '';
 
-      var long = 0;
-      dateList.forEach(function (element) {
-        // console.log(element.length)
-        if (element.length > _this3.data.long) _this3.data.long = element.length;
-      });
-
-      for (var ind = 0; ind < this.data.long; ind++) {
+      for (var ind = 0; ind < dateList.length; ind++) {
         var index = parseInt(ind) + 1;
 
         if (ind == 0) {
           // console.log('ssss')
-          dataBoxTemple += "<div class=\"date-item active\" @click=\"changeCard(".concat(index - 1, ")\">").concat(this.data.long - index + 1, "</div>");
+          dataBoxTemple += "<div class=\"date-item active\" @click=\"changeCard(".concat(index - 1, ")\">").concat(dateList.length - index + 1, "</div>");
         } else {
-          dataBoxTemple += "<div class=\"middle-line\"></div><div class=\"date-item\" @click=\"changeCard(".concat(index - 1, ")\">").concat(this.data.long - index + 1, "</div>");
+          dataBoxTemple += "<div class=\"middle-line\"></div><div class=\"date-item\" @click=\"changeCard(".concat(index - 1, ")\">").concat(dateList.length - index + 1, "</div>");
         }
       }
 
       dataBoxTemple += "<div class=\"clear\"></div>"; // 计算并设置dataBox宽度 or 高度
 
       if (this.data.isPC) {
-        this.domList.dataBox.style.width = this.data.long * 76 - 20 + 'px';
+        this.domList.dataBox.style.width = dateList.length * 76 - 20 + 'px';
         this.domList.dataBox.style.height = '50px';
       } else {
-        this.domList.dataBox.style.height = (this.data.long - 1) * 68 - 20 + 'px';
+        this.domList.dataBox.style.height = (dateList.length - 1) * 68 - 20 + 'px';
         this.domList.dataBox.style.width = '50px';
       }
 
@@ -471,30 +462,27 @@ window.ozzx.script = {
 
       var domTemple = '';
       var ind = 0;
-      var isFirst = true;
+      var isFirst = true; // console.log(dateList[this.data.activeDateIndex - 1])
 
-      for (var key in dateList) {
-        // console.log(dateList[key], this.data.activeCardIndex)
-        var element = dateList[key][this.data.activeDateIndex - 1]; // console.log(element, key, this.data.activeDateIndex)
-        // console.log(dateList[key], this.data.activeDateIndex, ind)
-        // console.log(dateList[key][this.data.activeDateIndex - 1])
+      for (var _index in dateList[this.data.activeDateIndex - 1]) {
+        var element = dateList[this.data.activeDateIndex - 1][_index]; // console.log(element)
 
-        if (element) {
+        if (element && element.content) {
           if (isFirst) {
             // console.log(ind)
             this.data.startCardIndex = parseInt(ind);
             isFirst = false;
           }
 
-          var nextIndex = parseInt(index) + 1; // 添加期目录
+          var nextIndex = parseInt(_index) + 1; // 添加期目录
           // 如果没有title，则title为空
 
           if (!element.title) element.title = ""; // 判断是否有image
 
           if (element.img) {
-            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"lest-bt content-left-button\" @click=\"lastCard\">< \u4E0A\u4E00\u9875</div><div class=\"num\">").concat(dateName.length - index, "</div><div class=\"next-bt content-left-button\" @click=\"nextCard\">\u4E0B\u4E00\u9875 ></div></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"lest-bt content-left-button\" @click=\"lastCard\">< \u4E0A\u4E00\u9875</div><div class=\"num\">").concat(this.data.activeDateIndex, "</div><div class=\"next-bt content-left-button\" @click=\"nextCard\">\u4E0B\u4E00\u9875 ></div></div><div class=\"title\">").concat(element.title, "</div><div class=\"image-box\"><img src=\"").concat(element.img, "\"/></div><div class=\"content mini\">").concat(element.content, "</div>");
           } else {
-            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"lest-bt content-left-button\" @click=\"lastCard\">< \u4E0A\u4E00\u9875</div><div class=\"num\">").concat(dateName.length - index, "</div><div class=\"next-bt content-left-button\" @click=\"nextCard\">\u4E0B\u4E00\u9875 ></div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
+            domTemple += "<li id=\"slideItem".concat(ind, "\"><div class=\"handle\"></div><div class=\"content-left\"><div class=\"lest-bt content-left-button\" @click=\"lastCard\">< \u4E0A\u4E00\u9875</div><div class=\"num\">").concat(this.data.activeDateIndex, "</div><div class=\"next-bt content-left-button\" @click=\"nextCard\">\u4E0B\u4E00\u9875 ></div></div><div class=\"title\">").concat(element.title, "</div><div class=\"content\">").concat(element.content, "</div>");
           }
 
           if (element.music) {
@@ -568,7 +556,7 @@ window.ozzx.script = {
 
     },
     "calculation": function calculation() {
-      var _this4 = this;
+      var _this3 = this;
 
       var _this = this;
 
@@ -582,61 +570,61 @@ window.ozzx.script = {
         // pc端禁止拖拽
         enable: false,
         atEnd: function atEnd() {
-          if (_this4.data.activeDateIndex > 1) {
-            _this4.changeCard(dateName.length - (_this4.data.activeDateIndex - 1));
+          if (_this3.data.activeDateIndex > 1) {
+            _this3.changeCard(dateName.length - (_this3.data.activeDateIndex - 1));
           } else {
             showToast('已经是最后一期了');
           }
         },
         atStart: function atStart() {
-          if (_this4.data.activeDateIndex < dateName.length) {
-            _this4.changeCard(dateName.length - (_this4.data.activeDateIndex + 1));
+          if (_this3.data.activeDateIndex < dateName.length) {
+            _this3.changeCard(dateName.length - (_this3.data.activeDateIndex + 1));
           } else {
             showToast('已经是最新一期了');
           }
         },
         onUpdateStack: function onUpdateStack(activeIndex) {
           // 记录学习期数
-          _this4.saveReadInfo(); // 设置活跃日期
+          _this3.saveReadInfo(); // 设置活跃日期
 
 
-          _this4.data.activeCardIndex = activeIndex + _this4.data.startCardIndex; // const activeCard = this.data.activeCardIndex + this.data.startCardIndex
-
-          console.log(_this4.data.activeCardIndex); // ------------------------------
+          _this3.data.activeCardIndex = activeIndex + _this3.data.startCardIndex; // const activeCard = this.data.activeCardIndex + this.data.startCardIndex
+          // console.log(this.data.activeCardIndex)
+          // ------------------------------
           // 如果阅读了就标记这一页为已阅读
           // 只有PC才有左右箭头
           // console.log(activeIndex)
 
-          if (_this4.data.isPC) {
+          if (_this3.data.isPC) {
             // 第一页的时候隐藏左箭头
             if (activeIndex === 0) {
               // console.log(this.data.ElastiStack.itemsCount - 1)
-              _this4.domList.last.style.display = 'none';
+              _this3.domList.last.style.display = 'none';
             } else {
-              _this4.domList.last.style.display = 'block';
+              _this3.domList.last.style.display = 'block';
             } // 最后一页的时候没有向右箭头
 
 
             if ($('#elasticstack')[0].children.length === activeIndex + 1) {
-              _this4.domList.next.style.display = 'none';
+              _this3.domList.next.style.display = 'none';
             } else {
-              _this4.domList.next.style.display = 'block';
+              _this3.domList.next.style.display = 'block';
             }
           } else {
             // 第一页的时候隐藏左箭头
             if (activeIndex === 0) {
               // console.log(this.data.ElastiStack.itemsCount - 1)
-              $("#slideItem".concat(_this4.data.activeCardIndex, " .lest-bt"))[0].style.display = 'none';
+              $("#slideItem".concat(_this3.data.activeCardIndex, " .lest-bt"))[0].style.display = 'none';
             } else {
-              $("#slideItem".concat(_this4.data.activeCardIndex, " .lest-bt"))[0].style.display = 'block';
+              $("#slideItem".concat(_this3.data.activeCardIndex, " .lest-bt"))[0].style.display = 'block';
             } // 最后一页的时候没有向右箭头
             // console.log($('#elasticstack')[0].children.length, activeIndex + 1, this.data.activeCardIndex)
 
 
             if ($('#elasticstack')[0].children.length === activeIndex + 1) {
-              $("#slideItem".concat(_this4.data.activeCardIndex, " .next-bt"))[0].style.display = 'none';
+              $("#slideItem".concat(_this3.data.activeCardIndex, " .next-bt"))[0].style.display = 'none';
             } else {
-              $("#slideItem".concat(_this4.data.activeCardIndex, " .next-bt"))[0].style.display = 'block';
+              $("#slideItem".concat(_this3.data.activeCardIndex, " .next-bt"))[0].style.display = 'block';
             }
           }
 
@@ -645,7 +633,7 @@ window.ozzx.script = {
             pgNameHandler(document.getElementById('dataBox'));
           }, 100);
 
-          _this4.playMusic();
+          _this3.playMusic();
         }
       });
       document.getElementById('elasticstack').style.display = 'block';
@@ -659,7 +647,7 @@ window.ozzx.script = {
       this.data.ElastiStack.last();
     },
     "playMusic": function playMusic() {
-      var _this5 = this;
+      var _this4 = this;
 
       var activeCard = this.data.activeCardIndex + this.data.startCardIndex; // console.log(activeCard, this.data.activeDateIndex - 1)
       // 停止当前播放的音乐
@@ -672,7 +660,8 @@ window.ozzx.script = {
 
       if (this.data.control !== null) {
         this.data.control.next = false;
-      } // 查找文字区域
+      } // console.log(activeCard)
+      // 查找文字区域
 
 
       var textBox = $("#slideItem".concat(activeCard, " .content")); // 查找音频区域
@@ -684,7 +673,7 @@ window.ozzx.script = {
         // 播放音乐
         this.data.audio = audio[0]; // console.log(activeCard, this.data.activeDateIndex - 1)
 
-        var musicSrc = dateList[activeCard][this.data.activeDateIndex - 1].music;
+        var musicSrc = dateList[this.data.activeDateIndex - 1][activeCard].music;
 
         if (musicSrc) {
           this.data.audio.src = musicSrc;
@@ -703,13 +692,13 @@ window.ozzx.script = {
 
             var overflow = scrollHeight - textBox[0].clientHeight;
 
-            _this5.data.audio.ontimeupdate = function (e) {
+            _this4.data.audio.ontimeupdate = function (e) {
               var value = (e.target.currentTime / e.target.duration).toFixed(4) * 100; // console.log((e.target.currentTime / e.target.duration).toFixed(4) * 100 + '%')
 
               spot[0].style.left = value + '%';
               progress[0].style.width = value + '%';
-              _this5.data.isPlaying = true;
-              textBox.scrollTop(_this5.data.audio.currentTime / _this5.data.audio.duration * overflow);
+              _this4.data.isPlaying = true;
+              textBox.scrollTop(_this4.data.audio.currentTime / _this4.data.audio.duration * overflow);
             };
           }, 0);
         }
@@ -741,29 +730,29 @@ window.ozzx.script = {
     },
     "changeAudioprogress": function changeAudioprogress(e) {
       var ratio = this.$event.offsetX / this.$event.target.offsetWidth; // 设置时间
+      // console.log(ratio);
 
-      console.log(ratio);
       this.data.audio.currentTime = this.data.audio.duration * ratio;
     },
     "hiddenMain": function hiddenMain(e) {
-      var _this6 = this;
+      var _this5 = this;
 
       this.domList.main.style.opacity = 0;
       setTimeout(function () {
-        _this6.domList.main.style.display = 'none';
-        _this6.domList.showBox.style.display = 'block';
+        _this5.domList.main.style.display = 'none';
+        _this5.domList.showBox.style.display = 'block';
       }, 1000);
     },
     "audio": function audio() {
-      var _this7 = this;
+      var _this6 = this;
 
       if (!this.data.audio) return;
 
       if (this.data.isPlaying) {
         this.data.audio.pause();
-        this.$el.style.background = 'url(../images/pause.png) center no-repeat';
+        this.$el.style.background = 'url(./images/pause.png) center no-repeat';
         setTimeout(function () {
-          _this7.data.isPlaying = false;
+          _this6.data.isPlaying = false;
         }, 0);
       } else {
         this.data.audio.play();
@@ -774,7 +763,7 @@ window.ozzx.script = {
   "copyright": {},
   "share": {
     "created": function created() {
-      var _this8 = this;
+      var _this7 = this;
 
       var times = 0;
       document.body.classList.add('h5'); // console.log(this.domList)
@@ -811,9 +800,9 @@ window.ozzx.script = {
         html2canvas(document.body, {
           async: false
         }).then(function (canvas) {
-          _this8.domList.shareImg.src = canvas.toDataURL("image/png");
-          _this8.domList.shareImg.style.display = 'block';
-          _this8.domList.shareText.style.opacity = 1;
+          _this7.domList.shareImg.src = canvas.toDataURL("image/png");
+          _this7.domList.shareImg.style.display = 'block';
+          _this7.domList.shareText.style.opacity = 1;
         });
       }, 1000);
     }

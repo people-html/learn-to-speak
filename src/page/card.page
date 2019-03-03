@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <div class="main" @click="hiddenMain" @name="main">
-      <img class="text" src="../images/main.png"/>
+      <img class="text" src="./images/main.png"/>
     </div>
     <div class="page-header"></div>
     <div class="show-box" @name="showBox">
@@ -16,7 +16,7 @@
       <div class="right history-item">
         <div class="history-right-title">累计打卡<span @name="times">6</span>期</div>
         <div class="qr-box">
-          <img src="../images/qr.png" />
+          <img src="./images/qr.png" />
         </div>
         <p>扫描二维码</p>
         <p>分享至朋友圈</p>
@@ -29,7 +29,7 @@
       <div class="clear"></div>
     </div>
     <div class="date-box" @name="dataBox" id="dataBox"></div>
-    <div class="record" @name="record"><img src="../images/record.png" @click="openHistory"/></div>
+    <div class="record" @name="record"><img src="./images/record.png" @click="openHistory"/></div>
     <temple name="copyright" src="./src/page/copyright.page"></temple>
     <div class="alert" id="alert"><div class="text">请在竖屏情况下观看!</div></div>
   </div>
@@ -47,8 +47,7 @@
       startCardIndex: 0,
       readList: [],
       isPC: true,
-      isPlaying: false,
-      long: 0
+      isPlaying: false
     },
     created: function() {
       setTimeout(() => {
@@ -83,28 +82,23 @@
       // 生成dom
       let dataBoxTemple = ''
       let historyTemple = ''
-      // 计算出最长的期数
-      let long = 0
-      dateList.forEach(element => {
-        // console.log(element.length)
-        if (element.length > this.data.long) this.data.long = element.length
-      })
-      for (let ind = 0; ind < this.data.long; ind++) {
+
+      for (let ind = 0; ind < dateList.length; ind++) {
         const index = parseInt(ind) + 1
         if (ind == 0) {
           // console.log('ssss')
-          dataBoxTemple += `<div class="date-item active" @click="changeCard(${index - 1})">${this.data.long - index + 1}</div>`
+          dataBoxTemple += `<div class="date-item active" @click="changeCard(${index - 1})">${dateList.length - index + 1}</div>`
         } else {
-          dataBoxTemple += `<div class="middle-line"></div><div class="date-item" @click="changeCard(${index - 1})">${this.data.long - index + 1}</div>`
+          dataBoxTemple += `<div class="middle-line"></div><div class="date-item" @click="changeCard(${index - 1})">${dateList.length - index + 1}</div>`
         }
       }
       dataBoxTemple += `<div class="clear"></div>`
       // 计算并设置dataBox宽度 or 高度
       if (this.data.isPC) {
-        this.domList.dataBox.style.width = (this.data.long) * 76 - 20 + 'px'
+        this.domList.dataBox.style.width = (dateList.length) * 76 - 20 + 'px'
         this.domList.dataBox.style.height = '50px'
       } else {
-        this.domList.dataBox.style.height = (this.data.long - 1) * 68 - 20 + 'px'
+        this.domList.dataBox.style.height = (dateList.length - 1) * 68 - 20 + 'px'
         this.domList.dataBox.style.width = '50px'
       }
 
@@ -134,14 +128,11 @@
       let domTemple = ''
       let ind = 0
       let isFirst = true
-      for (let key in dateList) {
-
-        // console.log(dateList[key], this.data.activeCardIndex)
-        const element = dateList[key][this.data.activeDateIndex - 1]
-        // console.log(element, key, this.data.activeDateIndex)
-        // console.log(dateList[key], this.data.activeDateIndex, ind)
-        // console.log(dateList[key][this.data.activeDateIndex - 1])
-        if (element) {
+      // console.log(dateList[this.data.activeDateIndex - 1])
+      for (let index in dateList[this.data.activeDateIndex - 1]) {
+        const element = dateList[this.data.activeDateIndex - 1][index]
+        // console.log(element)
+        if (element && element.content) {
           if (isFirst) {
             // console.log(ind)
             this.data.startCardIndex = parseInt(ind)
@@ -154,9 +145,9 @@
           if (!element.title) element.title = ""
           // 判断是否有image
           if (element.img) {
-            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="lest-bt content-left-button" @click="lastCard">< 上一页</div><div class="num">${dateName.length - index }</div><div class="next-bt content-left-button" @click="nextCard">下一页 ></div></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
+            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="lest-bt content-left-button" @click="lastCard">< 上一页</div><div class="num">${this.data.activeDateIndex}</div><div class="next-bt content-left-button" @click="nextCard">下一页 ></div></div><div class="title">${element.title}</div><div class="image-box"><img src="${element.img}"/></div><div class="content mini">${element.content}</div>`
           } else {
-            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="lest-bt content-left-button" @click="lastCard">< 上一页</div><div class="num">${dateName.length - index }</div><div class="next-bt content-left-button" @click="nextCard">下一页 ></div></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
+            domTemple += `<li id="slideItem${ind}"><div class="handle"></div><div class="content-left"><div class="lest-bt content-left-button" @click="lastCard">< 上一页</div><div class="num">${this.data.activeDateIndex}</div><div class="next-bt content-left-button" @click="nextCard">下一页 ></div></div><div class="title">${element.title}</div><div class="content">${element.content}</div>`
           }
           if (element.music) {
             domTemple += `<audio src="${element.music}"></audio><div class="audio-box"><div class="audio-image" @click="audio"></div><div class="audio-bar" @click="changeAudioprogress"><div class="spot"></div><div class="progress"></div></div></div>`
@@ -253,7 +244,7 @@
           // 设置活跃日期
           this.data.activeCardIndex = activeIndex + this.data.startCardIndex
           // const activeCard = this.data.activeCardIndex + this.data.startCardIndex
-          console.log(this.data.activeCardIndex)
+          // console.log(this.data.activeCardIndex)
           // ------------------------------
           // 如果阅读了就标记这一页为已阅读
           // 只有PC才有左右箭头
@@ -322,6 +313,7 @@
       if (this.data.control !== null) {
         this.data.control.next = false
       }
+      // console.log(activeCard)
       // 查找文字区域
       const textBox = $(`#slideItem${activeCard} .content`)
       
@@ -333,7 +325,7 @@
         // 播放音乐
         this.data.audio = audio[0]
         // console.log(activeCard, this.data.activeDateIndex - 1)
-        const musicSrc = dateList[activeCard][this.data.activeDateIndex - 1].music
+        const musicSrc = dateList[this.data.activeDateIndex - 1][activeCard].music
         if (musicSrc) {
           this.data.audio.src = musicSrc
           this.data.audio.play()
@@ -386,7 +378,7 @@
     changeAudioprogress: function (e) {
       const ratio = this.$event.offsetX / this.$event.target.offsetWidth
       // 设置时间
-      console.log(ratio);
+      // console.log(ratio);
       this.data.audio.currentTime  = this.data.audio.duration * ratio
     },
     hiddenMain: function (e) {
@@ -400,7 +392,7 @@
       if (!this.data.audio) return
       if (this.data.isPlaying) {
         this.data.audio.pause()
-        this.$el.style.background = 'url(../images/pause.png) center no-repeat'
+        this.$el.style.background = 'url(./images/pause.png) center no-repeat'
         setTimeout(() => {
           this.data.isPlaying = false
         }, 0)
