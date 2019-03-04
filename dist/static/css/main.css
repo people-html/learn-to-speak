@@ -51,17 +51,6 @@ html, body, .ox, .app {
       -ms-user-select: unset;
           user-select: unset;
 }
-.pc .ox-card .elasticstack .title {
-  left: 0;
-  right: 0;
-  margin: auto;
-  width: 100%;
-  text-align: center;
-}
-
-.pc .ox-card .elasticstack .content {
-  padding: 0 5%;
-}
 /* 手机页面 */
 .h5 {
   background-image: url("../images/h5-bg.jpg");
@@ -144,12 +133,12 @@ html, body, .ox, .app {
 }
 
 .h5 .ox-card .elasticstack .content {
-  max-height: calc(100% - 140px);
+  max-height: calc(100% - 130px);
   margin: 10px;
 }
 
 .h5 .ox-card .elasticstack .mini {
-  height: calc(100% - 285px);
+  height: calc(100% - 275px);
 }
 
 .h5 .ox-card .elasticstack .title {
@@ -158,7 +147,7 @@ html, body, .ox, .app {
   left: 0;
   text-align: center;
   width: 90%;
-  margin: 5px auto;
+  margin: 0 auto;
 }
 .h5 .ox-card .next, .h5 .ox-card .last {
   display: none;
@@ -332,17 +321,6 @@ p {
 }
 
 /* 媒体查询 */
-@media screen and (max-height: 780px) {
-  .pc .ox-copyright .copyright-box {
-    height: 100px;
-  }
-  .pc .ox-card .date-box, .pc .ox-card .record{
-    top: 77%;
-  }
-  .pc .ox-card .elasticstack {
-    top: 20%;
-  }
-}
 
 @media screen and (max-height: 720px) {
   .pc .ox-copyright {
@@ -354,11 +332,18 @@ p {
     right: 20px;
   }
   .pc .ox-card .elasticstack {
-    top: 40%;
+    top: 20%;
   }
 }
 
-
+@media screen and (max-height: 780px) {
+  .pc .ox-copyright .copyright-box {
+    height: 100px;
+  }
+  .pc .ox-card .date-box, .pc .ox-card .record{
+    top: 77%;
+  }
+}
 
 @media screen and (max-height: 690px) {
   .pc .ox-copyright .copyright-box {
@@ -522,13 +507,12 @@ p {
 
 .ox-card .elasticstack .content {
   overflow: auto;
-  font-size: 16px;
+  font-size: 14px;
   margin: 0 10px;
   margin: 40px 10px;
   max-height: 200px;
   overflow-x: hidden;
   overflow-y: auto;
-  letter-spacing:2px
 }
 
 .ox-card .elasticstack .content p {
