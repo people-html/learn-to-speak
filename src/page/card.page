@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <div class="main" @click="hiddenMain" @name="main">
-      <img class="text" src="./images/main.png"/>
+      <img class="text" src="./static/images/main.png"/>
     </div>
     <div class="page-header"></div>
     <div class="show-box" @name="showBox">
@@ -16,7 +16,7 @@
       <div class="right history-item">
         <div class="history-right-title">累计打卡<span @name="times">6</span>期</div>
         <div class="qr-box">
-          <img src="./images/qr.png" />
+          <img src="./static/images/qr.png" />
         </div>
         <p>扫描二维码</p>
         <p>分享至朋友圈</p>
@@ -29,7 +29,7 @@
       <div class="clear"></div>
     </div>
     <div class="date-box" @name="dataBox" id="dataBox"></div>
-    <div class="record" @name="record"><img src="./images/record.png" @click="openHistory"/></div>
+    <div class="record" @name="record"><img src="./static/images/record.png" @click="openHistory"/></div>
     <temple name="copyright" src="./src/page/copyright.page"></temple>
     <div class="alert" id="alert"><div class="text">请在竖屏情况下观看!</div></div>
   </div>
@@ -392,13 +392,13 @@
       if (!this.data.audio) return
       if (this.data.isPlaying) {
         this.data.audio.pause()
-        this.$el.style.background = 'url(./images/pause.png) center no-repeat'
+        this.$el.style.background = 'url(./static/images/pause.png) center no-repeat'
         setTimeout(() => {
           this.data.isPlaying = false
         }, 0)
       } else {
         this.data.audio.play()
-        this.$el.style.background = 'url(../images/audio.png) center no-repeat'
+        this.$el.style.background = 'url(../static/images/audio.png) center no-repeat'
       }
     }
   }
@@ -525,7 +525,7 @@
     }
     .content {
       overflow: auto;
-      font-size: 14px;
+      font-size: 16px;
       margin: 0 10px;
       margin: 40px 10px;
       max-height: 200px;
@@ -536,6 +536,7 @@
       p {
         user-select: none;
         pointer-events: none;
+        line-height: 28px;
       }
     }
     audio {
@@ -559,7 +560,7 @@
     margin: 2% 0;
   }
   .show-box {
-    height: 40%;
+    height: 410px;
     width: 70%;
     position: absolute;
     top: 32%;

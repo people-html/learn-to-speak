@@ -750,13 +750,13 @@ window.ozzx.script = {
 
       if (this.data.isPlaying) {
         this.data.audio.pause();
-        this.$el.style.background = 'url(./images/pause.png) center no-repeat';
+        this.$el.style.background = 'url(./static/images/pause.png) center no-repeat';
         setTimeout(function () {
           _this6.data.isPlaying = false;
         }, 0);
       } else {
         this.data.audio.play();
-        this.$el.style.background = 'url(../images/audio.png) center no-repeat';
+        this.$el.style.background = 'url(../static/images/audio.png) center no-repeat';
       }
     }
   },

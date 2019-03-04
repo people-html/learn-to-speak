@@ -1,16 +1,16 @@
 <template>
   <div class="share" @name="share">
-    <img class="bg" @name="bg" src="./images/share-bg.png"/>
+    <img class="bg" @name="bg" src="./static/images/share-bg.png"/>
     <div class="learn-info" @name="learnInfo">
       <div class="num" @name="number">0</div>
       <div class="text">期</div>
     </div>
     <div class="share-box-bottom">
-      <div class="qr"><img src="./images/qr.png"/></div>
+      <div class="qr"><img src="./static/images/qr.png"/></div>
       <div class="info-text">今年两会我为这个声音打卡！扫描并学习</div>
       <div class="share-text" @name="shareText">—— 长按保存海报分享至朋友圈 ——</div>
       <div class="logo-box">
-        <img src="./images/logo.png"/>
+        <img src="./static/images/logo.png"/>
       </div>
     </div>
     
