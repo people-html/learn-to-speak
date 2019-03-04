@@ -152,7 +152,7 @@ window.onload = function () {
   // 取出URL地址判断当前所在页面
   var pageArg = getarg(window.location.href); // 从配置项中取出程序入口
 
-  var page = pageArg ? pageArg.split('&')[0] : globalConfig.entry;
+  var page = pageArg ? pageArg.split('&')[0] : ozzx.entry;
 
   if (page) {
     var entryDom = document.getElementById('ox-' + page);
@@ -176,7 +176,7 @@ window.onhashchange = function (e) {
   var newUrlParam = getarg(e.newURL); // 如果没有跳转到任何页面则跳转到主页
 
   if (newUrlParam === undefined) {
-    newUrlParam = globalConfig.entry;
+    newUrlParam = ozzx.entry;
   } // 如果没有发生页面跳转则不需要进行操作
   // 切换页面特效
 
@@ -258,7 +258,7 @@ function switchPage(oldUrlParam, newUrlParam) {
   // 如果源地址获取不到 那么一般是因为源页面为首页
 
   if (oldPage === undefined) {
-    oldPage = globalConfig.entry;
+    oldPage = ozzx.entry;
   } else {
     oldPage = oldPage.split('&')[0];
   }
@@ -292,79 +292,8 @@ function switchPage(oldUrlParam, newUrlParam) {
 
 window.ozzx = {
   script: {},
-  tool: {}
-};
-var globalConfig = {
-  "root": "/src",
-  "entry": "card",
-  "title": "学习有声",
-  "outFolder": "./dist",
-  "watcher": {
-    "enable": true,
-    "folder": "./src",
-    "ignored": "./dist/*",
-    "depth": 99
-  },
-  "outPut": {
-    "minifyCss": false,
-    "minifyJs": false,
-    "choiceAnimation": true,
-    "globalStyle": "./src/main.css",
-    "globalScript": "./src/main.js",
-    "outFileAddVersion": true
-  },
-  "serverPort": 8000,
-  "server": true,
-  "autoReload": true,
-  "headList": [{
-    "http-equiv": "content-type",
-    "content": "text/html; charset=UTF-8"
-  }, {
-    "name": "viewport",
-    "content": "height=device-height,initial-scale=1,user-scalable=no,maximum-scale=1,,user-scalable=no"
-  }, {
-    "name": "renderer",
-    "content": "webkit"
-  }, {
-    "http-equiv": "X-UA-Compatible",
-    "content": "IE=edge,chrome=1"
-  }],
-  "scriptList": [{
-    "name": "jquery-3.3.1",
-    "src": "http://tools.people.com.cn/libs/jquery/1.11.1/jquery-1.11.1.min.js"
-  }, {
-    "name": "modernizr",
-    "src": "./src/modernizr.custom.js"
-  }, {
-    "name": "draggabilly",
-    "src": "./src/draggabilly.pkgd.min.js"
-  }, {
-    "babel": true,
-    "name": "elastiStack",
-    "src": "./src/elastiStack.js"
-  }, {
-    "name": "html2canvas",
-    "src": "./src/html2canvas.min.js"
-  }],
-  "styleList": [{
-    "name": "component",
-    "src": "./src/component.css"
-  }, {
-    "name": "normalize",
-    "src": "./src/normalize.css"
-  }],
-  "pageList": [{
-    "main": true,
-    "isPage": true,
-    "name": "card",
-    "src": "./src/page/card.page",
-    "temple": "<temple name=\"card\" src=\"./src/page/card.page\" isPage=\"true\"></temple>"
-  }, {
-    "isPage": true,
-    "name": "share",
-    "src": "./src/page/share.page",
-    "temple": "<temple name=\"share\" src=\"./src/page/share.page\" isPage=\"true\"></temple>"
-  }]
+  tool: {},
+  entry: "card"
 };
 window.ozzx.script = {
   "card": {

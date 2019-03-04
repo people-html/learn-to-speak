@@ -51,6 +51,17 @@ html, body, .ox, .app {
       -ms-user-select: unset;
           user-select: unset;
 }
+.pc .ox-card .elasticstack .title {
+  left: 0;
+  right: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.pc .ox-card .elasticstack .content {
+  padding: 0 5%;
+}
+
 /* 手机页面 */
 .h5 {
   background-image: url("../images/h5-bg.jpg");
