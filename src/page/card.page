@@ -98,7 +98,8 @@
         this.domList.dataBox.style.width = (dateList.length) * 76 - 20 + 'px'
         this.domList.dataBox.style.height = '50px'
       } else {
-        this.domList.dataBox.style.height = (dateList.length - 1) * 68 - 20 + 'px'
+        console.log((dateList.length - 1) * 68 - 20 + 'px')
+        this.domList.dataBox.style.height = (dateList.length) * 68 - 20 + 'px'
         this.domList.dataBox.style.width = '50px'
       }
 

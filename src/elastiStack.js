@@ -222,61 +222,59 @@
 		// last.style.zIndex = 5;
 		// 判断是否允许循环
 		if (this.options.loop && !last) last = this.items[this.items.length - 1]
+		// 禁止拖动
+		this._disableDragg()
+		last.style.opacity = 0
 		setTimeout(() => {
-			// 禁止拖动
-			this._disableDragg()
-			last.style.opacity = 0
-			setTimeout(() => {
-				last.style.zIndex = 5
-			}, 100)
-			
-			
-			// 添加动画标签
-			
-			classie.add( last, 'animate' )
-			var tVal = this._getTranslateVal( instance );
-			
-			// apply it	
-			setTransformStyle( last, is3d ? 'translate3d(' + tVal.x + 'px,' + tVal.y + 'px, 0px)' : 'translate(' + tVal.x + 'px,' + tVal.y + 'px)' );
-			// after transition ends..
-			var self = this,
-				// 动画结束事件
-				onEndTransFn = function() {
-					
-					// 开始进入回来状态
-					last.removeEventListener( transEndEventName, onEndTransFn );
-					
-					// reset first item
-					// setTransformStyle( last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0, 0)' );
-					// last.style.left = last.style.top = '0px';
-					last.style.opacity = 1
-					
-					// 前进
-					self.current --
-					// reorder stack
-					// 循环
-					if (self.current < 0) self.current = self.itemsCount - 1
-					if (self.current > self.itemsCount - 1) self.current = 0
+			last.style.zIndex = 5
+		}, 100)
+		
+		
+		// 添加动画标签
+		
+		classie.add( last, 'animate' )
+		var tVal = this._getTranslateVal( instance );
+		
+		// apply it	
+		setTransformStyle( last, is3d ? 'translate3d(' + tVal.x + 'px,' + tVal.y + 'px, 0px)' : 'translate(' + tVal.x + 'px,' + tVal.y + 'px)' );
+		// after transition ends..
+		var self = this,
+			// 动画结束事件
+			onEndTransFn = function() {
+				
+				// 开始进入回来状态
+				last.removeEventListener( transEndEventName, onEndTransFn );
+				
+				// reset first item
+				// setTransformStyle( last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0, 0)' );
+				// last.style.left = last.style.top = '0px';
+				last.style.opacity = 1
+				
+				// 前进
+				self.current --
+				// reorder stack
+				// 循环
+				if (self.current < 0) self.current = self.itemsCount - 1
+				if (self.current > self.itemsCount - 1) self.current = 0
 
-					self._setStackStyle()
+				self._setStackStyle()
 
-					// add dragging capability
-					self._initDragg();
+				// add dragging capability
+				self._initDragg();
 
-					// init drag events on new current item
-					self._initEvents();
+				// init drag events on new current item
+				self._initEvents();
 
-					// callback
-					self.options.onUpdateStack( self.current );
-				};
+				// callback
+				self.options.onUpdateStack( self.current );
+			};
 
-			if( supportTransitions ) {
-				last.addEventListener( transEndEventName, onEndTransFn );
-			}
-			else {
-				onEndTransFn.call();
-			}
-		}, 0)
+		if( supportTransitions ) {
+			last.addEventListener( transEndEventName, onEndTransFn );
+		}
+		else {
+			onEndTransFn.call();
+		}
 		
 	}
 

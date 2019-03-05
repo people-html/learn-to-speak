@@ -1,17 +1,5 @@
 "use strict";
 
-/**
- * elastiStack.js v1.0.0
- * http://www.codrops.com
- *
- * Licensed under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
- * 
- * Copyright 2013, Codrops
- * http://www.codrops.com
- */
-;
-
 (function (window) {
   'use strict';
 
@@ -219,8 +207,6 @@
   };
 
   ElastiStack.prototype._goBack = function (instance, event, pointer) {
-    var _this2 = this;
-
     var last = this.items[this.current - 1];
 
     if (!last) {
@@ -232,57 +218,55 @@
     last.style.display = 'block'; // last.style.zIndex = 5;
     // 判断是否允许循环
 
-    if (this.options.loop && !last) last = this.items[this.items.length - 1];
+    if (this.options.loop && !last) last = this.items[this.items.length - 1]; // 禁止拖动
+
+    this._disableDragg();
+
+    last.style.opacity = 0;
     setTimeout(function () {
-      // 禁止拖动
-      _this2._disableDragg();
+      last.style.zIndex = 5;
+    }, 100); // 添加动画标签
 
-      last.style.opacity = 0;
-      setTimeout(function () {
-        last.style.zIndex = 5;
-      }, 100); // 添加动画标签
+    classie.add(last, 'animate');
 
-      classie.add(last, 'animate');
-
-      var tVal = _this2._getTranslateVal(instance); // apply it	
+    var tVal = this._getTranslateVal(instance); // apply it	
 
 
-      setTransformStyle(last, is3d ? 'translate3d(' + tVal.x + 'px,' + tVal.y + 'px, 0px)' : 'translate(' + tVal.x + 'px,' + tVal.y + 'px)'); // after transition ends..
+    setTransformStyle(last, is3d ? 'translate3d(' + tVal.x + 'px,' + tVal.y + 'px, 0px)' : 'translate(' + tVal.x + 'px,' + tVal.y + 'px)'); // after transition ends..
 
-      var self = _this2,
-          // 动画结束事件
-      onEndTransFn = function onEndTransFn() {
-        // 开始进入回来状态
-        last.removeEventListener(transEndEventName, onEndTransFn); // reset first item
-        // setTransformStyle( last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0, 0)' );
-        // last.style.left = last.style.top = '0px';
+    var self = this,
+        // 动画结束事件
+    onEndTransFn = function onEndTransFn() {
+      // 开始进入回来状态
+      last.removeEventListener(transEndEventName, onEndTransFn); // reset first item
+      // setTransformStyle( last, is3d ? 'translate3d(0, 0, 0)' : 'translate(0, 0)' );
+      // last.style.left = last.style.top = '0px';
 
-        last.style.opacity = 1; // 前进
+      last.style.opacity = 1; // 前进
 
-        self.current--; // reorder stack
-        // 循环
+      self.current--; // reorder stack
+      // 循环
 
-        if (self.current < 0) self.current = self.itemsCount - 1;
-        if (self.current > self.itemsCount - 1) self.current = 0;
+      if (self.current < 0) self.current = self.itemsCount - 1;
+      if (self.current > self.itemsCount - 1) self.current = 0;
 
-        self._setStackStyle(); // add dragging capability
-
-
-        self._initDragg(); // init drag events on new current item
+      self._setStackStyle(); // add dragging capability
 
 
-        self._initEvents(); // callback
+      self._initDragg(); // init drag events on new current item
 
 
-        self.options.onUpdateStack(self.current);
-      };
+      self._initEvents(); // callback
 
-      if (supportTransitions) {
-        last.addEventListener(transEndEventName, onEndTransFn);
-      } else {
-        onEndTransFn.call();
-      }
-    }, 0);
+
+      self.options.onUpdateStack(self.current);
+    };
+
+    if (supportTransitions) {
+      last.addEventListener(transEndEventName, onEndTransFn);
+    } else {
+      onEndTransFn.call();
+    }
   };
 
   ElastiStack.prototype._onDragEnd = function (instance, event, pointer) {
