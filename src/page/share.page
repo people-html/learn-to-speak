@@ -5,7 +5,7 @@
       <div class="num" @name="number">0</div>
       <div class="text">期</div>
     </div>
-    <div class="share-box-bottom">
+    <div class="share-box-bottom" @name="bottom">
       <div class="qr"><img src="./static/images/qr.png"/></div>
       <div class="info-text">今年两会我为这个声音打卡！扫描并学习</div>
       <div class="share-text" @name="shareText">—— 长按保存海报分享至朋友圈 ——</div>
@@ -26,6 +26,7 @@
       // console.log(this.domList)
       // 获取到屏幕信息
       let readList = localStorage.getItem("readList")
+      // console.log(readList)
       if (readList) {
         readList = JSON.parse(readList)
         readList.forEach(element => {
@@ -33,12 +34,13 @@
         })
         this.domList.number.innerHTML = times
       }
-      console.log(ozzx.tool.getScreenInfo().ratio)
-      if (ozzx.tool.getScreenInfo().ratio > 0.65 && ozzx.tool.getScreenInfo().ratio < 0.77) {
+      
+      const ratio = ozzx.tool.getScreenInfo().ratio
+      if (ratio > 0.62) {
         // this.domList.learnInfo.style.top = '52%'
         this.domList.bg.style.width = "60%"
-      } else if (ozzx.tool.getScreenInfo().ratio >= 0.77) {
-        this.domList.bg.style.width = "50%"
+        this.domList.bg.style.margin = '2vw auto'
+        this.domList.bottom.style.padding = 0
       }
       const screenInfo = ozzx.tool.getScreenInfo()
       

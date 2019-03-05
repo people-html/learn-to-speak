@@ -288,7 +288,6 @@
             // 刷新dom节点
             pgNameHandler(document.getElementById('dataBox'))
           }, 100)
-          this.playMusic()
         }
       })
       document.getElementById('elasticstack').style.display = 'block'
@@ -296,10 +295,17 @@
     nextCard: function () {
       this.saveReadInfo()
       this.data.ElastiStack.next()
+      setTimeout(() => {
+        this.playMusic()
+      }, 500)
     },
     lastCard: function () {
       this.saveReadInfo()
       this.data.ElastiStack.last()
+      setTimeout(() => {
+        this.playMusic()
+      }, 500)
+      
     },
     playMusic: function () {
       const activeCard = this.data.activeCardIndex + this.data.startCardIndex
@@ -329,7 +335,11 @@
         const musicSrc = dateList[this.data.activeDateIndex - 1][activeCard].music
         if (musicSrc) {
           this.data.audio.src = musicSrc
+          this.data.audio.pause()
+          this.data.audio.currentTime = 0
+          console.log('延迟1')
           this.data.audio.play()
+          
           console.log('开始播放音乐')
         }
         // 播放拖动块

@@ -80,10 +80,10 @@ module.exports = {
       name: 'html2canvas',
       src: './src/html2canvas.min.js'
     },
-    // {
-    //   name: 'log',
-    //   src: "http://people.com.cn/img/MAIN/2018/10/118767/js/lib/vconsole.3.3.bundle.min.js"
-    // }
+    {
+      name: 'log',
+      src: "http://people.com.cn/img/MAIN/2018/10/118767/js/lib/vconsole.3.3.bundle.min.js"
+    }
   ],
   styleList: [
     {

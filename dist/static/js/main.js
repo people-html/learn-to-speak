@@ -295,7 +295,7 @@ function switchPage(oldUrlParam, newUrlParam) {
 
   window.ozzx.activePage = newPage; // 更改$data链接
 
-  $data = ozzx.script[page].data;
+  $data = ozzx.script[newPage].data;
   runPageFunction(newPage, newDom);
 }
 
@@ -567,22 +567,30 @@ window.ozzx = {
               // 刷新dom节点
               pgNameHandler(document.getElementById('dataBox'));
             }, 100);
-
-            _this3.playMusic();
           }
         });
         document.getElementById('elasticstack').style.display = 'block';
       },
       "nextCard": function nextCard() {
+        var _this4 = this;
+
         this.saveReadInfo();
         this.data.ElastiStack.next();
+        setTimeout(function () {
+          _this4.playMusic();
+        }, 500);
       },
       "lastCard": function lastCard() {
+        var _this5 = this;
+
         this.saveReadInfo();
         this.data.ElastiStack.last();
+        setTimeout(function () {
+          _this5.playMusic();
+        }, 500);
       },
       "playMusic": function playMusic() {
-        var _this4 = this;
+        var _this6 = this;
 
         var activeCard = this.data.activeCardIndex + this.data.startCardIndex; // console.log(activeCard, this.data.activeDateIndex - 1)
         // 停止当前播放的音乐
@@ -612,6 +620,9 @@ window.ozzx = {
 
           if (musicSrc) {
             this.data.audio.src = musicSrc;
+            this.data.audio.pause();
+            this.data.audio.currentTime = 0;
+            console.log('延迟1');
             this.data.audio.play();
             console.log('开始播放音乐');
           } // 播放拖动块
@@ -627,13 +638,13 @@ window.ozzx = {
 
               var overflow = scrollHeight - textBox[0].clientHeight;
 
-              _this4.data.audio.ontimeupdate = function (e) {
+              _this6.data.audio.ontimeupdate = function (e) {
                 var value = (e.target.currentTime / e.target.duration).toFixed(4) * 100; // console.log((e.target.currentTime / e.target.duration).toFixed(4) * 100 + '%')
 
                 spot[0].style.left = value + '%';
                 progress[0].style.width = value + '%';
-                _this4.data.isPlaying = true;
-                textBox.scrollTop(_this4.data.audio.currentTime / _this4.data.audio.duration * overflow);
+                _this6.data.isPlaying = true;
+                textBox.scrollTop(_this6.data.audio.currentTime / _this6.data.audio.duration * overflow);
               };
             }, 0);
           }
@@ -670,16 +681,16 @@ window.ozzx = {
         this.data.audio.currentTime = this.data.audio.duration * ratio;
       },
       "hiddenMain": function hiddenMain(e) {
-        var _this5 = this;
+        var _this7 = this;
 
         this.domList.main.style.opacity = 0;
         setTimeout(function () {
-          _this5.domList.main.style.display = 'none';
-          _this5.domList.showBox.style.display = 'block';
+          _this7.domList.main.style.display = 'none';
+          _this7.domList.showBox.style.display = 'block';
         }, 1000);
       },
       "audio": function audio() {
-        var _this6 = this;
+        var _this8 = this;
 
         if (!this.data.audio) return;
 
@@ -687,7 +698,7 @@ window.ozzx = {
           this.data.audio.pause();
           this.$el.style.background = 'url(./static/images/pause.png) center no-repeat';
           setTimeout(function () {
-            _this6.data.isPlaying = false;
+            _this8.data.isPlaying = false;
           }, 0);
         } else {
           this.data.audio.play();
@@ -698,13 +709,13 @@ window.ozzx = {
     "copyright": {},
     "share": {
       "created": function created() {
-        var _this7 = this;
+        var _this9 = this;
 
         var times = 0;
         document.body.classList.add('h5'); // console.log(this.domList)
         // 获取到屏幕信息
 
-        var readList = localStorage.getItem("readList");
+        var readList = localStorage.getItem("readList"); // console.log(readList)
 
         if (readList) {
           readList = JSON.parse(readList);
@@ -714,13 +725,13 @@ window.ozzx = {
           this.domList.number.innerHTML = times;
         }
 
-        console.log(ozzx.tool.getScreenInfo().ratio);
+        var ratio = ozzx.tool.getScreenInfo().ratio;
 
-        if (ozzx.tool.getScreenInfo().ratio > 0.65 && ozzx.tool.getScreenInfo().ratio < 0.77) {
+        if (ratio > 0.62) {
           // this.domList.learnInfo.style.top = '52%'
           this.domList.bg.style.width = "60%";
-        } else if (ozzx.tool.getScreenInfo().ratio >= 0.77) {
-          this.domList.bg.style.width = "50%";
+          this.domList.bg.style.margin = '2vw auto';
+          this.domList.bottom.style.padding = 0;
         }
 
         var screenInfo = ozzx.tool.getScreenInfo(); // console.log(screenInfo)
@@ -735,9 +746,9 @@ window.ozzx = {
           html2canvas(document.body, {
             async: false
           }).then(function (canvas) {
-            _this7.domList.shareImg.src = canvas.toDataURL("image/png");
-            _this7.domList.shareImg.style.display = 'block';
-            _this7.domList.shareText.style.opacity = 1;
+            _this9.domList.shareImg.src = canvas.toDataURL("image/png");
+            _this9.domList.shareImg.style.display = 'block';
+            _this9.domList.shareText.style.opacity = 1;
           });
         }, 1000);
       }

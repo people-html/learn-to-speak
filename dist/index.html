@@ -62,7 +62,7 @@
       <div class="num" @name="number">0</div>
       <div class="text">期</div>
     </div>
-    <div class="share-box-bottom">
+    <div class="share-box-bottom" @name="bottom">
       <div class="qr"><img src="./static/images/qr.png"></div>
       <div class="info-text">今年两会我为这个声音打卡！扫描并学习</div>
       <div class="share-text" @name="shareText">—— 长按保存海报分享至朋友圈 ——</div>
@@ -81,8 +81,8 @@
     <script src="./static/js/draggabilly.js" type="text/javascript" ></script>
     <script src="./static/js/elastiStack.js" type="text/javascript" ></script>
     <script src="./static/js/html2canvas.js" type="text/javascript" ></script>
-    <script>
-
+    <script src="http://people.com.cn/img/MAIN/2018/10/118767/js/lib/vconsole.3.3.bundle.min.js" type="text/javascript" ></script>
+<script>
 var dateList = [
   [ {
  content: "<p><b>习近平总书记今年两会首场重要讲话原声来了！</b></p><p>【编者按】中共中央总书记、国家主席、中央军委主席习近平3月4日下午看望了参加全国政协十三届二次会议的文化艺术界、社会科学界委员，并参加联组会，听取意见和建议。文化文艺工作、哲学社会科学工作，属于“培根铸魂”的工作，习近平总书记对此高度重视。在这次联组会上，习近平提出了哪些要求？“学习有声”带您聆听现场。</p>",
@@ -147,7 +147,7 @@ if (dateList.length != dateName.length) {
 }
 
 
-    </script>
+</script>
     <!-- 主要script文件 -->
     <script src="./static/js/main.js" type="text/javascript"></script>
   </body>
